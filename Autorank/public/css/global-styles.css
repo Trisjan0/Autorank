@@ -1,0 +1,143 @@
+/* INITIAL STYLING -- -- -- */
+* {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: Montserrat;
+    
+    --primaryColor: #00156a;
+    --primaryColorHover: #00197c;
+    --secondaryColor: #A8DFFF;
+    --secondaryColorHover: #9fd2ef;
+    --green: #4DFF62;
+}
+
+body {
+    position: relative;
+}
+
+::-webkit-scrollbar { /* removes the scroll bar */
+    display: none;
+}
+
+/* NAVBAR STYLING -- -- -- */
+nav {
+    width: 100vw;
+    height: auto;
+}
+
+.navbar-container {
+    background-color: var(--primaryColor);
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-left-side {
+    margin-left: 40px;
+    height: 65%;
+    width: 205px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-left-side i {
+    font-size: 1.5rem;
+}
+
+.navbar-logo-container {
+    height: 100%;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.navbar-logo-container img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.navbar-left-side h1 {
+    color: white;
+}
+
+.navbar-right-side {
+    margin-right: 40px; /* 2.5vw */
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-right-side i {
+    font-size: 1.5rem;
+}
+
+.fa-bars:hover, .fa-times:hover, .fa-user:hover, .fa-user-gear:hover {
+    cursor: pointer;
+    scale: 1.2;
+}
+
+/* HIDDEN MENU STYLING -- -- -- */
+#hidden-menu {
+    position: absolute;
+    top: 60;
+    background-color: var(--primaryColorHover);
+    width: 300px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    opacity: .85;
+    z-index: 10;
+}
+
+#hidden-menu a {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-decoration: none;
+}
+
+#hidden-menu a:hover {
+    background-color: var(--primaryColor);
+}
+
+#hidden-menu .hidden-menu-icon {
+    width: 25%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#hidden-menu .hidden-menu-title {
+    flex: 1;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+#hidden-menu a i {
+    font-size: 1.2rem;
+}
+
+/* GENERAL STYLING -- -- -- */
+a {
+    color: white;
+}
+

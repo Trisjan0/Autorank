@@ -1,0 +1,296 @@
+/* CONTAINER STYLING -- -- -- */
+.main-content-container {
+    width: 100vw;
+    height: auto;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+/* COMPLETION OVERVIEW STYLING -- -- -- */
+.overall-completion-overview-container {
+    width: 90%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+}
+
+.research-publication-container {
+    border: 5px solid var(--primaryColor);
+    width: 49%;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.research-publication-top-part {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.research-publication-top-part i {
+    font-size: 1.5rem;
+}
+
+.research-publication-top-part i:hover {
+    cursor: pointer;
+    scale: 1.1;
+}
+
+.research-publication-top-part h1 {
+    font-family: Montserrat;
+    color: var(--primaryColor);
+}
+
+.research-publication-bottom-part {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.event-participation-container {
+    border: 5px solid var(--primaryColor);
+    width: 49%;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.event-participation-top-part {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.event-participation-top-part i {
+    font-size: 1.5rem;
+}
+
+.event-participation-top-part i:hover {
+    cursor: pointer;
+    scale: 1.1;
+}
+
+.event-participation-top-part h1 {
+    font-family: Montserrat;
+    color: var(--primaryColor);
+}
+
+.event-participation-bottom-part {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.percentage-container {
+    width: 100%;
+    height: auto;
+}
+
+.percentage-container h1 {
+    font-weight: 550;
+    float: right;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+}
+
+.research-publication-progress {
+    background-color: var(--green);
+    width: 90%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+}
+
+.event-participation-progress {
+    background-color: var(--green);
+    width: 30%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+}
+
+.bar {
+    background-color: lightgrey;
+    height: 30px;
+    border-radius: 1.5px;
+    flex: 1;
+}
+
+/* FACULTY EVALUATION STYLING -- -- -- */
+.online-faculty-evaluation-container {
+    background-color: var(--primaryColor);
+    width: 90%;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    padding: 20px;
+}
+
+.online-faculty-evaluation-top-part {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.online-faculty-evaluation-top-part h1:nth-child(1){
+    font-family: Montserrat;
+}
+
+.online-faculty-evaluation-top-part h1:nth-child(2){
+    font-family: Montserrat;
+    font-weight: 550;
+}
+
+.online-faculty-evaluation-bottom-part {
+    width: 100%;
+    height: auto;
+}
+
+.online-faculty-evaluation-bottom-part button {
+    float: right;
+    background-color: var(--secondaryColor);
+    border: none;
+    border-radius: 5px;
+    width: 95px;
+    height: 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.online-faculty-evaluation-bottom-part button:hover {
+    cursor: pointer;
+    scale: 1.01;
+    background-color: var(--secondaryColorHover);
+}
+
+/* LATEST RESEARCH TITLE STYLING -- -- -- */
+.latest-research-title-container {
+    width: 90%;
+    height: auto;
+}
+
+.latest-research-title-header {
+    background-color: var(--primaryColor);
+    width: auto;
+    height: 100px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding-left: 20px;
+    color: white;
+}
+
+.latest-research-title-header h1 {
+    font-family: Montserrat;
+}
+
+.latest-research-title-table-container {
+    overflow: auto;
+    width: 100%;
+    height: auto;
+}
+
+.latest-research-title-container table {
+    width: 100%;
+    height: auto;
+    border-collapse: collapse;
+}
+
+.latest-research-title-container table th {
+    border: 2px solid var(--primaryColor);
+    background-color: var(--primaryColor);
+    color: white;
+    padding: 20px;
+}
+
+.latest-research-title-container table td {
+    border: 2px solid lightgray;
+    padding: 30px;
+    text-align: center;
+}
+
+.latest-research-title-container table td button {
+    background-color: var(--secondaryColor);
+    border: none;
+    border-radius: 5px;
+    width: 95px;
+    height: 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.latest-research-title-container table td button:hover {
+    cursor: pointer;
+    scale: 1.01;
+    background-color: var(--secondaryColorHover);
+}
+
+/* RESPONSIVE DESIGN -- -- -- */
+@media (max-width: 839px) {
+    .main-content-container h1 {
+      text-align: left;
+      font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 425px) {
+    .overall-completion-overview-container {
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+    }
+
+    .research-publication-container {
+        border: 5px solid var(--primaryColor);
+        width: 90%;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .event-participation-container {
+        border: 5px solid var(--primaryColor);
+        width: 90%;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+    }
+}
