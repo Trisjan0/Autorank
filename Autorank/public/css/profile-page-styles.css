@@ -1,0 +1,332 @@
+/* CONTENT CONTAINER STYLING -- -- -- */
+.content-container {
+    width: 100vw;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content {
+    width: 90%;
+    height: auto;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* CONTENT LEFT SIDE STYLING -- -- -- */
+.content-left-side {
+    top: 0;
+    width: 20%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 35px;
+}
+
+.profile-img-container {
+    width: 100%;
+    height: auto;
+    border: .5px solid gray;
+}
+
+.profile-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.separator-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    color: darkgrey;
+}
+
+.separator-container h6 {
+    font-weight: 600;
+}
+
+.separator-container hr {
+    flex: 1;
+    width: 50px;
+    height: 1px;
+}
+
+.basic-info-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+}
+
+.basic-info-container h3, h5 {
+    word-wrap: break-word;
+}
+
+.basic-info-container h3 {
+    font-weight: 600;
+}
+
+.basic-info-container h5 {
+    font-weight: 400;
+}
+
+/* CONTENT RIGHT SIDE STYLING -- -- -- */
+.content-right-side {
+    width: 75%; 
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    gap: 60px;
+}
+
+/* RECLASSIFICATION PROGRESS STYLING -- -- */
+.reclassification-progress-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.reclassification-progress-container h1 {
+    color: var(--primaryColor);
+    font-family: Montserrat;
+}
+
+.progress-bars-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.progress-bars-container h4 {
+    font-weight: 600;
+}
+
+.progress-bars-container h5 {
+    font-weight: 400;
+}
+
+.reclassification-progress-container .subtitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.current-tenure-progress-bar-container, .research-output-progress-bar-container, .evaluation-progress-bar-container {
+    display: flex;
+}
+
+.current-tenure-progress {
+    background-color: var(--green);
+    width: 50%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+}
+
+.research-output-progress {
+    background-color: var(--green);
+    width: 30%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+}
+
+.evaluation-progress {
+    background-color: var(--green);
+    width: 80%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+}
+
+.bar {
+    background-color: lightgrey;
+    height: 30px;
+    border-radius: 1.5px;
+    flex: 1;
+}
+
+.apply-for-reranking-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+.apply-for-reranking-container button {
+    background-color: var(--secondaryColor);
+    border: none;
+    border-radius: 5px;
+    width: 325px;
+    height: 50px;
+    font-size: 1.1rem;
+    font-family: Montserrat;
+    font-weight: 700;
+}
+
+.apply-for-reranking-container button:hover {
+    cursor: pointer;
+    scale: 1.01;
+    background-color: var(--secondaryColorHover);
+}
+
+/* PERFORMANCE METRICS STYLING -- -- */
+.performance-metrics-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.performance-metrics {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.performance-metrics-container table {
+    width: 100%;
+    height: auto;
+    border-collapse: collapse;
+}
+
+.performance-metrics-container table th {
+    border: 2px solid var(--primaryColor);
+    background-color: var(--primaryColor);
+    color: white;
+    padding: 15px;
+    font-weight: 600;
+}
+
+.performance-metrics-container table td {
+    border: 2px solid lightgray;
+    padding: 30px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.performance-metrics-container table td button {
+    background-color: var(--secondaryColor);
+    border: none;
+    border-radius: 5px;
+    width: 95px;
+    height: 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.performance-metrics-container table td div {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.performance-metrics-container table td button:hover {
+    cursor: pointer;
+    scale: 1.01;
+    background-color: var(--secondaryColorHover);
+}
+
+.performance-metrics-container .table-navigation button {
+    float: right;
+    border: none;
+    background-color: transparent;
+    color: white;
+    font: 1.1rem;
+}
+
+.performance-metrics-container .table-navigation button:hover {
+    transition: all 0.3s ease-out;
+    cursor: pointer;
+    color: var(--secondaryColor);
+}
+
+.performance-metrics-container h1, h2 {
+    font-family: Montserrat;
+}
+
+.performance-metrics-container h1 {
+    color: var(--primaryColor);
+}
+
+.performance-metrics-container .subtitle {
+    margin-bottom: 10px;
+}
+
+.research-documents-container, .evaluations-container, .event-participation-container {
+    overflow-x: auto;
+    width: 100%;
+    height: auto;
+    margin-bottom: 50px;
+}
+
+/* RESPONSIVE DESIGN -- -- -- */
+@media (max-width: 500px) {
+    .content {
+      width: 90%;
+      height: auto;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 60px;
+    }
+  
+    .content-left-side {
+        top: 0;
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 35px;
+    }
+  
+    .basic-info-container h3, h5 {
+      font-size: 1.2rem;
+    }
+  
+    .content-right-side {
+        width: 100%; 
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* justify-content: center; */
+        gap: 60px;
+    }
+  
+    .title h1 {
+      font-size: 2rem;
+    }
+}
+
+@media (max-width: 593px) and (min-width: 501px) {
+    .basic-info-container h3, h5 {
+      font-size: .8rem;
+    }
+}
+
+@media (max-width: 376px) {
+    .basic-info-container h3, h5 {
+      font-size: .9rem;
+    }
+
+    .progress-bars-container h4, h5 {
+      font-size: .9rem;
+    }
+}

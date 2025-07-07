@@ -13,7 +13,7 @@
 
     <!-- CSS Links -->
     <link rel="stylesheet" href="{{ asset('css/global-styles.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/home-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/profile-page-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive-styles.css') }}">
 
     <!-- Fontawesome CDN -->

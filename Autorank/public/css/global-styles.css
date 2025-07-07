@@ -53,7 +53,7 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
 }
 
 .navbar-logo-container img {

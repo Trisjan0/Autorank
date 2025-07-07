@@ -11,13 +11,28 @@ class PageController extends Controller
         return view('home');
     }
 
-    public function page1()
+    public function showApplicationsPage()
     {
-        return view('page1');
+        return view('application-page');
     }
 
-    public function page2()
+    public function showProfilePage()
     {
-        return view('page2');
+        return view('profile-page');
+    }
+
+    public function showResearchDocumentsPage()
+    {
+        return view('research-documents-page');
+    }
+
+    public function showEvaluationsPage()
+    {
+        return view('evaluations-page');
+    }
+
+    public function showEventParticipationsPage()
+    {
+        return view('event-participations-page');
     }
 }

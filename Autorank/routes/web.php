@@ -6,8 +6,17 @@ use App\Http\Controllers\PageController; //Page Controller import
 // Route for the initial page load, index page load
 Route::get('/', [PageController::class, 'home'])->name('home');
 
-// Route for Page 1
-Route::get('/page-1', [PageController::class, 'page1'])->name('page1');
+// Route for the Applications Page
+Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');
 
-// Route for Page 2
-Route::get('/page-2', [PageController::class, 'page2'])->name('page2');
+// Route for the Profile Page
+Route::get('/profile', [PageController::class, 'showProfilePage'])->name('profile-page');
+
+// Route for the Research Documents Page
+Route::get('/research-documents', [PageController::class, 'showResearchDocumentsPage'])->name('research-documents-page');
+
+// Route for the Evaluations Page
+Route::get('/evaluations', [PageController::class, 'showEvaluationsPage'])->name('evaluations-page');
+
+// Route for the Evaluations Page
+Route::get('/event-participations', [PageController::class, 'showEventParticipationsPage'])->name('event-participations-page');

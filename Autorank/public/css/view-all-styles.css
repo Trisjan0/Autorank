@@ -1,0 +1,142 @@
+/* PAGE HEADER STYLING -- -- -- */
+.header {
+    width: auto;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.header h1 {
+    font-family: Montserrat;
+    font-weight: 700;
+    color: var(--primaryColor);
+}
+
+/* DATA DISPLAY TABLE STYLING -- -- -- */
+.performance-metric-container {
+    overflow-x: auto;
+    width: 100vw;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.performance-metric-container table {
+    width: 90%;
+    height: auto;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.performance-metric-container table th {
+    border: 2px solid var(--primaryColor);
+    background-color: var(--primaryColor);
+    color: white;
+    padding: 20px;
+    font-weight: 600;
+}
+
+.performance-metric-container table td {
+    border: 2px solid lightgray;
+    padding: 30px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.performance-metric-container table td div {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.performance-metric-container table td button {
+    background-color: var(--secondaryColor);
+    border: none;
+    border-radius: 5px;
+    width: 95px;
+    height: 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.performance-metric-container table td button:hover {
+    cursor: pointer;
+    scale: 1.01;
+    background-color: var(--secondaryColorHover);
+}
+
+/* SEARCH BAR STYLING -- -- -- */
+.search-bar-container {
+    width: 90%;
+    height: auto;
+    justify-self: center;
+}
+
+.search-bar-container form {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-bar-container form input {
+    border: none;
+    border-radius: 5px;
+    width: 86%;
+    height: 35px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.search-bar-container form button {
+    background-color: transparent;
+    border: none;
+    width: 25%;
+    height: 35px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+.search-bar-container form button:hover {
+    cursor: pointer;
+    scale: 1.2;
+    color: var(--secondaryColor);
+}
+
+/* LOAD MORE STYLING -- -- -- */
+.load-more-container {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 90vw;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    justify-self: center;
+}
+
+.load-more-container button {
+    background-color: var(--primaryColor);
+    border: none;
+    color: white;
+    border-radius: 5px;
+    width: 225px;
+    height: 50px;
+    font-size: 1.1rem;
+}
+
+.load-more-container button:hover {
+    cursor: pointer;
+    scale: 1.01;
+    background-color: var(--primaryColorHover);
+}
