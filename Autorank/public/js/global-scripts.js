@@ -1,6 +1,7 @@
-// For Toggling the Sidebar > Main Menu
+// For Toggling the Hidden Menu
 let nav = document.getElementById('hidden-menu');
 let toggleMenuIcon = document.querySelector('.fa-bars');
+let mobileProfileMenu = document.querySelectorAll('.profile-menu');
 nav.style.display = "none";
 
 function toggleMenu(){
@@ -13,4 +14,14 @@ function toggleMenu(){
         toggleMenuIcon.classList.remove('fa-times');
         toggleMenuIcon.classList.add('fa-bars');
     }
+
+    // Hide the menu once the user's cursor leaves the container for the menu
+    nav.addEventListener('mouseleave', function() {
+
+    if (nav.style.display === "flex") {
+            nav.style.display = "none";
+            toggleMenuIcon.classList.remove('fa-times');
+            toggleMenuIcon.classList.add('fa-bars');
+        }
+    });
 }

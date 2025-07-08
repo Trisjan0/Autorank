@@ -1,4 +1,13 @@
 @media (max-width: 500px) {
+  /* NAVBAR STYLING -- -- -- */
+  .navbar-left-side {
+    margin-left: var(--navbarMarginMobileSize);
+  }
+
+  .navbar-right-side {
+    display: none;
+  }
+
   /* PROFILE PAGE STYLING -- -- -- */
   .content {
     width: 90%;
@@ -37,11 +46,6 @@
 
   .title h1 {
     font-size: 2rem;
-  }
-
-  /* APPLICATION PAGE STYLING -- -- -- */
-  .performance-metric-container {
-    
   }
 }
 

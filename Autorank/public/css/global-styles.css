@@ -9,18 +9,23 @@
     --secondaryColor: #A8DFFF;
     --secondaryColorHover: #9fd2ef;
     --green: #4DFF62;
+
+    --navbarMarginDesktopSize: 2.5vw; /* 2.5vw or 40px */
+    --navbarMarginMobileSize: 5vw;
 }
 
 body {
     position: relative;
 }
 
-::-webkit-scrollbar { /* removes the scroll bar */
+/* ::-webkit-scrollbar {
     display: none;
-}
+} */
 
 /* NAVBAR STYLING -- -- -- */
 nav {
+    position: sticky;
+    top: 0;
     width: 100vw;
     height: auto;
 }
@@ -35,15 +40,18 @@ nav {
 }
 
 .navbar-left-side {
-    margin-left: 40px;
+    margin-left: var(--navbarMarginDesktopSize);
     height: 65%;
-    width: 205px;
+    width: 225px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .navbar-left-side i {
+    text-align: center;
+    height: auto;
+    width: auto;
     font-size: 1.5rem;
 }
 
@@ -68,19 +76,34 @@ nav {
 }
 
 .navbar-right-side {
-    margin-right: 40px; /* 2.5vw */
+    margin-right: var(--navbarMarginDesktopSize);
+    height: 65%;
     width: auto;
-    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+}
+
+.navbar-right-side img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.navbar-right-side h2 {
+    color: white;
+    font-size: .9rem;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 .navbar-right-side i {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
-.fa-bars:hover, .fa-times:hover, .fa-user:hover, .fa-user-gear:hover {
+.fa-bars:hover, .fa-times:hover, .fa-chevron-down:hover, .fa-chevron-up:hover {
     cursor: pointer;
     scale: 1.2;
 }

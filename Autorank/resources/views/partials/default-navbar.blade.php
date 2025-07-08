@@ -7,8 +7,9 @@
                 <h1>AutoRank</h1>
             </div>
         </div>
-        <div class="navbar-right-side">
-            <a href="{{ route('profile-page') }}"><i class="fa-solid fa-user" style="color: #ffffff;"></i></a>
+        <div onclick="toggleProfileMenu()" class="navbar-right-side">
+            <img src="https://www.svgrepo.com/show/508699/landscape-placeholder.svg" alt="user profile">
+            <h2>Dela Cruz, Juan B.</h2>
         </div>
     </div>
     <div id="hidden-menu">
@@ -58,6 +59,14 @@
             </div>
             <div class="hidden-menu-title">
                 <p>Event Participations</p>
+            </div>
+        </a>
+        <a href="#">
+            <div class="hidden-menu-icon">
+                <i class="fa-solid fa-key" style="color: #ffffff;"></i>
+            </div>
+            <div class="hidden-menu-title">
+                <p>Log Out</p>
             </div>
         </a>
     </div>
