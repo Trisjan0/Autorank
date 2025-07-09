@@ -1,4 +1,5 @@
 /* INITIAL STYLING -- -- -- */
+/* INITIAL STYLING -- -- -- */
 * {
     margin: 0;
     box-sizing: border-box;
@@ -14,22 +15,31 @@
     --navbarMarginMobileSize: 5vw;
 }
 
-body {
-    position: relative;
-}
-
-a {
-    color: white;
-}
-
 ::-webkit-scrollbar {
     display: none;
 }
 
+body {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url("https://sms.dhvsu.edu.ph/general/getThemePhoto?tid=1&field=login_bg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
 /* NAVBAR STYLING -- -- -- */
 nav {
-    position: sticky;
-    top: 0;
     width: 100vw;
     height: auto;
 }
@@ -79,88 +89,57 @@ nav {
     color: white;
 }
 
-.navbar-right-side {
-    margin-right: var(--navbarMarginDesktopSize);
-    height: 65%;
-    width: auto;
+/* CONTAINER STYLING -- -- -- */
+main {
+    flex-grow: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 8px;
+    align-items: center;
 }
 
-.navbar-right-side img {
-    height: 100%;
-    width: 100%;
+.content-container {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signin-container {
+    border-radius: 3%;
+    background-color: #5490f4;
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signin-container:hover {
+    transition: filter 0.25s ease-in-out;
+    filter: brightness(0.85);
+}
+
+.image-container {
+    background-color: white;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-container img {
+    height: 50%;
+    width: 50%;
     object-fit: contain;
     border-radius: 50%;
 }
 
-.navbar-right-side h2 {
-    color: white;
+.signin-container h1 {
+    text-align: center;
     font-size: .9rem;
-    font-weight: 500;
-    white-space: nowrap;
+    font-weight: 600;
+    margin-left: 15px;
+    margin-right: 15px;
 }
-
-.navbar-right-side i {
-    font-size: 1.2rem;
-}
-
-.fa-bars:hover, .fa-times:hover, .fa-chevron-down:hover, .fa-chevron-up:hover {
-    cursor: pointer;
-    scale: 1.2;
-}
-
-/* HIDDEN MENU STYLING -- -- -- */
-#hidden-menu {
-    position: absolute;
-    top: 60;
-    background-color: var(--primaryColorHover);
-    width: 300px;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-top: 25px;
-    padding-bottom: 25px;
-    opacity: .85;
-    z-index: 10;
-}
-
-#hidden-menu a {
-    width: 100%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    text-decoration: none;
-}
-
-#hidden-menu a:hover {
-    background-color: var(--primaryColor);
-}
-
-#hidden-menu .hidden-menu-icon {
-    width: 25%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#hidden-menu .hidden-menu-title {
-    flex: 1;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: start;
-}
-
-#hidden-menu a i {
-    font-size: 1.2rem;
-}
-
-

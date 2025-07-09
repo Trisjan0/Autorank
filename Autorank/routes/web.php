@@ -4,7 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController; //Page Controller import
 
 // Route for the initial page load, index page load
-Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/', [PageController::class, 'signin'])->name('signin-page');
+
+// Route for the initial page load, index page load
+Route::get('/home', [PageController::class, 'home'])->name('home');
 
 // Route for the Applications Page
 Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');

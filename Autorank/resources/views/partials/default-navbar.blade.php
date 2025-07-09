@@ -61,7 +61,7 @@
                 <p>Event Participations</p>
             </div>
         </a>
-        <a href="#">
+        <a href="{{ route('signin-page') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-key" style="color: #ffffff;"></i>
             </div>
