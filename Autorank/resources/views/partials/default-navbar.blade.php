@@ -9,7 +9,7 @@
         </div>
         <div onclick="toggleProfileMenu()" class="navbar-right-side">
             <img src="https://www.svgrepo.com/show/508699/landscape-placeholder.svg" alt="user profile">
-            <h2>Dela Cruz, Juan B.</h2>
+            <h2>{{ auth()->user()->name }}</h2>
         </div>
     </div>
     <div id="hidden-menu">
@@ -61,13 +61,17 @@
                 <p>Event Participations</p>
             </div>
         </a>
-        <a href="{{ route('signin-page') }}">
-            <div class="hidden-menu-icon">
-                <i class="fa-solid fa-key" style="color: #ffffff;"></i>
-            </div>
-            <div class="hidden-menu-title">
-                <p>Log Out</p>
-            </div>
-        </a>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+
+            <button>
+                <div class="button-menu-icon">
+                    <i class="fa-solid fa-key" style="color: #ffffff;"></i>
+                </div>
+                <div class="button-menu-title">
+                    <p>Log Out</p>
+                </div>
+            </button>
+        </form>
     </div>
 </nav>

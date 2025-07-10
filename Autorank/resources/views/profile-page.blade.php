@@ -16,7 +16,7 @@
             <div class="basic-info-container">
                 <div class="full-name-container">
                     <h3>Full Name</h3>
-                    <h5>Juan Dela Cruz</h5>
+                    <h5>{{ auth()->user()->name }}</h5>
                 </div>
                 <div class="instructor-number-container">
                     <h3>Instructor Number</h3>
@@ -34,7 +34,7 @@
                 </div>
                 <div class="email-container">
                     <h3>Email</h3>
-                    <h5>juandelacruz@univ.edu.ph</h5>
+                    <h5>{{ auth()->user()->email }}</h5>
                 </div>
                 <div class="email-container">
                     <h3>Phone Number</h3>
