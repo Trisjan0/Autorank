@@ -27,7 +27,16 @@ class PageController extends Controller
 
     public function showProfilePage()
     {
-        return view('profile-page');
+        $user = Auth::user();
+
+        if ($user) {
+            /** @var \App\Models\User $user */
+            $user->load('credentials');
+        } else {
+            return redirect('/signin')->with('error', 'You must be logged in to view your profile.');
+        }
+
+        return view('profile-page', compact('user'));
     }
 
     public function showResearchDocumentsPage()
@@ -54,12 +63,25 @@ class PageController extends Controller
     {
         $googleUser = Socialite::driver('google')->user();
 
+        $originalAvatarUrl = $googleUser->getAvatar();
+
+        if ($originalAvatarUrl) {
+            $avatarUrl = preg_replace('/=s\d+(-c)?$/', '=s400-c', $originalAvatarUrl);
+
+            if (strpos($avatarUrl, '=s') === false) {
+                $avatarUrl .= '=s400-c'; // Appends if no size parameter found
+            }
+        } else {
+            $avatarUrl = null;
+        }
+
         $user = User::updateOrCreate(
             ['google_id' => $googleUser->id],
             [
                 'name' => $googleUser->name,
                 'email' => $googleUser->email,
-                'password' => Str::password(12)
+                'password' => Str::password(12),
+                'avatar' => $avatarUrl
             ]
         );
 

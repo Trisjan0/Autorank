@@ -7,38 +7,73 @@
     <div class="content">
         <div class="content-left-side">
             <div class="profile-img-container">
-                <img src="https://www.svgrepo.com/show/508699/landscape-placeholder.svg" alt="Profile Image">
+                <img src="{{ Auth::user()->avatar }}" alt="{{ auth()->user()->name }}'s profile picture">
             </div>
             <div class="separator-container">
                 <h6>Basic Info</h6>
                 <hr>
             </div>
             <div class="basic-info-container">
-                <div class="full-name-container">
-                    <h3>Full Name</h3>
-                    <h5>{{ auth()->user()->name }}</h5>
+                <div class="basic-info-fields">
+                    <div class="basic-info">
+                        <h3>Full Name</h3>
+                        <h5 id="username">{{ auth()->user()->name }}</h5>
+                    </div>
+                    <div class="basic-info-action" title="Copy Instructor Name" onclick="copyInstructorsName();">
+                        <i class="fa-regular fa-copy" style="color: #000000;"></i>
+                    </div>
                 </div>
-                <div class="instructor-number-container">
-                    <h3>Instructor Number</h3>
-                    <h5>12345</h5>
+                <div class="basic-info-fields">
+                    <div class="basic-info">
+                        <h3>Instructor Number</h3>
+                        <h5 id="instructorsNumber">{{ auth()->user()->instructor_number ?? 'TBC' }}</h5>
+                    </div>
+                    <div class="basic-info-action" title="Copy Instructor Number" onclick="copyInstructorNumber();">
+                        <i class="fa-regular fa-copy" style="color: #000000;"></i>
+                    </div>
                 </div>
-                <div class="rank-container">
-                    <h3>Rank</h3>
-                    <h5>Instructor I</h5>
+                <div class="basic-info-fields">
+                    <div class="basic-info">
+                        <h3>Rank</h3>
+                        <h5>{{ auth()->user()->rank ?? 'TBC' }}</h5>
+                    </div>
+                    <div class="basic-info-action"></div>
                 </div>
-                <div class="credentials-container">
-                    <h3>Credentials</h3>
-                    <h5>Master's Degree</h5>
-                    <h5>Bachelor's Degree</h5>
-                    <h5>Licensed Professional Teacher</h5>
+                <div class="basic-info-fields">
+                    <div class="basic-info">
+                        <h3>Credentials</h3>
+                        @if (auth()->user()->credentials->isNotEmpty())
+                        @foreach (auth()->user()->credentials as $credential)
+                        <h5>{{ $credential->name }}</h5>
+                        @endforeach
+                        @else
+                        <h5>TBC</h5>
+                        @endif
+                    </div>
+                    <div class="basic-info-action"></div>
                 </div>
-                <div class="email-container">
-                    <h3>Email</h3>
-                    <h5>{{ auth()->user()->email }}</h5>
+                <div class="basic-info-fields">
+                    <div class="basic-info">
+                        <h3>Email</h3>
+                        <h5>{{ auth()->user()->email }}</h5>
+                    </div>
+                    <div class="basic-info-action">
+                        <a href="mailto:{{ auth()->user()->email }}" title="Email Instructor">
+                            <i class="fa-regular fa-envelope" style="color: #000000;"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="email-container">
-                    <h3>Phone Number</h3>
-                    <h5>+6391 2345 6789</h5>
+                <div class="basic-info-fields">
+                    <div class="basic-info">
+                        <h3>Phone Number</h3>
+                        <h5>{{ auth()->user()->phone_number ?? 'TBC' }}</h5>
+                    </div>
+                    <div class="basic-info-action">
+                        <!-- add if else statement here when admins and users are separated -->
+                        <a href="tel:{{ auth()->user()->phone_number }}" title="Edit">
+                            <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -3,12 +3,12 @@
         <div class="navbar-left-side">
             <i onclick="toggleMenu()" class="fa-solid fa-bars" style="color: #ffffff;"></i>
             <div class="navbar-logo-container">
-                <img src="https://www.svgrepo.com/show/508699/landscape-placeholder.svg" alt="website logo">
+                <img src="{{ asset('images/autorank_logo.png') }}" alt="website logo">
                 <h1>AutoRank</h1>
             </div>
         </div>
         <div onclick="toggleProfileMenu()" class="navbar-right-side">
-            <img src="https://www.svgrepo.com/show/508699/landscape-placeholder.svg" alt="user profile">
+            <img src="{{ Auth::user()->avatar }}" alt="{{ auth()->user()->name }}'s profile picture">
             <h2>{{ auth()->user()->name }}</h2>
         </div>
     </div>

@@ -25,3 +25,28 @@ function toggleMenu(){
         }
     });
 }
+
+// For Copying Texts to Clipboard
+function copyInstructorsName() {
+    const usernameElement = document.getElementById('username');
+
+    if (usernameElement) {
+        const textToCopy = usernameElement.innerText;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(textToCopy)
+        }
+    }
+}
+
+function copyInstructorNumber() {
+    const instructorsNumberElement = document.getElementById('instructorsNumber');
+
+    if (instructorsNumberElement) {
+        const textToCopy = instructorsNumberElement.innerText;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(textToCopy)
+        }
+    }
+}

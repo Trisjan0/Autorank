@@ -80,6 +80,42 @@
     font-weight: 400;
 }
 
+.basic-info-fields {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.basic-info-fields .basic-info {
+    width: 75%;
+    height: auto;
+}
+
+.basic-info-fields .basic-info h3, h5 {
+    width: 100%;
+}
+
+.basic-info-fields .basic-info-action {
+    width: 25%;
+    height: auto;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding-right: 20px;
+}
+
+.basic-info-fields .basic-info-action i {
+    opacity: .3;
+}
+
+.basic-info-fields .basic-info-action i:hover {
+    opacity: 100;
+    cursor: pointer;
+    scale: 1.5;
+}
+
 /* CONTENT RIGHT SIDE STYLING -- -- -- */
 .content-right-side {
     width: 75%; 
