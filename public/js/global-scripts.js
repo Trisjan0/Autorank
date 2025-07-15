@@ -50,3 +50,8 @@ function copyInstructorNumber() {
         }
     }
 }
+
+// For Going Back a Page
+function goBack() {
+    history.back();
+}

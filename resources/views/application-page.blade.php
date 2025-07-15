@@ -85,7 +85,7 @@
     </table>
 </div>
 <div class="load-more-container">
-    <button onclick="window.location.href='profile-page.html'">Back</button>
+    <button onclick="goBack()">Back</button>
     <button>Load More +</button>
 </div>
 @endsection

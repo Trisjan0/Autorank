@@ -64,6 +64,7 @@
     height: 35px;
     font-size: 1.1rem;
     font-weight: 600;
+    justify-self: center;
 }
 
 .performance-metric-container table td button:hover {
