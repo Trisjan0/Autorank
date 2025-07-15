@@ -159,8 +159,16 @@
 
 .reclassification-progress-container .subtitle {
     display: flex;
-    align-items: center;
+    width: 100%;
+    height: auto;
     justify-content: space-between;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.reclassification-progress-container .subtitle h3, h5{
+    width: auto;
+    height: auto;
 }
 
 .current-tenure-progress-bar-container, .research-output-progress-bar-container, .evaluation-progress-bar-container {
@@ -276,15 +284,14 @@
     background-color: var(--secondaryColorHover);
 }
 
-.performance-metrics-container .table-navigation button {
-    float: right;
+.performance-metrics-container .table-navigation a {
     border: none;
     background-color: transparent;
     color: white;
     font: 1.1rem;
 }
 
-.performance-metrics-container .table-navigation button:hover {
+.performance-metrics-container .table-navigation a:hover {
     transition: all 0.3s ease-out;
     cursor: pointer;
     color: var(--secondaryColor);
@@ -365,4 +372,29 @@
     .progress-bars-container h4, h5 {
       font-size: .9rem;
     }
+}
+
+/* Toast Container Styling */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333; /* Dark background */
+    color: white;    /* White text */
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0; /* Initially hidden */
+    visibility: hidden; /* Initially hidden */
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    z-index: 1000;
+    min-width: 200px;
+    text-align: center;
+}
+
+/* Class to make the toast visible */
+.toast-container.show {
+    opacity: 1;
+    visibility: visible;
 }

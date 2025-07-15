@@ -1,13 +1,13 @@
 <nav>
     <div class="navbar-container">
         <div class="navbar-left-side">
-            <i onclick="toggleMenu()" class="fa-solid fa-bars" style="color: #ffffff;"></i>
+            <i id="menu-toggle-button" class="fa-solid fa-bars" style="color: #ffffff;"></i>
             <div class="navbar-logo-container">
                 <img src="{{ asset('images/autorank_logo.png') }}" alt="website logo">
                 <h1>AutoRank</h1>
             </div>
         </div>
-        <div onclick="toggleProfileMenu()" class="navbar-right-side">
+        <div class="navbar-right-side">
             <img src="{{ Auth::user()->avatar }}" alt="{{ auth()->user()->name }}'s profile picture">
             <h2>{{ auth()->user()->name }}</h2>
         </div>

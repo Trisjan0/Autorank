@@ -14,6 +14,9 @@
                 <hr>
             </div>
             <div class="basic-info-container">
+                <div id="copyToast" class="toast-container">
+                    <p>Copied to clipboard!</p>
+                </div>
                 <div class="basic-info-fields">
                     <div class="basic-info">
                         <h3>Full Name</h3>
@@ -160,7 +163,7 @@
                                     <td><button>Upload</button></td>
                                 </tr>
                                 <tr>
-                                    <th class="table-navigation" colspan="4"><button onclick="window.location.href='research-documents-page.html'">View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></button></th>
+                                    <th class="table-navigation" colspan="4"><a href='{{ route("research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
                             </tbody>
                         </table>
                     </div>
