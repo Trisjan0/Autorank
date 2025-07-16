@@ -103,7 +103,6 @@
     display: flex;
     justify-content: end;
     align-items: center;
-    padding-right: 20px;
 }
 
 .basic-info-fields .basic-info-action i {
@@ -209,7 +208,7 @@
     background-color: var(--secondaryColor);
     border: none;
     border-radius: 5px;
-    width: 325px;
+    width: 80%;
     height: 50px;
     font-size: 1.1rem;
     font-family: Montserrat;
@@ -288,11 +287,12 @@
     border: none;
     background-color: transparent;
     color: white;
-    font: 1.1rem;
+    font-size: 1.1rem;
 }
 
 .performance-metrics-container .table-navigation a:hover {
-    transition: all 0.3s ease-out;
+    transition: all 0.15s ease-out;
+    font-size: larger;
     cursor: pointer;
     color: var(--secondaryColor);
 }
@@ -316,84 +316,25 @@
     margin-bottom: 50px;
 }
 
-/* RESPONSIVE DESIGN -- -- -- */
-@media (max-width: 500px) {
-    .content {
-      width: 90%;
-      height: auto;
-      margin-top: 40px;
-      margin-bottom: 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 60px;
-    }
-  
-    .content-left-side {
-        top: 0;
-        width: 100%;
-        height: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 35px;
-    }
-  
-    .basic-info-container h3, h5 {
-      font-size: 1.2rem;
-    }
-  
-    .content-right-side {
-        width: 100%; 
-        height: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        /* justify-content: center; */
-        gap: 60px;
-    }
-  
-    .title h1 {
-      font-size: 2rem;
-    }
-}
-
-@media (max-width: 593px) and (min-width: 501px) {
-    .basic-info-container h3, h5 {
-      font-size: .8rem;
-    }
-}
-
-@media (max-width: 376px) {
-    .basic-info-container h3, h5 {
-      font-size: .9rem;
-    }
-
-    .progress-bars-container h4, h5 {
-      font-size: .9rem;
-    }
-}
-
-/* Toast Container Styling */
+/* TOAST STYLING */
 .toast-container {
     position: fixed;
-    bottom: 20px;
+    bottom: 50%;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #333; /* Dark background */
-    color: white;    /* White text */
+    background-color: #333;
+    color: white;
     padding: 12px 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    opacity: 0; /* Initially hidden */
-    visibility: hidden; /* Initially hidden */
+    opacity: 0;
+    visibility: hidden;
     transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
     z-index: 1000;
     min-width: 200px;
     text-align: center;
 }
 
-/* Class to make the toast visible */
 .toast-container.show {
     opacity: 1;
     visibility: visible;

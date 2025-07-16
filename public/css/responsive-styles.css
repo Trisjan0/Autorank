@@ -1,3 +1,64 @@
+@media (max-width: 320px) {
+  /* PROFILE PAGE -- -- -- */
+  .apply-for-reranking-container button {
+    width: 80%;
+  }
+}
+
+@media (max-width: 376px) {
+  /* PROFILE PAGE STYLING -- -- -- */
+    .basic-info-container h3, h5 {
+      font-size: .9rem;
+    }
+
+    .progress-bars-container h4, h5 {
+      font-size: .9rem;
+    }
+}
+
+@media (max-width: 425px) {
+  /* HOME PAGE -- -- -- */
+  .overall-completion-overview-container {
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+  }
+
+  .research-publication-container {
+      border: 5px solid var(--primaryColor);
+      width: 90%;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+  }
+
+  .event-participation-container {
+      border: 5px solid var(--primaryColor);
+      width: 90%;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+  }
+}
+
+@media (max-width: 480px) and (min-width: 425px) {
+  /* HOME PAGE -- -- -- */
+  .research-publication-top-part h1, .event-participation-top-part h1 {
+    font-size: 1.05rem;
+  }
+}
+
 @media (max-width: 500px) {
   /* NAVBAR STYLING -- -- -- */
   .navbar-left-side {
@@ -7,7 +68,9 @@
   .navbar-right-side {
     display: none;
   }
+}
 
+@media (max-width: 626px) {
   /* PROFILE PAGE STYLING -- -- -- */
   .content {
     width: 90%;
@@ -49,9 +112,17 @@
   }
 }
 
-@media (max-width: 593px) and (min-width: 501px) {
-  /* PROFILE PAGE STYLING -- -- -- */
-  .basic-info-container h3, h5 {
-    font-size: .8rem;
+@media (max-width: 814px) and (min-width: 626px){
+  /* PROFILE PAGE -- -- -- */
+  .basic-info-fields .basic-info h3 {
+    font-size: .9rem;
+  }
+}
+
+@media (max-width: 839px) {
+  /* HOME PAGE -- -- -- */
+  .main-content-container h1 {
+    text-align: left;
+    font-size: 1.3rem;
   }
 }

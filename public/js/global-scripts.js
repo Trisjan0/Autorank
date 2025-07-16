@@ -61,8 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (nav && menuToggleButton) {
         nav.classList.remove('is-active');
-        menuToggleButton.setAttribute('aria-expanded', 'false');
-        nav.setAttribute('aria-hidden', 'true');
     }
 
     function toggleMenu() {
@@ -81,8 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleMenuIcon.classList.add('fa-bars');
         }
 
-        menuToggleButton.setAttribute('aria-expanded', isActive);
-        nav.setAttribute('aria-hidden', !isActive);
     }
 
     if (menuToggleButton) {

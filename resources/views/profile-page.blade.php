@@ -204,7 +204,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="table-navigation" colspan="4"><button onclick="window.location.href='evaluations-page.html'">View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></button></th>
+                                    <th class="table-navigation" colspan="4"><a href='{{ route("research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
                             </tbody>
                         </table>
                     </div>
@@ -245,7 +245,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="table-navigation" colspan="4"><button onclick="window.location.href='event-participation-page.html'">View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></button></th>
+                                    <th class="table-navigation" colspan="4"><a href='{{ route("research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
                             </tbody>
                         </table>
                     </div>

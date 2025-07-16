@@ -120,9 +120,7 @@ nav {
     background-color: var(--primaryColorHover);
     width: 300px;
     height: auto;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    display: none;
     padding-top: 25px;
     padding-bottom: 25px;
     opacity: .85;
@@ -132,6 +130,9 @@ nav {
 
 #hidden-menu.is-active {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     opacity: .95;
 }
 
