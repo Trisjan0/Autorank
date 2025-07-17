@@ -7,13 +7,25 @@
 
 @media (max-width: 376px) {
   /* PROFILE PAGE STYLING -- -- -- */
-    .basic-info-container h3, h5 {
-      font-size: .9rem;
-    }
+  .basic-info-container h3, h5 {
+    font-size: .9rem;
+  }
 
-    .progress-bars-container h4, h5 {
-      font-size: .9rem;
-    }
+  .progress-bars-container h4, h5 {
+    font-size: .9rem;
+  }
+
+  .subtitle h5 {
+    font-size: .75rem;
+  }
+
+  .subtitle h5 {
+    font-size: .90rem;
+  }
+
+  .bottom-note h5 {
+    font-size: .90rem;
+  }
 }
 
 @media (max-width: 425px) {
@@ -70,6 +82,27 @@
   }
 }
 
+
+@media (max-width: 626px) and (min-width: 376px) {
+  /* PROFILE PAGE -- -- -- */
+  .title h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle h4, h5 {
+    font-size: 1rem;
+  }
+
+  .bottom-note h5 {
+    font-size: 1rem;
+  }
+
+  .subtitle h2 {
+    font-size: 1.5rem;
+  }
+}
+
+
 @media (max-width: 626px) {
   /* PROFILE PAGE STYLING -- -- -- */
   .content {
@@ -106,16 +139,28 @@
       /* justify-content: center; */
       gap: 60px;
   }
-
-  .title h1 {
-    font-size: 2rem;
-  }
 }
 
 @media (max-width: 814px) and (min-width: 626px){
   /* PROFILE PAGE -- -- -- */
   .basic-info-fields .basic-info h3 {
     font-size: .9rem;
+  }
+
+  .title h1 {
+    font-size: 1.5rem;
+  }
+
+  .subtitle h4, h5 {
+    font-size: .9rem;
+  }
+
+  .bottom-note h5 {
+    font-size: .9rem;
+  }
+
+  .subtitle h2 {
+    font-size: 1.25rem;
   }
 }
 
