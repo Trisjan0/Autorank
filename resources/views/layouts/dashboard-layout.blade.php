@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'AutoRank')</title>
+    <title>@yield('title', 'Autorank')</title>
 
     <!-- Google Font Links -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +13,7 @@
 
     <!-- CSS Links -->
     <link rel="stylesheet" href="{{ asset('css/global-styles.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/home-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive-styles.css') }}">
 
     <!-- Fontawesome CDN -->

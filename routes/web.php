@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 Route::get('/', [PageController::class, 'signin'])->name('signin-page');
 
 // Route for the Home Page
-Route::get('/home', [PageController::class, 'home'])->name('home');
+Route::get('/dashboard', [PageController::class, 'showDashboard'])->name('dashboard');
 
 // Route for the Applications Page
 Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');

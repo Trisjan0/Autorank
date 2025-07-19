@@ -13,7 +13,7 @@
         </div>
     </div>
     <div id="hidden-menu">
-        <a href="{{ route('home') }}">
+        <a href="{{ route('dashboard') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-house" style="color: #ffffff;"></i>
             </div>

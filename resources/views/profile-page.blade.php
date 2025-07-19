@@ -1,6 +1,6 @@
 @extends('layouts.profile-page-layout')
 
-@section('title', 'Profile')
+@section('title', 'Profile - Autorank')
 
 @section('content')
 <div class="content-container">

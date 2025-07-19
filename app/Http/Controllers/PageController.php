@@ -15,9 +15,9 @@ class PageController extends Controller
         return view('signin-page');
     }
 
-    public function home()
+    public function showDashboard()
     {
-        return view('home');
+        return view('dashboard');
     }
 
     public function showApplicationsPage()
@@ -87,7 +87,7 @@ class PageController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('home');
+        return redirect()->route('dashboard');
     }
 
     public function logout(Request $request)

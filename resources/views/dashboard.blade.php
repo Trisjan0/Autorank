@@ -1,6 +1,6 @@
-@extends('layouts.home-layout')
+@extends('layouts.dashboard-layout')
 
-@section('title', 'Home')
+@section('title', 'Dashboard - Autorank')
 
 @section('content')
 <div class="main-content-container">
