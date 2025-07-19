@@ -21,7 +21,7 @@
 </head>
 
 <body>
-    @include('partials.default-navbar')
+    @include('partials.admin-navbar')
 
     <main>
         @yield('content')
