@@ -1,34 +1,65 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController; //Page Controller import
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\Auth\SocialiteLoginController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes (Accessible without login)
+|--------------------------------------------------------------------------
+*/
 
 // Route for the initial page load, index page load
 Route::get('/', [PageController::class, 'signin'])->name('signin-page');
 
-// Route for the Home Page
-Route::get('/dashboard', [PageController::class, 'showDashboard'])->name('dashboard');
+// Route for Google OAuth Redirect
+Route::get('/auth/google/redirect', [SocialiteLoginController::class, 'redirectGoogleAuth'])->name('auth.google.redirect');
 
-// Route for the Applications Page
-Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');
+// Route for Google OAuth Callback
+Route::get('/auth/google/callback', [SocialiteLoginController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
-// Route for the Profile Page
-Route::get('/profile', [PageController::class, 'showProfilePage'])->name('profile-page');
+Route::post('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect()->route('signin-page');
+})->name('logout');
 
-// Route for the Research Documents Page
-Route::get('/research-documents', [PageController::class, 'showResearchDocumentsPage'])->name('research-documents-page');
 
-// Route for the Evaluations Page
-Route::get('/evaluations', [PageController::class, 'showEvaluationsPage'])->name('evaluations-page');
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes (Accessible only to logged-in users)
+|--------------------------------------------------------------------------
+*/
 
-// Route for the Evaluations Page
-Route::get('/event-participations', [PageController::class, 'showEventParticipationsPage'])->name('event-participations-page');
+Route::middleware(['auth'])->group(function () {
+    // Route for the Home Page
+    Route::get('/dashboard', [PageController::class, 'showDashboard'])->name('dashboard');
 
-// Route for Google OAuth
-Route::get('/auth/google/redirect', [PageController::class, 'redirectGoogleAuth'])->name('auth.google.redirect');
+    // Route for the Profile Page
+    Route::get('/profile', [PageController::class, 'showProfilePage'])->name('profile-page');
 
-Route::get('/auth/google/callback', [PageController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Only Routes
+    |--------------------------------------------------------------------------
+    */
 
-// Redirect Route after Loggin Out
-Route::post('/signin', [PageController::class, 'signin'])->name('logout');
+    // Example: Only Admins can access an admin dashboard
+    Route::middleware(['role:admin'])->group(function () {
+        // Route for the Review Applications Page
+        Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');
+
+        // Route for the Research Documents Page
+        Route::get('/research-documents', [PageController::class, 'showResearchDocumentsPage'])->name('research-documents-page');
+
+        // Route for the Evaluations Page
+        Route::get('/evaluations', [PageController::class, 'showEvaluationsPage'])->name('evaluations-page');
+
+        // Route for the Event Participations Page
+        Route::get('/event-participations', [PageController::class, 'showEventParticipationsPage'])->name('event-participations-page');
+    });
+});

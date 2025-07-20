@@ -54,42 +54,6 @@ class PageController extends Controller
         return view('event-participations-page');
     }
 
-    public function redirectGoogleAuth()
-    {
-        return Socialite::driver('google')->redirect();
-    }
-
-    public function handleGoogleCallback(Request $request)
-    {
-        $googleUser = Socialite::driver('google')->user();
-
-        $originalAvatarUrl = $googleUser->getAvatar();
-
-        if ($originalAvatarUrl) {
-            $avatarUrl = preg_replace('/=s\d+(-c)?$/', '=s400-c', $originalAvatarUrl);
-
-            if (strpos($avatarUrl, '=s') === false) {
-                $avatarUrl .= '=s400-c'; // Appends if no size parameter found
-            }
-        } else {
-            $avatarUrl = null;
-        }
-
-        $user = User::updateOrCreate(
-            ['google_id' => $googleUser->id],
-            [
-                'name' => $googleUser->name,
-                'email' => $googleUser->email,
-                'password' => Str::password(12),
-                'avatar' => $avatarUrl
-            ]
-        );
-
-        Auth::login($user);
-
-        return redirect()->route('dashboard');
-    }
-
     public function logout(Request $request)
     {
         Auth::logout();
