@@ -49,15 +49,10 @@ class SocialiteLoginController extends Controller
             ]
         );
 
-        $adminEmails = DB::table('admin_emails')->pluck('email')->toArray();
+        // --- ROLE ASSIGNMENT ---
+        $user->assignDefaultRoleByEmail();
 
-        $assignedRole = 'user';
-
-        if (in_array($user->email, $adminEmails)) {
-            $assignedRole = 'admin';
-        }
-
-        $user->syncRoles([$assignedRole]);
+        // --- END OF ROLE ASSIGNMENT ---
 
         Auth::login($user);
 

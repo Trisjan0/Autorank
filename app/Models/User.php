@@ -57,4 +57,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(Credential::class);
     }
+
+    public function assignDefaultRoleByEmail(): void
+    {
+        // Define email lists here.
+        // b4 deployment, store on either config or a db
+        $superAdminEmails = [
+            'autorank.team@gmail.com',
+        ];
+
+        $adminEmails = [
+            '2020103851@pampangatasteu.edu.ph',
+        ];
+
+        $assignedRole = 'user';
+
+        if (in_array($this->email, $superAdminEmails)) {
+            $assignedRole = 'super_admin';
+        } elseif (in_array($this->email, $adminEmails)) {
+            $assignedRole = 'admin';
+        }
+
+        $this->syncRoles([$assignedRole]);
+    }
 }

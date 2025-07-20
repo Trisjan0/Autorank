@@ -18,31 +18,16 @@ class AssignRolesToExistingUsers extends Command
     {
         $this->info('Starting role assignment for existing users...');
 
-        $superAdminEmails = [
-            'autorank.team@gmail.com',
-        ];
+        $users = User::all(); // gets all users, paginate when too many
 
-        $adminEmails = [
-            '2020103851@pampangatasteu.edu.ph',
-        ];
-
-        // Get all users (paginate if too many)
-        $users = User::all();
-
-        $this->withProgressBar($users, function ($user) use ($superAdminEmails, $adminEmails) {
-            $assignedRole = 'user';
-
-            if (in_array($user->email, $superAdminEmails)) {
-                $assignedRole = 'super_admin';
-            } elseif (in_array($user->email, $adminEmails)) {
-                $assignedRole = 'admin';
-            }
-
-            $user->syncRoles($assignedRole);
+        $this->withProgressBar($users, function ($user) {
+            // Call the centralized method on each user
+            $user->assignDefaultRoleByEmail();
         });
 
         $this->newLine();
 
+        // Clear Spatie's permission cache after assigning roles
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->info('Role assignment completed for all existing users.');
