@@ -9,13 +9,19 @@
         </div>
         <div class="navbar-right-side">
             <img src="{{ Auth::user()->avatar }}" alt="{{ auth()->user()->name }}'s profile picture">
-            <h2>{{ auth()->user()->name }}</h2>
+            @auth
+            @if(Auth::user()->hasRole('super_admin'))
+            <h2>{{ auth()->user()->name }} <b>[ Super Admin ]</b></h2>
+            @else
+            <h2>{{ auth()->user()->name }} <b>[ Admin ]</b></h2>
+            @endif
+            @endauth
         </div>
     </div>
     <div id="hidden-menu">
         <a href="{{ route('dashboard') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-house" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-chart-simple" style="color: #ffffff;"></i>
             </div>
             <div class="hidden-menu-title">
                 <p>Dashboard</p>

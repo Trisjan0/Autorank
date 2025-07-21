@@ -23,7 +23,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage users',
             'manage roles',
             'access applications page',
-            'view home',
+            'view dashboard',
             'view profile',
             'view research documents',
             'view evaluations',
@@ -38,7 +38,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // --- Roles and Permissions ---
         $rolesWithPermissions = [
             'admin' => [
-                'view home',
+                'view dashboard',
                 'view profile',
                 'view research documents',
                 'view evaluations',
@@ -48,7 +48,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'manage roles',
             ],
             'user' => [
-                'view home',
+                'view dashboard',
                 'view profile',
             ],
         ];

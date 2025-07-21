@@ -21,7 +21,13 @@
 </head>
 
 <body>
+    @auth
+    @if(Auth::user()->hasRole('admin') || Auth::user()->hasRole('super_admin'))
     @include('partials.admin-navbar')
+    @elseif(Auth::user()->hasRole('user'))
+    @include('partials.user-navbar')
+    @endif
+    @endauth
 
     <main>
         @yield('content')

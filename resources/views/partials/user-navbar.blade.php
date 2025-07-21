@@ -9,13 +9,13 @@
         </div>
         <div class="navbar-right-side">
             <img src="{{ Auth::user()->avatar }}" alt="{{ auth()->user()->name }}'s profile picture">
-            <h2>{{ auth()->user()->name }}</h2>
+            <h2>{{ auth()->user()->name }} <b>[ User ]</b></h2>
         </div>
     </div>
     <div id="hidden-menu">
         <a href="{{ route('dashboard') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-house" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-chart-simple" style="color: #ffffff;"></i>
             </div>
             <div class="hidden-menu-title">
                 <p>Dashboard</p>

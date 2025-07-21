@@ -48,8 +48,7 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    // Example: Only Admins can access an admin dashboard
-    Route::middleware(['role:admin'])->group(function () {
+    Route::middleware(['role_or_permission:admin|access applications page|view research documents|view evaluations|view event participations'])->group(function () {
         // Route for the Review Applications Page
         Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');
 

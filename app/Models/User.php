@@ -61,13 +61,14 @@ class User extends Authenticatable
     public function assignDefaultRoleByEmail(): void
     {
         // Define email lists here.
-        // b4 deployment, store on either config or a db
+        // b4 deployment store on either a config or db
         $superAdminEmails = [
             'autorank.team@gmail.com',
+            'btrisjan@gmail.com',
         ];
 
         $adminEmails = [
-            '2020103851@pampangatasteu.edu.ph',
+            '2020103851@pampangastateu.edu.ph',
         ];
 
         $assignedRole = 'user';

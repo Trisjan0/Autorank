@@ -51,7 +51,6 @@ class SocialiteLoginController extends Controller
 
         // --- ROLE ASSIGNMENT ---
         $user->assignDefaultRoleByEmail();
-
         // --- END OF ROLE ASSIGNMENT ---
 
         Auth::login($user);

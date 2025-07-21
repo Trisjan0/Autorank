@@ -21,17 +21,7 @@
 </head>
 
 <body>
-    <!-- debugging -->
-    @if(Auth::check())
-    <p>Logged in as: {{ Auth::user()->email }}</p>
-    <p>Roles: {{ Auth::user()->roles->pluck('name')->implode(', ') }}</p>
-    <p>Is Admin: {{ Auth::user()->hasRole('admin') ? 'Yes' : 'No' }}</p>
-    <p>Is Super Admin: {{ Auth::user()->hasRole('super_admin') ? 'Yes' : 'No' }}</p>
-    <p>Is User: {{ Auth::user()->hasRole('user') ? 'Yes' : 'No' }}</p>
-    @else
-    <p>Not logged in.</p>
-    @endif
-
+    <!-- separate super admin to admin before deplotment -->
     @auth
     @if(Auth::user()->hasRole('admin') || Auth::user()->hasRole('super_admin'))
     @include('partials.admin-navbar')
@@ -39,7 +29,6 @@
     @include('partials.user-navbar')
     @endif
     @endauth
-    <!-- debugging -->
 
     <main>
         @yield('content')
