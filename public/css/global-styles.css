@@ -166,7 +166,7 @@ nav {
     justify-content: start;
 }
 
-form {
+#hidden-menu form {
     width: 100%;
     height: 39.2px;
     display: flex;
@@ -176,11 +176,11 @@ form {
     text-decoration: none;
 }
 
-form:hover {
+#hidden-menu form:hover {
     background-color: var(--primaryColor);
 }
 
-button {
+#hidden-menu button {
     border: none;
     background-color: transparent;
     width: 100%;
@@ -191,11 +191,11 @@ button {
     font-size: 1rem;
 }
 
-button:hover {
+#hidden-menu button:hover {
     cursor: pointer;
 }
 
-button .button-menu-icon {
+#hidden-menu button .button-menu-icon {
     width: 20%;
     height: auto;
     display: flex;
@@ -204,7 +204,7 @@ button .button-menu-icon {
     margin-right: 7px;
 }
 
-button .button-menu-title {
+#hidden-menu button .button-menu-title {
     flex: 1;
     height: auto;
     display: flex;

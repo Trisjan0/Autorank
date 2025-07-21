@@ -69,11 +69,10 @@
                 <div class="basic-info-fields">
                     <div class="basic-info">
                         <h3>Phone Number</h3>
-                        <h5>{{ auth()->user()->phone_number ?? 'TBC' }}</h5>
+                        <h5>TBC</h5>
                     </div>
                     <div class="basic-info-action">
-                        <!-- add if else statement here when admins and users are separated -->
-                        <a href="tel:{{ auth()->user()->phone_number }}" title="Edit">
+                        <a id="openPhoneNumberModalBtn" href="#" title="Edit">
                             <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
                         </a>
                     </div>
@@ -254,4 +253,32 @@
         </div>
     </div>
 </div>
+
+<!-- Modal for Editing Phone Number -->
+<div class="phone-num-modal-container">
+    <div class="phone-num-modal">
+        <div class="phone-num-modal-navigation">
+            <i class="fa-solid fa-chevron-left" style="color: #ffffff;"></i>
+            <i class="fa-solid fa-xmark" style="color: #ffffff;"></i>
+        </div>
+        <div class="phone-num-modal-content">
+            <div class="phone-num-modal-content-header">
+                <h1>Add a mobile number</h1>
+                <p>This number enables us to provide an additional and efficient means of contact regarding your reranking process. <a href="#" style="color: #48a2f2;"><b>Learn More</b></a></p>
+            </div>
+            <div class="phone-num-modal-content-body">
+                <div class="phone-num-modal-content-body-tip">
+                    <h5>Philippines (+63)</h5>
+                </div>
+                <form action="">
+                    <input type="tel" name="" id="" placeholder="Enter your number">
+                </form>
+            </div>
+        </div>
+        <div class="phone-num-modal-confirmation">
+            <button>Next</button>
+        </div>
+    </div>
+</div>
+<!-- End of -->
 @endsection
