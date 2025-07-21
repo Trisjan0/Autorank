@@ -26,6 +26,10 @@
   .bottom-note h5 {
     font-size: .90rem;
   }
+
+  .phone-num-modal-content-header p {
+    font-size: .8rem;
+  }
 }
 
 @media (max-width: 425px) {
@@ -61,6 +65,18 @@
       justify-content: space-between;
       align-items: center;
       padding: 20px;
+  }
+
+  /* PROFILE PAGE -- -- -- */
+  .phone-num-modal {
+      width: 90vw;
+  }
+}
+
+@media (max-width: 450px) {
+  /* PROFILE PAGE -- -- -- */
+  .phone-num-modal {
+      width: 90vw;
   }
 }
 

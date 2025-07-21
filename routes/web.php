@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\SocialiteLoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +42,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Route for the Profile Page
     Route::get('/profile', [PageController::class, 'showProfilePage'])->name('profile-page');
+
+    // Route to send OTP (THIS IS FOR DEMO ONLY - WILL CHANGE BEFORE DEPLOYMENT)
+    Route::post('/profile/send-otp', [\App\Http\Controllers\ProfileController::class, 'sendOtpForPhoneNumber'])->name('profile.send_otp'); // Ensure ProfileController here
+
+    // Route to verify OTP and save phone number (THIS IS FOR DEMO ONLY - WILL CHANGE BEFORE DEPLOYMENT)
+    Route::post('/profile/verify-phone-otp', [\App\Http\Controllers\ProfileController::class, 'verifyOtpAndSavePhoneNumber'])->name('profile.verify_otp_save_phone');
 
     /*
     |--------------------------------------------------------------------------
