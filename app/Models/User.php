@@ -64,7 +64,6 @@ class User extends Authenticatable
         // b4 deployment store on either a config or db
         $superAdminEmails = [
             'autorank.team@gmail.com',
-            'btrisjan@gmail.com',
         ];
 
         $adminEmails = [
