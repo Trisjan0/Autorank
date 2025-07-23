@@ -68,6 +68,7 @@ class User extends Authenticatable
 
         $adminEmails = [
             '2020103851@pampangastateu.edu.ph',
+            '2022310186@pampangastateu.edu.ph'
         ];
 
         $assignedRole = 'user';

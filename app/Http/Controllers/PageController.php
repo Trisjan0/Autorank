@@ -41,6 +41,11 @@ class PageController extends Controller
         return view('research-documents-page');
     }
 
+    public function showReviewDocumentsPage()
+    {
+        return view('review-documents-page');
+    }
+
     public function showEvaluationsPage()
     {
         return view('evaluations-page');

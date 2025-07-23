@@ -25,7 +25,11 @@
                 <td style="color: rgb(31, 212, 31)">Complete</td>
                 <td style="color: rgb(31, 212, 31)">Passed</td>
                 <td>December 15, 2024</td>
-                <td><button>Revise</button></td>
+                <td>
+                    <a href="{{ route('review-documents-page') }}">
+                        <button>Revise</button>
+                    </a>
+                </td>
             </tr>
             <tr>
                 <td>67890</td>
@@ -34,7 +38,11 @@
                 <td style="color: rgb(31, 212, 31)">Complete</td>
                 <td style="color: rgb(31, 212, 31)">Passed</td>
                 <td>January 15, 2025</td>
-                <td><button>Revise</button></td>
+                <td>
+                    <a href="{{ route('review-documents-page') }}">
+                        <button>Revise</button>
+                    </a>
+                </td>
             </tr>
             <tr>
                 <td>24681</td>
@@ -43,7 +51,11 @@
                 <td style="color: rgb(31, 212, 31)">Complete</td>
                 <td style="color: rgb(31, 212, 31)">Passed</td>
                 <td>February 9, 2025</td>
-                <td><button>Revise</button></td>
+                <td>
+                    <a href="{{ route('review-documents-page') }}">
+                        <button>Revise</button>
+                    </a>
+                </td>
             </tr>
             <tr>
                 <td>36912</td>
@@ -52,7 +64,11 @@
                 <td style="color: rgb(31, 212, 31)">Complete</td>
                 <td style="color: rgb(31, 212, 31)">Passed</td>
                 <td>February 16, 2025</td>
-                <td><button>Revise</button></td>
+                <td>
+                    <a href="{{ route('review-documents-page') }}">
+                        <button>Revise</button>
+                    </a>
+                </td>
             </tr>
             <tr>
                 <td>48121</td>
@@ -61,7 +77,11 @@
                 <td style="color: rgb(237, 150, 69)">90%</td>
                 <td style="color: rgb(31, 212, 31)">Passed</td>
                 <td>March 17, 2025</td>
-                <td><button>Revise</button></td>
+                <td>
+                    <a href="{{ route('review-documents-page') }}">
+                        <button>Revise</button>
+                    </a>
+                </td>
             </tr>
             <tr>
                 <td>51015</td>
@@ -70,7 +90,11 @@
                 <td style="color: rgb(31, 212, 31)">Complete</td>
                 <td style="color: rgb(31, 212, 31)">Passed</td>
                 <td>April 2, 2025</td>
-                <td><button>Revise</button></td>
+                <td>
+                    <a href="{{ route('review-documents-page') }}">
+                        <button>Revise</button>
+                    </a>
+                </td>
             </tr>
             <tr>
                 <td>61261</td>
@@ -79,7 +103,11 @@
                 <td style="color: rgb(237, 150, 69)">90%</td>
                 <td style="color: rgb(31, 212, 31)">Passed</td>
                 <td>April 15, 2025</td>
-                <td><button>Revise</button></td>
+                <td>
+                    <a href="{{ route('review-documents-page') }}">
+                        <button>Revise</button>
+                    </a>
+                </td>
             </tr>
         </tbody>
     </table>
