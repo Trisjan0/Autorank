@@ -29,6 +29,14 @@
                 <p>Profile</p>
             </div>
         </a>
+        <a href="{{ route('system-settings') }}">
+            <div class="hidden-menu-icon">
+                <i class="fa-solid fa-gear" style="color: #ffffff;"></i>
+            </div>
+            <div class="hidden-menu-title">
+                <p>Settings</p>
+            </div>
+        </a>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
 

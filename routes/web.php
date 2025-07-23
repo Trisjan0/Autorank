@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SystemSettingsController;
 use App\Http\Controllers\Auth\SocialiteLoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,14 +23,6 @@ Route::get('/auth/google/redirect', [SocialiteLoginController::class, 'redirectG
 // Route for Google OAuth Callback
 Route::get('/auth/google/callback', [SocialiteLoginController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
-Route::post('/logout', function (Request $request) {
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect()->route('signin-page');
-})->name('logout');
-
-
 /*
 |--------------------------------------------------------------------------
 | Authenticated Routes (Accessible only to logged-in users)
@@ -43,11 +36,22 @@ Route::middleware(['auth'])->group(function () {
     // Route for the Profile Page
     Route::get('/profile', [PageController::class, 'showProfilePage'])->name('profile-page');
 
+    // Route for the System Settings
+    Route::get('/settings', [SystemSettingsController::class, 'showSystemSettings'])->name('system-settings');
+
+    //Route for Logging Out
+    Route::post('/logout', function (Request $request) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('signin-page');
+    })->name('logout');
+
     // Route to send OTP (THIS IS FOR DEMO ONLY - WILL CHANGE BEFORE DEPLOYMENT)
-    Route::post('/profile/send-otp', [\App\Http\Controllers\ProfileController::class, 'sendOtpForPhoneNumber'])->name('profile.send_otp'); // Ensure ProfileController here
+    Route::post('/profile/send-otp', [ProfileController::class, 'sendOtpForPhoneNumber'])->name('profile.send_otp'); // Ensure ProfileController here
 
     // Route to verify OTP and save phone number (THIS IS FOR DEMO ONLY - WILL CHANGE BEFORE DEPLOYMENT)
-    Route::post('/profile/verify-phone-otp', [\App\Http\Controllers\ProfileController::class, 'verifyOtpAndSavePhoneNumber'])->name('profile.verify_otp_save_phone');
+    Route::post('/profile/verify-phone-otp', [ProfileController::class, 'verifyOtpAndSavePhoneNumber'])->name('profile.verify_otp_save_phone');
 
     /*
     |--------------------------------------------------------------------------
@@ -58,9 +62,6 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role_or_permission:admin|access applications page|view research documents|view evaluations|view event participations'])->group(function () {
         // Route for the Review Applications Page
         Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');
-
-        // Route for the Review Documents Page
-        Route::get('/review-documents', [PageController::class, 'showReviewDocumentsPage'])->name('review-documents-page');
 
         // Route for the Research Documents Page
         Route::get('/research-documents', [PageController::class, 'showResearchDocumentsPage'])->name('research-documents-page');

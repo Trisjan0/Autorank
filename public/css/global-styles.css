@@ -47,17 +47,18 @@ nav {
 .navbar-left-side {
     margin-left: var(--navbarMarginDesktopSize);
     height: 65%;
-    width: 225px;
+    width: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .navbar-left-side i {
-    text-align: center;
+    text-align: start;
     height: auto;
-    width: auto;
+    width: 30px;
     font-size: 1.5rem;
+    margin-right: 20px;
 }
 
 .navbar-logo-container {
