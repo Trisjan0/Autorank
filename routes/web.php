@@ -63,6 +63,10 @@ Route::middleware(['auth'])->group(function () {
         // Route for the Review Applications Page
         Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');
 
+        // Route for the Review Documents Page
+        Route::get('/review-documents', [PageController::class, 'showReviewDocumentsPage'])->name('review-documents-page');
+
+
         // Route for the Research Documents Page
         Route::get('/research-documents', [PageController::class, 'showResearchDocumentsPage'])->name('research-documents-page');
 
