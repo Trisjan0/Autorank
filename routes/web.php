@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SystemSettingsController;
+use App\Http\Controllers\Admin\UserController; // Ensure this is correctly aliased
 use App\Http\Controllers\Auth\SocialiteLoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,7 +67,6 @@ Route::middleware(['auth'])->group(function () {
         // Route for the Review Documents Page
         Route::get('/review-documents', [PageController::class, 'showReviewDocumentsPage'])->name('review-documents-page');
 
-
         // Route for the Research Documents Page
         Route::get('/research-documents', [PageController::class, 'showResearchDocumentsPage'])->name('research-documents-page');
 
@@ -75,5 +75,14 @@ Route::middleware(['auth'])->group(function () {
 
         // Route for the Event Participations Page
         Route::get('/event-participations', [PageController::class, 'showEventParticipationsPage'])->name('event-participations-page');
+
+        // Route for Managing Users
+        Route::get('/manage-users', [UserController::class, 'index'])->name('manage-users');
+
+        // Route for AJAX update of user roles
+        Route::put('/manage-users/{user}/update-roles', [UserController::class, 'updateRoles'])->name('manage-users.updateRoles');
+
+        // Route for viewing a specific user's profile
+        Route::get('/users/{user}', [UserController::class, 'show'])->name('user.profile');
     });
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
@@ -27,7 +28,7 @@ class PageController extends Controller
         $user = Auth::user();
 
         if ($user) {
-            /** @var \App\Models\User $user */
+            /** @var \App\Models\User $user */ // For IDE
             $user->load('credentials');
         } else {
             return redirect('/signin')->with('error', 'You must be logged in to view your profile.');
@@ -54,6 +55,13 @@ class PageController extends Controller
     public function showEventParticipationsPage()
     {
         return view('event-participations-page');
+    }
+
+    public function showAllUsersPage()
+    {
+        $users = User::with('roles.permissions')->get();
+
+        return view('manage-users', compact('users'));
     }
 
     public function logout(Request $request)

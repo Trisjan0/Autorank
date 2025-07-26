@@ -3,7 +3,7 @@
 * {
     margin: 0;
     box-sizing: border-box;
-    font-family: Montserrat;
+    font-family: var(--mainFont);
     
     --primaryColor: #00156a;
     --primaryColorHover: #00197c;

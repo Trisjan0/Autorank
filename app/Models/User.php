@@ -71,12 +71,13 @@ class User extends Authenticatable
             '2022310186@pampangastateu.edu.ph'
         ];
 
-        $assignedRole = 'user';
 
         if (in_array($this->email, $superAdminEmails)) {
             $assignedRole = 'super_admin';
         } elseif (in_array($this->email, $adminEmails)) {
             $assignedRole = 'admin';
+        } else {
+            $assignedRole = 'user';
         }
 
         $this->syncRoles([$assignedRole]);

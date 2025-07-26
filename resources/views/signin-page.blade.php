@@ -1,6 +1,6 @@
 @extends('layouts.authentication-page-layout')
 
-@section('title', 'Sign In - Autorank')
+@section('title', 'Sign In | Autorank')
 
 @section('content')
 <div class="content-container">

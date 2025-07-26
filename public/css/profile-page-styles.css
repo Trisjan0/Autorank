@@ -137,7 +137,7 @@
 
 .reclassification-progress-container h1 {
     color: var(--primaryColor);
-    font-family: Montserrat;
+    font-family: var(--mainFont);
 }
 
 .progress-bars-container {
@@ -211,7 +211,7 @@
     width: 80%;
     height: 50px;
     font-size: 1.1rem;
-    font-family: Montserrat;
+    font-family: var(--mainFont);
     font-weight: 700;
 }
 
@@ -298,7 +298,7 @@
 }
 
 .performance-metrics-container h1, h2 {
-    font-family: Montserrat;
+    font-family: var(--mainFont);
 }
 
 .performance-metrics-container h1 {

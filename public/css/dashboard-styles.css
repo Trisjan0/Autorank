@@ -52,7 +52,7 @@
 }
 
 .research-publication-top-part h1 {
-    font-family: Montserrat;
+    font-family: var(--mainFont);
     color: var(--primaryColor);
 }
 
@@ -96,7 +96,7 @@
 }
 
 .event-participation-top-part h1 {
-    font-family: Montserrat;
+    font-family: var(--mainFont);
     color: var(--primaryColor);
 }
 
@@ -164,11 +164,11 @@
 }
 
 .online-faculty-evaluation-top-part h1:nth-child(1){
-    font-family: Montserrat;
+    font-family: var(--mainFont);
 }
 
 .online-faculty-evaluation-top-part h1:nth-child(2){
-    font-family: Montserrat;
+    font-family: var(--mainFont);
     font-weight: 550;
 }
 
@@ -212,7 +212,7 @@
 }
 
 .latest-research-title-header h1 {
-    font-family: Montserrat;
+    font-family: var(--mainFont);
 }
 
 .latest-research-title-table-container {

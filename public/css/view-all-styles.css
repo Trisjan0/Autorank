@@ -9,7 +9,7 @@
 }
 
 .header h1 {
-    font-family: Montserrat;
+    font-family: var(--mainFont);
     font-weight: 700;
     color: var(--primaryColor);
 }
@@ -53,18 +53,25 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
+}
+
+.performance-metric-container table td a {
+    width: auto;
+    height: auto;
 }
 
 .performance-metric-container table td button {
     background-color: var(--secondaryColor);
     border: none;
     border-radius: 5px;
-    width: 95px;
-    height: 35px;
+    width: auto;
+    min-height: 35px;
     font-size: 1.1rem;
     font-weight: 600;
     justify-self: center;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .performance-metric-container table td button:hover {
@@ -86,12 +93,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px
 }
 
 .search-bar-container form input {
     border: none;
     border-radius: 5px;
-    width: 86%;
+    flex-grow: 1;
     height: 35px;
     padding-left: 10px;
     padding-right: 10px;
@@ -100,7 +108,7 @@
 .search-bar-container form button {
     background-color: transparent;
     border: none;
-    width: 25%;
+    width: auto;
     height: 35px;
     font-size: 1.05rem;
     font-weight: 600;

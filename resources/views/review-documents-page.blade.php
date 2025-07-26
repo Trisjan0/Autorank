@@ -1,6 +1,6 @@
 @extends('layouts.view-all-layout')
 
-@section('title', content: 'Review Documents - Autorank')
+@section('title', content: 'Review Documents | Autorank')
 
 @section('content')
 <div class="header">
@@ -58,7 +58,6 @@
                     <button>Source</button>
                 </td>
             </tr>
-
         </tbody>
     </table>
 </div>

@@ -1,6 +1,6 @@
 @extends('layouts.view-all-layout')
 
-@section('title', 'Evaluations - Autorank')
+@section('title', 'Evaluations | Autorank')
 
 @section('content')
 <div class="header">

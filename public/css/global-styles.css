@@ -2,12 +2,16 @@
 * {
     margin: 0;
     box-sizing: border-box;
-    font-family: Montserrat;
+    font-family: var(--mainFont);
     
+    --mainFont: Rubik;
+
     --primaryColor: #00156a;
     --primaryColorHover: #00197c;
     --secondaryColor: #A8DFFF;
     --secondaryColorHover: #9fd2ef;
+    /* --secondaryColor: #353b41;
+    --secondaryColorHover: #40474f; */
     --green: #4DFF62;
 
     --navbarMarginDesktopSize: 2.5vw; /* 2.5vw or 40px */

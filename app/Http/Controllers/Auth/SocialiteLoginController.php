@@ -9,52 +9,102 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
+use Spatie\Permission\PermissionRegistrar; // Spatie package's class for managing permissions/roles cache
 
 class SocialiteLoginController extends Controller
 {
+    /**
+     * Redirects the user to the Google authentication page.
+     * This method is typically hit when the user clicks a "Sign in with Google" button.
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function redirectGoogleAuth()
     {
+        // Use Socialite to redirect to Google's OAuth consent screen.
         return Socialite::driver('google')->redirect();
     }
 
+    /**
+     * Handles the callback from Google after the user has authenticated.
+     * This method receives the user's data from Google.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function handleGoogleCallback(Request $request)
     {
         try {
+            // Attempt to retrieve the user's information from Google.
             $googleUser = Socialite::driver('google')->user();
         } catch (\Exception $e) {
+            // If authentication fails (e.g., user denies access, network issue), log the error.
             Log::error('Google authentication failed: ' . $e->getMessage(), ['exception' => $e]);
-            return redirect('/login')->withErrors('Google authentication failed. Please try again.');
+            // Redirect back to the login page with an error message.
+            return redirect('/signin-page')->withErrors('Google authentication failed. Please try again.');
         }
 
+        // Process the user's avatar URL to get a specific size (s400-c for 400px square, cropped)
         $originalAvatarUrl = $googleUser->getAvatar();
-
+        $avatarUrl = null; // Initialize avatarUrl to null
         if ($originalAvatarUrl) {
+            // Use regex to replace or append size parameter to the Google avatar URL
             $avatarUrl = preg_replace('/=s\d+(-c)?$/', '=s400-c', $originalAvatarUrl);
-
             if (strpos($avatarUrl, '=s') === false) {
-                $avatarUrl .= '=s400-c'; // Appends if no size parameter found
+                $avatarUrl .= '=s400-c'; // Appends if no size parameter was found at all
             }
-        } else {
-            $avatarUrl = null;
         }
 
-        $user = User::updateOrCreate(
-            ['google_id' => $googleUser->id],
-            [
+        // Find or create the user in your database based on their Google ID.
+        // Manually check for existence to get the $wasCreated flag accurately.
+        $user = User::where('google_id', $googleUser->id)->first();
+        $wasCreated = false; // Flag to track if the user was just created
+
+        if (!$user) {
+            // If the user does not exist in the database, create a new record.
+            $user = User::create([
+                'google_id' => $googleUser->id,
                 'name' => $googleUser->name,
                 'email' => $googleUser->email,
+                // Assign a random, hashed password as it won't be used for direct login.
                 'password' => bcrypt(Str::random(40)),
                 'avatar' => $avatarUrl
-            ]
-        );
+            ]);
+            $wasCreated = true; // Set flag to true as the user is new
+        } else {
+            // If the user already exists, update their details.
+            // This keeps their name, email, and avatar in sync with Google's latest data.
+            $user->update([
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'avatar' => $avatarUrl
+            ]);
+        }
 
-        // --- ROLE ASSIGNMENT ---
-        $user->assignDefaultRoleByEmail();
-        // --- END OF ROLE ASSIGNMENT ---
+        // --- Role Assignment Logic ---
+        // This ensures the default role is assigned ONLY when a user registers for the first time
+        // via Google OAuth. If an admin manually changes a user's role, this login process
+        // will NOT overwrite that change.
+        if ($wasCreated) {
+            $user->assignDefaultRoleByEmail();
+        }
 
-        Auth::login($user);
+        // --- Ensure Fresh User Data on Login ---
+        // Reload the user model from the database to guarantee that the authenticated user
+        // object contains the very latest data, including any role changes made by an admin.
+        $freshUser = User::find($user->id);
 
+        // --- Clear Spatie Permissions Cache ---
+        // This is a crucial step to ensure that Spatie's internal cache of permissions
+        // and roles is invalidated. Any subsequent check for permissions/roles will
+        // then fetch the fresh data from the database. This is a safeguard
+        // even if cleared on role update, ensuring the logging-in user gets accurate data.
+        app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        // Log the user into the application using the fresh user object.
+        Auth::login($freshUser);
+
+        // Redirect the authenticated user to the dashboard page.
         return redirect()->route('dashboard');
     }
 }
