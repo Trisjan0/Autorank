@@ -10,7 +10,7 @@
 }
 
 body {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    background-image: linear-gradient(rgba(22, 22, 22, 0.86), rgba(22, 22, 22, 0.86)),
                         url("https://sms.dhvsu.edu.ph/general/getThemePhoto?tid=1&field=login_bg");
     background-repeat: no-repeat;
     background-size: cover;
@@ -21,6 +21,8 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+
+    position: relative;
 }
 
 a {
@@ -30,6 +32,8 @@ a {
 
 /* NAVBAR STYLING -- -- -- */
 nav {
+    position: sticky;
+    top: 0;
     width: 100vw;
     height: auto;
 }
@@ -79,20 +83,47 @@ nav {
     color: white;
 }
 
-/* CONTAINER STYLING -- -- -- */
-main {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.content-container {
-    width: auto;
+/* CONTAINER STYLING */
+.login-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--primaryColor);
+    width: 380px;
+    max-width: 90%;
     height: auto;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    border-radius: 5px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+.login-card-header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.login-card-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.login-card-header p {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.login-card-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    gap: 20px;
 }
 
 .signin-container {
@@ -103,10 +134,12 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-decoration: none;
+    color: white;
 }
 
 .signin-container:hover {
-    transition: filter 0.25s ease-in-out;
+    transition: filter 0.15s ease-in-out;
     filter: brightness(0.85);
 }
 
@@ -132,4 +165,7 @@ main {
     font-weight: 600;
     margin-left: 15px;
     margin-right: 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: inherit;
 }

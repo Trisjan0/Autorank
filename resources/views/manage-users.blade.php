@@ -57,35 +57,41 @@
     </button>
 </div>
 
-<div class="custom-modal-overlay" id="updateRoleModal" style="display: none;">
-    <div class="custom-modal-content">
+<div class="role-modal-container" id="updateRoleModal">
+    <div class="role-modal">
+        <div class="role-modal-navigation">
+            <i class="fa-solid fa-xmark" style="color: #ffffff;" id="closeUpdateRoleModalBtn"></i>
+        </div>
+
         <form id="updateRoleForm" method="POST">
             @csrf
             @method('PUT')
-            <div class="custom-modal-header">
-                <h5 class="custom-modal-title" id="updateRoleModalLabel">Update Roles for [<span id="modal-user-name"></span>]</h5>
-                <button type="button" class="custom-close-button" id="closeUpdateRoleModalBtn" aria-label="Close">&times;</button>
-            </div>
-            <div class="custom-modal-body">
-                <input type="hidden" name="user_id" id="modal-user-id">
-                <div id="modal-roles-radio-buttons">
-                    {{-- Roles will be dynamically loaded here by JavaScript --}}
-                    @forelse($allRoles as $role)
-                    <div class="custom-form-check">
-                        <input class="custom-form-check-input" type="radio" name="role_id" value="{{ $role->id }}" id="modal_role_{{ $role->id }}">
-                        <label class="custom-form-check-label" for="modal_role_{{ $role->id }}">
-                            {{ Str::title($role->name) }}
-                        </label>
-                    </div>
-                    @empty
-                    <p>No roles available.</p>
-                    @endforelse
+            <div class="role-modal-content">
+                <div class="role-modal-content-header">
+                    <h1>Update Roles for [ <span id="modal-user-name"></span> ]</h1>
+                    <p>Select a new role for this user. Assigning a new role will update their permissions accordingly.</p>
                 </div>
-                <div id="modal-messages" class="mt-2"></div>
+                <div class="role-modal-content-body">
+                    <input type="hidden" name="user_id" id="modal-user-id">
+                    <div id="modal-roles-radio-buttons">
+                        {{-- Roles will be dynamically loaded here by JavaScript --}}
+                        @forelse($allRoles as $role)
+                        <div class="role-modal-form-check">
+                            <input class="role-modal-form-check-input" type="radio" name="role_id" value="{{ $role->id }}" id="modal_role_{{ $role->id }}">
+                            <label class="role-modal-form-check-label" for="modal_role_{{ $role->id }}">
+                                {{ Str::title(str_replace('_', ' ', $role->name)) }}
+                            </label>
+                        </div>
+                        @empty
+                        <p>No roles available.</p>
+                        @endforelse
+                    </div>
+                    <div id="modal-messages" class="mt-2"></div>
+                </div>
             </div>
-            <div class="custom-modal-footer">
-                <button type="button" class="custom-button custom-button-secondary" id="cancelUpdateRoleBtn">Close</button>
-                <button type="submit" class="custom-button custom-button-primary">Save Changes</button>
+            <div class="role-modal-confirmation">
+                <button type="button" id="cancelUpdateRoleBtn">Close</button>
+                <button type="submit">Save Changes</button>
             </div>
         </form>
     </div>
