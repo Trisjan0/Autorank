@@ -1,18 +1,8 @@
 /* INITIAL STYLING -- -- -- */
-/* INITIAL STYLING -- -- -- */
 * {
     margin: 0;
     box-sizing: border-box;
     font-family: var(--mainFont);
-    
-    --primaryColor: #00156a;
-    --primaryColorHover: #00197c;
-    --secondaryColor: #A8DFFF;
-    --secondaryColorHover: #9fd2ef;
-    --green: #4DFF62;
-
-    --navbarMarginDesktopSize: 2.5vw; /* 2.5vw or 40px */
-    --navbarMarginMobileSize: 5vw;
 }
 
 ::-webkit-scrollbar {

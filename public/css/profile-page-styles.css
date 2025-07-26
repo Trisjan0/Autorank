@@ -136,7 +136,6 @@
 }
 
 .reclassification-progress-container h1 {
-    color: var(--primaryColor);
     font-family: var(--mainFont);
 }
 
@@ -217,7 +216,6 @@
 
 .apply-for-reranking-container button:hover {
     cursor: pointer;
-    scale: 1.01;
     background-color: var(--secondaryColorHover);
 }
 
@@ -258,16 +256,6 @@
     font-weight: 600;
 }
 
-.performance-metrics-container table td button {
-    background-color: var(--secondaryColor);
-    border: none;
-    border-radius: 5px;
-    width: 95px;
-    height: 35px;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
 .performance-metrics-container table td div {
     width: auto;
     height: auto;
@@ -277,24 +265,30 @@
     gap: 10px;
 }
 
+.performance-metrics-container table td button {
+    background-color: var(--secondaryColor);
+    border: none;
+    border-radius: 5px;
+    width: 95px;
+    min-height: 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
 .performance-metrics-container table td button:hover {
     cursor: pointer;
-    scale: 1.01;
     background-color: var(--secondaryColorHover);
 }
 
 .performance-metrics-container .table-navigation a {
     border: none;
     background-color: transparent;
-    color: white;
     font-size: 1.1rem;
 }
 
 .performance-metrics-container .table-navigation a:hover {
-    transition: all 0.15s ease-out;
-    font-size: larger;
     cursor: pointer;
-    color: var(--secondaryColor);
+    text-decoration: underline;
 }
 
 .performance-metrics-container h1, h2 {

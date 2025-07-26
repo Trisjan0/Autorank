@@ -36,13 +36,13 @@
     border: 2px solid var(--primaryColor);
     background-color: var(--primaryColor);
     color: white;
-    padding: 20px;
+    padding: var(--tableHeaderPadding);
     font-weight: 600;
 }
 
 .performance-metric-container table td {
     border: 2px solid lightgray;
-    padding: 30px;
+    padding: var(--tableDataPadding);
     text-align: center;
     font-weight: 600;
 }
@@ -76,7 +76,6 @@
 
 .performance-metric-container table td button:hover {
     cursor: pointer;
-    scale: 1.01;
     background-color: var(--secondaryColorHover);
 }
 
@@ -117,7 +116,7 @@
 
 .search-bar-container form button:hover {
     cursor: pointer;
-    scale: 1.2;
+    scale: 1.1;
     color: var(--secondaryColor);
 }
 
@@ -129,7 +128,7 @@
     height: 10vh;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 15px;
     justify-self: center;
 }
@@ -146,6 +145,5 @@
 
 .load-more-container button:hover {
     cursor: pointer;
-    scale: 1.01;
     background-color: var(--primaryColorHover);
 }
