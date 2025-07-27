@@ -339,7 +339,7 @@ Profile | Autorank
                 </div>
             </div>
 
-            <div id="otpInputStep" style="display: none;">
+            <div id="otpInputStep">
                 <div class="phone-num-modal-content">
                     <div class="phone-num-modal-content-header">
                         <h1>Verify Phone Number</h1>
