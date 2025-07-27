@@ -30,11 +30,18 @@ class PageController extends Controller
         if ($user) {
             /** @var \App\Models\User $user */ // For IDE
             $user->load('credentials');
-        } else {
-            return redirect('/signin')->with('error', 'You must be logged in to view your profile.');
-        }
 
-        return view('profile-page', compact('user'));
+            // For the user's own profile page, isOwnProfile will always be true
+            $isOwnProfile = true;
+
+            return view('profile-page', [
+                'user' => $user,
+                'isOwnProfile' => $isOwnProfile,
+            ]);
+        } else {
+            // Redirect to signin if not logged in
+            return redirect()->route('signin-page')->with('error', 'You must be logged in to view your profile.');
+        }
     }
 
     public function showResearchDocumentsPage()

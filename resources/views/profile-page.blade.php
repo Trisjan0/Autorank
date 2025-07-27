@@ -1,13 +1,19 @@
 @extends('layouts.profile-page-layout')
 
-@section('title', 'Profile | Autorank')
+@section('title')
+@if ($isOwnProfile)
+Profile | Autorank
+@else
+{{ $user->name }}'s Profile | Autorank
+@endif
+@endsection
 
 @section('content')
 <div class="content-container">
     <div class="content">
         <div class="content-left-side">
             <div class="profile-img-container">
-                <img src="{{ Auth::user()->avatar }}" alt="{{ auth()->user()->name }}'s profile picture">
+                <img src="{{ $user->avatar }}" alt="{{ $user->name }}'s profile picture">
             </div>
             <div class="separator-container">
                 <h6>Basic Info</h6>
@@ -20,7 +26,7 @@
                 <div class="basic-info-fields">
                     <div class="basic-info">
                         <h3>Full Name</h3>
-                        <h5 id="username">{{ auth()->user()->name }}</h5>
+                        <h5 id="username">{{ $user->name }}</h5>
                     </div>
                     <div class="basic-info-action" title="Copy Instructor Name" onclick="copyInstructorsName();">
                         <i class="fa-regular fa-copy" style="color: #000000;"></i>
@@ -29,7 +35,7 @@
                 <div class="basic-info-fields">
                     <div class="basic-info">
                         <h3>Instructor Number</h3>
-                        <h5 id="instructorsNumber">{{ auth()->user()->instructor_number ?? 'TBC' }}</h5>
+                        <h5 id="instructorsNumber">{{ $user->instructor_number ?? 'TBC' }}</h5>
                     </div>
                     <div class="basic-info-action" title="Copy Instructor Number" onclick="copyInstructorNumber();">
                         <i class="fa-regular fa-copy" style="color: #000000;"></i>
@@ -38,15 +44,15 @@
                 <div class="basic-info-fields">
                     <div class="basic-info">
                         <h3>Rank</h3>
-                        <h5>{{ auth()->user()->rank ?? 'TBC' }}</h5>
+                        <h5>{{ $user->rank ?? 'TBC' }}</h5>
                     </div>
                     <div class="basic-info-action"></div>
                 </div>
                 <div class="basic-info-fields">
                     <div class="basic-info">
                         <h3>Credentials</h3>
-                        @if (auth()->user()->credentials->isNotEmpty())
-                        @foreach (auth()->user()->credentials as $credential)
+                        @if ($user->credentials->isNotEmpty())
+                        @foreach ($user->credentials as $credential)
                         <h5>{{ $credential->name }}</h5>
                         @endforeach
                         @else
@@ -58,24 +64,34 @@
                 <div class="basic-info-fields">
                     <div class="basic-info">
                         <h3>Email</h3>
-                        <h5>{{ auth()->user()->email }}</h5>
+                        <h5>{{ $user->email }}</h5>
                     </div>
+                    @if (!$isOwnProfile)
                     <div class="basic-info-action">
-                        <a href="mailto:{{ auth()->user()->email }}" title="Email Instructor">
+                        <a href="mailto:{{ $user->email }}" title="Email Instructor">
                             <i class="fa-regular fa-envelope" style="color: #000000;"></i>
                         </a>
                     </div>
+                    @endif
                 </div>
                 <div class="basic-info-fields">
                     <div class="basic-info">
                         <h3>Phone Number</h3>
-                        <h5>{{ auth()->user()->phone_number ?? 'TBC' }}</h5>
+                        <h5>{{ $user->phone_number ?? 'TBC' }}</h5>
                     </div>
+                    @if ($isOwnProfile)
                     <div class="basic-info-action">
                         <a id="openPhoneNumberModalBtn" href="#" title="Edit">
                             <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
                         </a>
                     </div>
+                    @else
+                    <div class="basic-info-action">
+                        <a href="tel:{{ $user->phone_number }}" title="Call Instructor">
+                            <i class="fa-solid fa-phone-flip" style="color: #000000;"></i>
+                        </a>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -122,9 +138,11 @@
                         </div>
                     </div>
                 </div>
+                @if ($isOwnProfile)
                 <div class="apply-for-reranking-container">
                     <button>Apply for Reranking</button>
                 </div>
+                @endif
             </div>
             <div class="performance-metrics-container">
                 <div class="title">
@@ -141,28 +159,41 @@
                                     <th>Title</th>
                                     <th>Publication Date</th>
                                     <th>Status</th>
+                                    @if ($isOwnProfile)
                                     <th>Action</th>
+                                    @endif
                                 </tr>
                                 <tr>
                                     <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
                                     <td>N/A</td>
                                     <td>Ongoing</td>
+                                    @if ($isOwnProfile)
                                     <td><button>View</button></td>
+                                    @endif
                                 </tr>
                                 <tr>
                                     <td>Sed do eiusmod tempor incididunt ut labore</td>
                                     <td>July 12, 2024</td>
                                     <td>Done</td>
+                                    @if ($isOwnProfile)
                                     <td><button>Upload</button></td>
+                                    @endif
                                 </tr>
                                 <tr>
                                     <td>Eiusmod do tempor incididunt ut labore</td>
                                     <td>June 2, 2024</td>
                                     <td>Done</td>
+                                    @if ($isOwnProfile)
                                     <td><button>Upload</button></td>
+                                    @endif
                                 </tr>
                                 <tr>
+                                    @if ($isOwnProfile)
                                     <th class="table-navigation" colspan="4"><a href='{{ route("research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
+                                    @else
+                                    <th class="table-navigation" colspan="3">Latest Research Documents</th>
+                                    @endif
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -176,34 +207,47 @@
                                     <th>Type</th>
                                     <th>Date</th>
                                     <th>Status</th>
+                                    @if ($isOwnProfile)
                                     <th>Action</th>
+                                    @endif
                                 </tr>
                                 <tr>
                                     <td>Student Evaluation</td>
                                     <td>May 7, 2024</td>
                                     <td>Uploaded</td>
+                                    @if ($isOwnProfile)
                                     <td>
                                         <div><button>View</button><button>Edit</button></div>
                                     </td>
+                                    @endif
                                 </tr>
                                 <tr>
                                     <td>Faculty/Peer Evaluation</td>
                                     <td>December 2, 2023</td>
                                     <td>Ongoing</td>
+                                    @if ($isOwnProfile)
                                     <td>
                                         <div><button>View</button><button>Edit</button></div>
                                     </td>
+                                    @endif
                                 </tr>
                                 <tr>
                                     <td>Student Evaluation</td>
                                     <td>September 12, 2023</td>
                                     <td>Uploaded</td>
+                                    @if ($isOwnProfile)
                                     <td>
                                         <div><button>View</button><button>Edit</button></div>
                                     </td>
+                                    @endif
                                 </tr>
                                 <tr>
+                                    @if ($isOwnProfile)
                                     <th class="table-navigation" colspan="4"><a href='{{ route("research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
+                                    @else
+                                    <th class="table-navigation" colspan="3">Latest Public Evaluations</th>
+                                    @endif
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -217,34 +261,47 @@
                                     <th>Type</th>
                                     <th>Date</th>
                                     <th>Status</th>
+                                    @if ($isOwnProfile)
                                     <th>Action</th>
+                                    @endif
                                 </tr>
                                 <tr>
                                     <td>Seminar</td>
                                     <td>October 14, 2023</td>
                                     <td>Uploaded</td>
+                                    @if ($isOwnProfile)
                                     <td>
                                         <div><button>View</button><button>Edit</button></div>
                                     </td>
+                                    @endif
                                 </tr>
                                 <tr>
                                     <td>Seminar</td>
                                     <td>July 30, 2023</td>
                                     <td>Uploaded</td>
+                                    @if ($isOwnProfile)
                                     <td>
                                         <div><button>View</button><button>Edit</button></div>
                                     </td>
+                                    @endif
                                 </tr>
                                 <tr>
                                     <td>Seminar</td>
                                     <td>June 3, 2023</td>
                                     <td>Ongoing</td>
+                                    @if ($isOwnProfile)
                                     <td>
                                         <div><button>View</button><button>Edit</button></div>
                                     </td>
+                                    @endif
                                 </tr>
                                 <tr>
+                                    @if ($isOwnProfile)
                                     <th class="table-navigation" colspan="4"><a href='{{ route("research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
+                                    @else
+                                    <th class="table-navigation" colspan="3">Latest Public Events</th>
+                                    @endif
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -254,7 +311,7 @@
     </div>
 </div>
 
-<!-- Modal for Editing Phone Number -->
+@if ($isOwnProfile)
 <div class="phone-num-modal-container" id="phoneNumberModal">
     <div class="phone-num-modal">
         <div class="phone-num-modal-navigation">
@@ -262,6 +319,7 @@
         </div>
 
         <form id="phoneNumberUpdateForm" action="/profile/update-phone" method="POST">
+            @csrf
             <div id="phoneInputStep">
                 <div class="phone-num-modal-content">
                     <div class="phone-num-modal-content-header">
@@ -272,7 +330,7 @@
                         <div class="phone-num-modal-content-body-tip">
                             <h5>Philippines (+63)</h5>
                         </div>
-                        <input type="tel" name="phone_number" id="phoneInput" placeholder="Enter your number" pattern="09[0-9]{9}" maxlength="11">
+                        <input type="tel" name="phone_number" id="phoneInput" placeholder="Enter your number" pattern="09[0-9]{9}" maxlength="11" value="{{ $user->phone_number ?? '' }}">
                     </div>
                 </div>
                 <div class="phone-num-modal-confirmation">
@@ -280,7 +338,7 @@
                 </div>
             </div>
 
-            <div id="otpInputStep">
+            <div id="otpInputStep" style="display: none;">
                 <div class="phone-num-modal-content">
                     <div class="phone-num-modal-content-header">
                         <h1>Verify Phone Number</h1>
@@ -297,5 +355,6 @@
         </form>
     </div>
 </div>
-<!-- End of -->
+@endif
+
 @endsection

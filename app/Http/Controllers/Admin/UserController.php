@@ -204,7 +204,18 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        // Load roles and permissions for the profile user
         $user->load('roles.permissions');
-        return view('user.profile', compact('user'));
+
+        // Determine if the currently authenticated user is viewing their own profile
+        // This is crucial for differentiating between "My Profile" and "Other User's Profile" views
+        $isOwnProfile = (Auth::check() && Auth::id() === $user->id);
+
+        // Return the existing 'profile-page' view, passing both the target user
+        // and the flag indicating if it's the authenticated user's own profile.
+        return view('profile-page', [
+            'user' => $user, // The user object for the profile being displayed
+            'isOwnProfile' => $isOwnProfile, // True if the logged-in user is viewing their own profile
+        ]);
     }
 }
