@@ -59,8 +59,8 @@ class UserController extends Controller
             // This part handles the initial page load
             $users = $query->take($perPage)->get(); // Get only the first 'perPage' users
 
-            // Also fetch all roles to pass to the modal for selection
-            $allRoles = Role::all();
+            // Fetch all roles by rank to pass to the modal for selection
+            $allRoles = Role::orderBy('rank', 'asc')->get();
 
             // Determine initial hasMore for the "Load More" button
             $totalUsersMatchingSearch = $query->count(); // Count total matching users for initial check

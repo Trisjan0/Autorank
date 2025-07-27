@@ -31,6 +31,7 @@
     </main>
 
     <script src="{{ asset('js/global-scripts.js') }}"></script>
+    <script src="{{ asset('js/manage-users-scripts.js') }}"></script>
 </body>
 
 </html>
