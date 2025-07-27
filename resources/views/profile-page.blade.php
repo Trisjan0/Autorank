@@ -311,6 +311,7 @@ Profile | Autorank
     </div>
 </div>
 
+<!-- Modal for Editing Phone Number -->
 @if ($isOwnProfile)
 <div class="phone-num-modal-container" id="phoneNumberModal">
     <div class="phone-num-modal">

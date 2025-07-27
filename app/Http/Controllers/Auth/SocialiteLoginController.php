@@ -9,13 +9,13 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Spatie\Permission\PermissionRegistrar; // Spatie package's class for managing permissions/roles cache
+use Spatie\Permission\PermissionRegistrar;
+use Illuminate\Support\Facades\Hash;
 
 class SocialiteLoginController extends Controller
 {
     /**
      * Redirects the user to the Google authentication page.
-     * This method is typically hit when the user clicks a "Sign in with Google" button.
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -46,7 +46,7 @@ class SocialiteLoginController extends Controller
 
         // Process the user's avatar URL to get a specific size (s400-c for 400px square, cropped)
         $originalAvatarUrl = $googleUser->getAvatar();
-        $avatarUrl = null; // Initialize avatarUrl to null
+        $avatarUrl = null;
         if ($originalAvatarUrl) {
             // Use regex to replace or append size parameter to the Google avatar URL
             $avatarUrl = preg_replace('/=s\d+(-c)?$/', '=s400-c', $originalAvatarUrl);
@@ -57,26 +57,38 @@ class SocialiteLoginController extends Controller
 
         // Find or create the user in your database based on their Google ID.
         // Manually check for existence to get the $wasCreated flag accurately.
-        $user = User::where('google_id', $googleUser->id)->first();
-        $wasCreated = false; // Flag to track if the user was just created
+        $user = User::where('email', $googleUser->email)->first(); // 1. Try to find user by email FIRST
+        $wasCreated = false;
 
         if (!$user) {
-            // If the user does not exist in the database, create a new record.
-            $user = User::create([
-                'google_id' => $googleUser->id,
-                'name' => $googleUser->name,
-                'email' => $googleUser->email,
-                // Assign a random, hashed password as it won't be used for direct login.
-                'password' => bcrypt(Str::random(40)),
-                'avatar' => $avatarUrl
-            ]);
-            $wasCreated = true; // Set flag to true as the user is new
-        } else {
-            // If the user already exists, update their details.
-            // This keeps their name, email, and avatar in sync with Google's latest data.
+            // User not found by email, check by google_id
+            $user = User::where('google_id', $googleUser->id)->first();
+
+            if (!$user) {
+                // If user still not found by either email or google_id, create a new user
+                $user = User::create([
+                    'google_id' => $googleUser->id,
+                    'name' => $googleUser->name,
+                    'email' => $googleUser->email,
+                    // Assign a random, hashed password as it won't be used for direct login.
+                    'password' => bcrypt(Str::random(40)),
+                    'avatar' => $avatarUrl
+                ]);
+                $wasCreated = true; // Set flag to true as the user is new
+            }
+        }
+
+        // If user was found by email but doesn't have a google_id, link it
+        if ($user && empty($user->google_id)) {
+            $user->google_id = $googleUser->id;
+            // Also update name/avatar in case they changed on Google
+            $user->name = $googleUser->name;
+            $user->avatar = $avatarUrl;
+            $user->save();
+        } else if ($user) {
+            // If user exists and has google_id, just update name/avatar in case they changed on Google
             $user->update([
                 'name' => $googleUser->name,
-                'email' => $googleUser->email,
                 'avatar' => $avatarUrl
             ]);
         }
@@ -93,6 +105,7 @@ class SocialiteLoginController extends Controller
         // Reload the user model from the database to guarantee that the authenticated user
         // object contains the very latest data, including any role changes made by an admin.
         $freshUser = User::find($user->id);
+        $freshUser = User::find($user->id);
 
         // --- Clear Spatie Permissions Cache ---
         // This is a crucial step to ensure that Spatie's internal cache of permissions
@@ -100,11 +113,10 @@ class SocialiteLoginController extends Controller
         // then fetch the fresh data from the database. This is a safeguard
         // even if cleared on role update, ensuring the logging-in user gets accurate data.
         app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
+        app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        // Log the user into the application using the fresh user object.
         Auth::login($freshUser);
 
-        // Redirect the authenticated user to the dashboard page.
         return redirect()->route('dashboard');
     }
 }
