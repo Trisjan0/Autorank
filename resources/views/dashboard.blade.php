@@ -45,7 +45,7 @@
     </div>
     <div class="latest-research-title-container">
         <div class="latest-research-title-header">
-            <h1>Latest Research Title</h1>
+            <h1>Your Latest Research Title</h1>
         </div>
         <div class="latest-research-title-table-container">
             <table>

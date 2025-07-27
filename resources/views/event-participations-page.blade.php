@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="header">
-    <h1>Event Participations</h1>
+    <h1>Your Event Participations</h1>
 </div>
 <div class="performance-metric-container">
     <table>

@@ -50,6 +50,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'user' => [
                 'view dashboard',
                 'view profile',
+                'view research documents',
+                'view evaluations',
+                'view event participations',
             ],
         ];
 

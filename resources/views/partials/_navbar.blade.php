@@ -34,7 +34,7 @@
         </div>
     </div>
     <div id="hidden-menu">
-        {{-- Always show Dashboard, Profile, Settings, and Logout for any authenticated user --}}
+        {{-- Always show Dashboard, Profile, Settings, Performance Metric Pages, and Logout for any authenticated user --}}
         <a href="{{ route('dashboard') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-chart-simple" style="color: #ffffff;"></i>
@@ -43,18 +43,9 @@
                 <p>Dashboard</p>
             </div>
         </a>
-        <a href="{{ route('profile-page') }}">
-            <div class="hidden-menu-icon">
-                <i class="fa-solid fa-address-book" style="color: #ffffff;"></i>
-            </div>
-            <div class="hidden-menu-title">
-                <p>Profile</p>
-            </div>
-        </a>
 
         {{-- ADMIN/SUPER_ADMIN specific links --}}
         @auth
-        {{-- Using @can for permission management with Spatie --}}
         @can('manage users')
         <a href="{{ route('application-page') }}">
             <div class="hidden-menu-icon">
@@ -73,8 +64,17 @@
             </div>
         </a>
         @endcan
+        @endauth
 
-        @can('view research documents')
+        <a href="{{ route('profile-page') }}">
+            <div class="hidden-menu-icon">
+                <i class="fa-solid fa-address-book" style="color: #ffffff;"></i>
+            </div>
+            <div class="hidden-menu-title">
+                <p>Profile</p>
+            </div>
+        </a>
+
         <a href="{{ route('research-documents-page') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-file-lines" style="color: #ffffff;"></i>
@@ -83,9 +83,7 @@
                 <p>Research Documents</p>
             </div>
         </a>
-        @endcan
 
-        @can('view evaluations')
         <a href="{{ route('evaluations-page') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-chart-pie" style="color: #ffffff;"></i>
@@ -94,9 +92,7 @@
                 <p>Evaluations</p>
             </div>
         </a>
-        @endcan
 
-        @can('manage events')
         <a href="{{ route('event-participations-page') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-calendar-day" style="color: #ffffff;"></i>
@@ -105,8 +101,6 @@
                 <p>Event Participations</p>
             </div>
         </a>
-        @endcan
-        @endauth
 
         <a href="{{ route('system-settings') }}">
             <div class="hidden-menu-icon">

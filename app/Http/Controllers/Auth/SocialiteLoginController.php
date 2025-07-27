@@ -10,7 +10,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\PermissionRegistrar;
-use Illuminate\Support\Facades\Hash;
 
 class SocialiteLoginController extends Controller
 {
@@ -112,7 +111,6 @@ class SocialiteLoginController extends Controller
         // and roles is invalidated. Any subsequent check for permissions/roles will
         // then fetch the fresh data from the database. This is a safeguard
         // even if cleared on role update, ensuring the logging-in user gets accurate data.
-        app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
         app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
 
         Auth::login($freshUser);

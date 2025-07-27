@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="header">
-    <h1>Research Documents</h1>
+    <h1>Your Research Documents</h1>
 </div>
 <div class="performance-metric-container">
     <table>

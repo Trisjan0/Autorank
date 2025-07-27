@@ -37,6 +37,15 @@ Route::middleware(['auth'])->group(function () {
     // Route for the Profile Page
     Route::get('/profile', [PageController::class, 'showProfilePage'])->name('profile-page');
 
+    // Route for the Research Documents Page
+    Route::get('/research-documents', [PageController::class, 'showResearchDocumentsPage'])->name('research-documents-page');
+
+    // Route for the Evaluations Page
+    Route::get('/evaluations', [PageController::class, 'showEvaluationsPage'])->name('evaluations-page');
+
+    // Route for the Event Participations Page
+    Route::get('/event-participations', [PageController::class, 'showEventParticipationsPage'])->name('event-participations-page');
+
     // Route for the System Settings
     Route::get('/settings', [SystemSettingsController::class, 'showSystemSettings'])->name('system-settings');
 
@@ -60,21 +69,12 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(['role_or_permission:admin|access applications page|view research documents|view evaluations|view event participations'])->group(function () {
+    Route::middleware(['role_or_permission:admin|access applications page'])->group(function () {
         // Route for the Review Applications Page
         Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');
 
         // Route for the Review Documents Page
         Route::get('/review-documents', [PageController::class, 'showReviewDocumentsPage'])->name('review-documents-page');
-
-        // Route for the Research Documents Page
-        Route::get('/research-documents', [PageController::class, 'showResearchDocumentsPage'])->name('research-documents-page');
-
-        // Route for the Evaluations Page
-        Route::get('/evaluations', [PageController::class, 'showEvaluationsPage'])->name('evaluations-page');
-
-        // Route for the Event Participations Page
-        Route::get('/event-participations', [PageController::class, 'showEventParticipationsPage'])->name('event-participations-page');
 
         // Route for Managing Users
         Route::get('/manage-users', [UserController::class, 'index'])->name('manage-users');
