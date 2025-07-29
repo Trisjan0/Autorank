@@ -26,6 +26,8 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th>Role Assigned At</th>
+                <th>Role Assigned By</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('manage-users') }}" method="GET" id="search-form">
@@ -41,7 +43,7 @@
             @include('partials._user_table_row', ['user' => $user])
             @empty
             <tr id="no-users-row">
-                <td colspan="5" style="text-align: center;">No users found.</td>
+                <td colspan="7" style="text-align: center;">No users found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -50,50 +52,69 @@
 
 <div class="load-more-container">
     <button onclick="window.history.back()">Back</button>
-    {{-- Conditionally display the load more button and add data attributes --}}
     <button id="loadMoreUsersBtn" data-current-offset="{{ $perPage }}"
-        @if (!$initialHasMore || $users->isEmpty()) style="display: none;" @endif> {{-- Hide if no more to load initially or no users at all --}}
+        @if (!$initialHasMore || $users->isEmpty()) style="display: none;" @endif>
         Load More +
     </button>
 </div>
 
+{{-- UPDATE ROLE MODAL --}}
 <div class="role-modal-container" id="updateRoleModal">
     <div class="role-modal">
         <div class="role-modal-navigation">
             <i class="fa-solid fa-xmark" style="color: #ffffff;" id="closeUpdateRoleModalBtn"></i>
         </div>
 
-        <form id="updateRoleForm" method="POST">
-            @csrf
-            @method('PUT')
+        {{-- STEP 1: Initial Role Selection --}}
+        <div id="updateRoleInitialStep">
+            <form id="updateRoleForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="role-modal-content">
+                    <div class="role-modal-content-header">
+                        <h1>Update Roles for [ <span id="modal-user-name"></span> ]</h1>
+                        <p>Select a new role for this user. Assigning a new role will update their permissions accordingly.</p>
+                    </div>
+                    <div class="role-modal-content-body">
+                        <input type="hidden" name="user_id" id="modal-user-id">
+                        <div id="modal-roles-radio-buttons">
+                            @forelse($allRoles as $role)
+                            <div class="role-modal-form-check">
+                                <input class="role-modal-form-check-input" type="radio" name="role_id" value="{{ $role->id }}" id="modal_role_{{ $role->id }}" data-role-name="{{ Str::title(str_replace('_', ' ', $role->name)) }}">
+                                <label class="role-modal-form-check-label" for="modal_role_{{ $role->id }}">
+                                    {{ Str::title(str_replace('_', ' ', $role->name)) }}
+                                </label>
+                            </div>
+                            @empty
+                            <p>No roles available.</p>
+                            @endforelse
+                        </div>
+                        <div id="modal-messages" class="mt-2"></div>
+                    </div>
+                </div>
+                <div class="role-modal-actions">
+                    <button type="button" id="cancelUpdateRoleBtn">Close</button>
+                    <button type="submit" id="proceedToConfirmationBtn">Next</button>
+                </div>
+            </form>
+        </div>
+
+        {{-- STEP 2: Confirmation --}}
+        <div id="updateRoleConfirmationStep" style="display: none;">
             <div class="role-modal-content">
                 <div class="role-modal-content-header">
-                    <h1>Update Roles for [ <span id="modal-user-name"></span> ]</h1>
-                    <p>Select a new role for this user. Assigning a new role will update their permissions accordingly.</p>
+                    <h1>Confirm Role Update for [ <span id="modal-user-name-confirm"></span> ]</h1>
+                    <p id="confirmationMessageArea"></p>
                 </div>
                 <div class="role-modal-content-body">
-                    <input type="hidden" name="user_id" id="modal-user-id">
-                    <div id="modal-roles-radio-buttons">
-                        {{-- Roles will be dynamically loaded here by JavaScript --}}
-                        @forelse($allRoles as $role)
-                        <div class="role-modal-form-check">
-                            <input class="role-modal-form-check-input" type="radio" name="role_id" value="{{ $role->id }}" id="modal_role_{{ $role->id }}">
-                            <label class="role-modal-form-check-label" for="modal_role_{{ $role->id }}">
-                                {{ Str::title(str_replace('_', ' ', $role->name)) }}
-                            </label>
-                        </div>
-                        @empty
-                        <p>No roles available.</p>
-                        @endforelse
-                    </div>
-                    <div id="modal-messages" class="mt-2"></div>
+                    <div id="finalStatusMessageArea" class="mt-2"></div>
                 </div>
             </div>
-            <div class="role-modal-confirmation">
-                <button type="button" id="cancelUpdateRoleBtn">Close</button>
-                <button type="submit">Save Changes</button>
+            <div class="role-modal-actions">
+                <button type="button" class="btn btn-info" id="backToSelectionBtn">Back</button>
+                <button type="button" class="btn btn-success" id="confirmUpdateRoleBtn">Confirm Update</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 @endsection

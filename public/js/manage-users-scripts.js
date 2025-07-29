@@ -11,13 +11,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalMessages = document.getElementById('modal-messages');
     const modalRolesRadioButtonsContainer = document.getElementById('modal-roles-radio-buttons');
     const closeUpdateRoleModalBtn = document.getElementById('closeUpdateRoleModalBtn');
-    const cancelUpdateRoleBtn = document.getElementById('cancelUpdateRoleBtn');
 
-    // Displays the role update modal.
-    function showModal() {
+    const updateRoleInitialStep = document.getElementById('updateRoleInitialStep');
+    const updateRoleConfirmationStep = document.getElementById('updateRoleConfirmationStep');
+    const confirmUpdateRoleBtn = document.getElementById('confirmUpdateRoleBtn');
+    const backToSelectionBtn = document.getElementById('backToSelectionBtn');
+    const confirmationMessageArea = document.getElementById('confirmationMessageArea');
+    const finalStatusMessageArea = document.getElementById('finalStatusMessageArea');
+
+    let currentSelectedUserId = null;
+    let currentSelectedUserName = null;
+    let currentSelectedRoleName = null;
+    let currentUserCurrentRoleName = null;
+
+    // Displays the role update modal and controls which step is visible.
+    function showModal(step = 'initial') {
         if (updateRoleModal) {
             updateRoleModal.style.display = 'flex'; // Make the modal visible
             document.body.classList.add('modal-open'); // Add class to body to prevent scrolling
+            showStep(step); // Show the specified step
         }
     }
 
@@ -26,35 +38,56 @@ document.addEventListener('DOMContentLoaded', () => {
         if (updateRoleModal) {
             updateRoleModal.style.display = 'none'; // Hide the modal
             document.body.classList.remove('modal-open'); // Remove class from body
+            // Clear all messages and reset state when closing
+            modalMessages.innerHTML = '';
+            finalStatusMessageArea.innerHTML = '';
+            confirmationMessageArea.innerHTML = '';
+            // Re-enable buttons if they were disabled
+            if (confirmUpdateRoleBtn) confirmUpdateRoleBtn.disabled = false;
+            if (backToSelectionBtn) backToSelectionBtn.disabled = false;
+            if (closeUpdateRoleModalBtn) closeUpdateRoleModalBtn.disabled = false;
         }
     }
 
+    // Controls which step of the modal is visible
+    function showStep(step) {
+        if (updateRoleInitialStep && updateRoleConfirmationStep) {
+            if (step === 'initial') {
+                updateRoleInitialStep.style.display = 'block';
+                updateRoleConfirmationStep.style.display = 'none';
+            } else if (step === 'confirmation') {
+                updateRoleInitialStep.style.display = 'none';
+                updateRoleConfirmationStep.style.display = 'block';
+            }
+        }
+    }
+
+
     // Event listener for opening the role update modal.
-    // This is a delegated event listener attached to the document.
-    // It's used because 'update-role-btn' elements might be dynamically loaded
-    // (e.g., via "Load More" functionality on the manage-users page).
     document.addEventListener('click', function(event) {
-        // Check if the clicked element (or its parent) matches a button with class 'update-role-btn'
         if (event.target.matches('.update-role-btn')) {
             const button = event.target;
-            // Retrieve user data from data attributes on the button
-            const userId = button.dataset.userId;
-            const userName = button.dataset.userName;
-            // Parse user roles (expected as a JSON string) to get the current role ID
+            currentSelectedUserId = button.dataset.userId;
+            currentSelectedUserName = button.dataset.userName;
             const userRoles = JSON.parse(button.dataset.userRoles);
-            const currentUserRoleId = userRoles.length > 0 ? userRoles[0] : null; // Get the ID of the first role
+            const currentUserRoleId = userRoles.length > 0 ? userRoles[0] : null;
+            currentUserCurrentRoleName = button.dataset.currentRoleName; // Get the user's current role name
 
             // Populate modal fields with the clicked user's data
-            modalUserId.value = userId;
-            modalUserName.textContent = userName;
+            modalUserId.value = currentSelectedUserId;
+            modalUserName.textContent = currentSelectedUserName;
             modalMessages.innerHTML = ''; // Clear any messages from previous modal interactions
+            finalStatusMessageArea.innerHTML = ''; // Clear any previous final status
 
             // Select the correct radio button based on the user's current role
             modalRolesRadioButtonsContainer.querySelectorAll('input[type="radio"]').forEach(radio => {
                 radio.checked = (parseInt(radio.value) === currentUserRoleId);
             });
 
-            showModal(); // Display the modal
+            // Reset internal variables for the next interaction
+            currentSelectedRoleName = null;
+
+            showModal('initial'); // Always start with the initial selection step
         }
     });
 
@@ -62,9 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeUpdateRoleModalBtn) {
         closeUpdateRoleModalBtn.addEventListener('click', hideModal); // Close button click
     }
-    if (cancelUpdateRoleBtn) {
-        cancelUpdateRoleBtn.addEventListener('click', hideModal); // Cancel button click
-    }
+
     if (updateRoleModal) {
         // Close modal if click occurs directly on the modal's background (outside its content)
         updateRoleModal.addEventListener('click', function(event) {
@@ -74,97 +105,151 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle modal form submission via AJAX for role updates
+    // Handle initial form submission (move to confirmation step)
     if (updateRoleForm) {
-        updateRoleForm.addEventListener('submit', async function(e) {
-            e.preventDefault(); // Prevent the default form submission (it causes a full page reload)
+        updateRoleForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
 
-            const userId = modalUserId.value; // Get the user ID from the hidden input
-            // Construct the API endpoint URL for updating the user's roles
-            const url = `/manage-users/${userId}/update-roles`;
-            // Get the CSRF token from the meta tag for secure POST/PUT requests
+            modalMessages.innerHTML = ''; // Clear previous messages
+
+            const selectedRadio = modalRolesRadioButtonsContainer.querySelector('input[type="radio"]:checked');
+
+            if (!selectedRadio) {
+                modalMessages.innerHTML = '<div class="alert-danger">Please select a role to proceed.</div>';
+                return;
+            }
+
+            currentSelectedRoleName = selectedRadio.dataset.roleName; // Get the selected role's human-readable name
+
+            // Populate confirmation message
+            confirmationMessageArea.innerHTML = `You are about to change <strong>${currentSelectedUserName}'s</strong> role from <strong>${currentUserCurrentRoleName || 'N/A'}</strong> to <strong>${currentSelectedRoleName}</strong>.<br><br>Do you want to proceed?`;
+
+            showStep('confirmation'); // Move to the confirmation step
+        });
+    }
+
+    // Handle confirmation button click (perform actual AJAX update)
+    if (confirmUpdateRoleBtn) {
+        confirmUpdateRoleBtn.addEventListener('click', async function() {
+            const url = `/manage-users/${currentSelectedUserId}/update-roles`;
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            // Find the currently selected role radio button
             const selectedRadio = modalRolesRadioButtonsContainer.querySelector('input[type="radio"]:checked');
-            // Get its value (role ID) or null if none is selected
             const selectedRoleId = selectedRadio ? selectedRadio.value : null;
 
-            // Prepare the data to be sent in the request body
-            // 'roles' is expected to be an array of role IDs by the Laravel controller's syncRoles method
             const dataToSend = {
-                user_id: userId, // Include user_id, though it's also in the URL path
-                roles: selectedRoleId ? [parseInt(selectedRoleId)] : [] // Send an array, parse ID to integer
+                user_id: currentSelectedUserId,
+                roles: selectedRoleId ? [parseInt(selectedRoleId)] : []
             };
 
+            // Disable buttons to prevent multiple submissions
+            if (confirmUpdateRoleBtn) confirmUpdateRoleBtn.disabled = true;
+            if (backToSelectionBtn) backToSelectionBtn.disabled = true;
+            if (closeUpdateRoleModalBtn) closeUpdateRoleModalBtn.disabled = true; // Disable modal close during process
+
+            finalStatusMessageArea.innerHTML = '<div class="alert-info">Updating role... Please wait.</div>'; // Show loading message
+
             try {
-                // Send the AJAX request using the Fetch API
                 const response = await fetch(url, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json', // Indicate sending JSON
-                        'Accept': 'application/json',       // Expecting JSON response
-                        'X-CSRF-TOKEN': csrfToken          // Include CSRF token for security
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
                     },
-                    body: JSON.stringify(dataToSend) // Convert data to JSON string for the body
+                    body: JSON.stringify(dataToSend)
                 });
 
-                const responseData = await response.json(); // Parse the JSON response from the server
+                const responseData = await response.json();
 
-                if (response.ok) { // Check if the HTTP status code is in the 200-299 range (success)
-                    modalMessages.innerHTML = `<div class="alert-success">${responseData.message}</div>`; // Display success message in modal
+                if (response.ok) {
+                    finalStatusMessageArea.innerHTML = `<div class="alert-success">${responseData.message}</div>`;
 
                     // --- LOGIC FOR HANDLING ADMIN'S OWN ROLE CHANGE & REDIRECT ---
-                    // If the server response includes a 'redirect_url', it means the admin changed their own role
-                    // and has been logged out on the server-side.
                     if (responseData.redirect_url) {
                         console.log('Admin role updated. Redirecting to login page...');
-                        // Add a small delay to allow the user to read the success message
                         setTimeout(() => {
-                            // Redirect the browser to the specified URL (your sign-in page)
                             window.location.href = responseData.redirect_url;
-                        }, 1500);
-                        return; // Stop further execution of this JavaScript function
+                        }, 3000); // Give user 3 seconds to read success before redirect
+                        return;
                     }
 
                     // --- Logic for when another user's role was updated ---
-                    // If no 'redirect_url' is present, it means an admin updated another user's role.
-                    // In this case, update the specific table row's roles badge dynamically without a full page reload.
-                    const rolesTd = document.getElementById(`roles-${userId}`); // Find the table cell for roles
+                    const rolesTd = document.getElementById(`roles-${currentSelectedUserId}`);
                     if (rolesTd && responseData.newRolesHtml) {
-                        rolesTd.innerHTML = responseData.newRolesHtml; // Update its content with the new roles HTML
+                        rolesTd.innerHTML = responseData.newRolesHtml;
                     }
 
-                    console.log('Another user\'s role updated. Hiding modal...');
-                    // Hide the modal after a delay, allowing the user to see the update
+                    // Update Role Assigned At and By in the table if available in response
+                    const assignedAtTd = document.getElementById(`assigned-at-${currentSelectedUserId}`);
+                    const assignedByTd = document.getElementById(`assigned-by-${currentSelectedUserId}`);
+
+                    if (assignedAtTd && responseData.newRoleAssignedAt) {
+                        assignedAtTd.textContent = responseData.newRoleAssignedAt;
+                    }
+                    if (assignedByTd && responseData.newRoleAssignedBy) {
+                        assignedByTd.textContent = responseData.newRoleAssignedBy;
+                    }
+
+                    console.log('Another user\'s role updated. Modal will close and page reload shortly...');
                     setTimeout(() => {
                         hideModal();
-                    }, 1500);
+                        window.location.reload(); // Reload the entire page to ensure all data is fresh
+                    }, 3000); // Keep modal open for 3 seconds to show success
+                    console.log('here.')
 
-                } else { // Server responded with a non-2xx status (e.g., 422 Unprocessable Entity for validation, 500 Internal Server Error)
+                } else { // Server responded with a non-2xx status
                     let errorMessage = 'An error occurred. Please try again.';
-                    // If it's a validation error (HTTP 422), format and display specific error messages
                     if (response.status === 422) {
-                        const errors = responseData.errors; // Get validation errors object
+                        const errors = responseData.errors;
                         errorMessage = '<div class="alert-danger"><ul>';
                         for (const key in errors) {
-                            // Append each validation error message
                             errorMessage += `<li>${errors[key][0]}</li>`;
                         }
                         errorMessage += '</ul></div>';
                     } else if (responseData.message) {
-                        // If a general error message is provided by the server
                         errorMessage = `<div class="alert-danger">${responseData.message}</div>`;
                     }
-                    modalMessages.innerHTML = errorMessage; // Display the error message in the modal
-                    console.error('Server error response:', responseData); // Log the full error response
+                    finalStatusMessageArea.innerHTML = errorMessage;
+                    console.error('Server error response:', responseData);
+
+                    // Re-enable buttons if there's an error and no redirect
+                    if (confirmUpdateRoleBtn) confirmUpdateRoleBtn.disabled = false;
+                    if (backToSelectionBtn) backToSelectionBtn.disabled = false;
+                    if (closeUpdateRoleModalBtn) closeUpdateRoleModalBtn.disabled = false;
                 }
             } catch (error) { // Catch block for network errors or issues parsing the JSON response
-                console.error('AJAX Error:', error); // Log the technical error
-                modalMessages.innerHTML = `<div class="alert-danger">Network error or unexpected response: ${error.message}</div>`; // Display a user-friendly error
+                console.error('AJAX Error:', error);
+                finalStatusMessageArea.innerHTML = `<div class="alert-danger">Network error or unexpected response: ${error.message}</div>`;
+
+                // Re-enable buttons on network error
+                if (confirmUpdateRoleBtn) confirmUpdateRoleBtn.disabled = false;
+                if (backToSelectionBtn) backToSelectionBtn.disabled = false;
+                if (closeUpdateRoleModalBtn) closeUpdateRoleModalBtn.disabled = false;
             }
         });
     }
+
+    // Back button on confirmation step
+    if (backToSelectionBtn) {
+        backToSelectionBtn.addEventListener('click', function() {
+            showStep('initial');
+            // Clear messages and re-enable buttons when going back
+            modalMessages.innerHTML = '';
+            finalStatusMessageArea.innerHTML = '';
+            if (confirmUpdateRoleBtn) confirmUpdateRoleBtn.disabled = false;
+            if (backToSelectionBtn) backToSelectionBtn.disabled = false;
+            if (closeUpdateRoleModalBtn) closeUpdateRoleModalBtn.disabled = false;
+        });
+    }
+
+    // Existing cancel button behavior (if you keep it separate from 'Back')
+    // Make sure 'cancelUpdateRoleBtn' ID is on a button you intend to close the modal directly from initial step
+    // const initialCancelBtn = document.getElementById('cancelUpdateRoleBtn');
+    // if (initialCancelBtn) {
+    //     initialCancelBtn.addEventListener('click', hideModal);
+    // }
+
     /*
     |--------------------------------------------------------------------------
     | FOR MANAGING USER ROLES (MODAL) -- END
@@ -283,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newNoUsersRow = document.createElement('tr');
                 newNoUsersRow.id = 'no-users-row'; // Assign the ID for future reference
                 // Add the message spanning all 5 columns of the table
-                newNoUsersRow.innerHTML = '<td colspan="5" style="text-align: center;">No users found.</td>';
+                newNoUsersRow.innerHTML = '<td colspan="7" style="text-align: center;">No users found.</td>';
                 // Append this row to the table body
                 userTableBody.appendChild(newNoUsersRow);
                 // Hide the "Load More" button if no users are found for the search

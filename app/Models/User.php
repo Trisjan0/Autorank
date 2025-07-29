@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Permission\Traits\HasRoles;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -28,6 +29,8 @@ class User extends Authenticatable
         'instructor_number',
         'rank',
         'phone_number',
+        'role_assigned_at',
+        'role_assigned_by',
     ];
 
     /**
@@ -50,6 +53,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role_assigned_at' => 'datetime',
         ];
     }
 
@@ -81,5 +85,9 @@ class User extends Authenticatable
         }
 
         $this->syncRoles([$assignedRole]);
+
+        $this->role_assigned_at = Carbon::now();
+        $this->role_assigned_by = 'System';
+        $this->save();
     }
 }

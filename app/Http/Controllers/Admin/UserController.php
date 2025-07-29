@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon; // <--- ADD THIS LINE
 
 class UserController extends Controller
 {
@@ -97,7 +98,7 @@ class UserController extends Controller
         $loggedInUser = Auth::user();
         $assignedRoleIds = $request->input('roles', []);
 
-        // Get the ID of the specific role being assigned
+        // Get the ID of the specific role being assigned (assuming single role assignment based on radio buttons)
         $targetRoleId = $assignedRoleIds[0] ?? null;
 
         // Retrieve the Role model for the target role
@@ -121,7 +122,14 @@ class UserController extends Controller
 
         // --- START: HIERARCHY-BASED AUTHORIZATION ---
 
-        // A. General Authorization: Only 'admin' or 'super_admin' can update roles via this endpoint.
+        // A. Super Admin's role cannot be changed by anyone.
+        if ($user->hasRole('super_admin')) {
+            return response()->json([
+                'message' => 'Cannot change the role of a Super Admin.',
+            ], 403); // Forbidden
+        }
+
+        // B. General Authorization: Only 'admin' or 'super_admin' can update roles via this endpoint.
         // This acts as a first line of defense if non-authorized users somehow hit this endpoint.
         if (!$loggedInUser->hasAnyRole(['admin', 'super_admin'])) {
             return response()->json([
@@ -130,7 +138,7 @@ class UserController extends Controller
             ], 403); // Forbidden
         }
 
-        // B. Specific Hierarchy Restrictions
+        // C. Specific Hierarchy Restrictions
         // If the logged-in user is an 'admin' (but NOT a 'super_admin'):
         // They cannot assign the 'super_admin' role.
         if ($loggedInUser->hasRole('admin') && !$loggedInUser->hasRole('super_admin')) {
@@ -148,6 +156,18 @@ class UserController extends Controller
                     'message' => 'As an Admin, you can only assign "Admin" or "User" roles.',
                 ], 403); // Forbidden
             }
+            // An Admin cannot change another existing Admin's role
+            if ($loggedInUser->id !== $user->id && $user->hasRole('admin')) {
+                return response()->json([
+                    'message' => 'You cannot change the role of another Admin.',
+                ], 403); // Forbidden
+            }
+            // An Admin cannot demote themselves
+            if ($loggedInUser->id === $user->id && $targetRole->id !== $adminRole->id) {
+                return response()->json([
+                    'message' => 'You are an Admin. You cannot demote yourself. A Super Admin must change your role.',
+                ], 403); // Forbidden
+            }
         }
 
         // C. Super Admin Authorization: If we reach here and the user is 'super_admin',
@@ -155,7 +175,13 @@ class UserController extends Controller
 
         // --- END: HIERARCHY-BASED AUTHORIZATION ---
 
-        $user->syncRoles($assignedRoleIds); // Assign the selected role to the user
+        // Sync (update) the user's roles
+        $user->syncRoles($assignedRoleIds);
+
+        // Update role assignment timestamp and assignee
+        $user->role_assigned_at = Carbon::now();
+        $user->role_assigned_by = $loggedInUser->email;
+        $user->save(); // Save the user model to persist these changes
 
         // Clear Spatie's permission cache to ensure new roles are recognized immediately
         app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
@@ -167,34 +193,25 @@ class UserController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            if ($request->expectsJson()) {
-                // If AJAX request, return a JSON response with the redirect URL
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Your role has been updated. Please sign in again.',
-                    'redirect_url' => route('signin-page'), // This URL will be used by your JavaScript
-                ], 200);
-            } else {
-                // If it's a regular (non-AJAX) request, perform a server-side redirect
-                return redirect()->route('signin-page')->with('message', 'Your role has been updated. Please sign in again.');
-            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Your role has been updated. Please sign in again.',
+                'redirect_url' => route('signin-page'), // This URL will be used by your JavaScript
+            ], 200);
         }
 
         // If another user's role was updated (not the logged-in user)
-        if ($request->expectsJson()) {
-            $user->load('roles'); // Reload user with updated roles for the response
-            return response()->json([
-                'success' => true,
-                'message' => 'User\'s role updated successfully!',
-                // Pass new HTML for the roles badge to dynamically update the table on the frontend
-                'newRolesHtml' => view('partials._roles_badge', ['user' => $user])->render(),
-            ]);
-        }
-
-        // Fallback for non-AJAX requests (unlikely to be hit with current setup)
-        return redirect()->route('manage-users')->with('success', 'User\'s role updated successfully!');
+        // This is the common success path for managing other users
+        return response()->json([
+            'success' => true,
+            'message' => 'User\'s role updated successfully!',
+            // Pass new HTML for the roles badge to dynamically update the table on the frontend
+            'newRolesHtml' => view('partials._roles_badge', ['user' => $user->fresh()])->render(), // Use fresh() to ensure reloaded roles
+            // Pass new formatted values for the 'role_assigned_at' and 'role_assigned_by' columns
+            'newRoleAssignedAt' => $user->role_assigned_at->timezone('Asia/Manila')->format('F d, Y | h:iA'),
+            'newRoleAssignedBy' => $user->role_assigned_by,
+        ]);
     }
-
 
     /**
      * Display the specified user's profile.
