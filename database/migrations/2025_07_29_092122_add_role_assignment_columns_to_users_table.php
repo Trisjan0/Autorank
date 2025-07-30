@@ -24,7 +24,7 @@ return new class extends Migration
         // This will update ALL existing users with the default values.
         DB::table('users')->update([
             'role_assigned_at' => Carbon::now(),
-            'role_assigned_by' => 'System Default'
+            'role_assigned_by' => 'System'
         ]);
     }
 

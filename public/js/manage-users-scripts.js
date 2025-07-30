@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmationMessageArea = document.getElementById('confirmationMessageArea');
     const finalStatusMessageArea = document.getElementById('finalStatusMessageArea');
 
+    const pageRefreshDelay = 1250;
+
     let currentSelectedUserId = null;
     let currentSelectedUserName = null;
     let currentSelectedRoleName = null;
@@ -170,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.log('Admin role updated. Redirecting to login page...');
                         setTimeout(() => {
                             window.location.href = responseData.redirect_url;
-                        }, 3000); // Give user 3 seconds to read success before redirect
+                        }, pageRefreshDelay); // Give user enough time to read success before redirect
                         return;
                     }
 
@@ -195,8 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         hideModal();
                         window.location.reload(); // Reload the entire page to ensure all data is fresh
-                    }, 3000); // Keep modal open for 3 seconds to show success
-                    console.log('here.')
+                    }, pageRefreshDelay); // Keep modal open to show success
 
                 } else { // Server responded with a non-2xx status
                     let errorMessage = 'An error occurred. Please try again.';
@@ -242,14 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (closeUpdateRoleModalBtn) closeUpdateRoleModalBtn.disabled = false;
         });
     }
-
-    // Existing cancel button behavior (if you keep it separate from 'Back')
-    // Make sure 'cancelUpdateRoleBtn' ID is on a button you intend to close the modal directly from initial step
-    // const initialCancelBtn = document.getElementById('cancelUpdateRoleBtn');
-    // if (initialCancelBtn) {
-    //     initialCancelBtn.addEventListener('click', hideModal);
-    // }
-
     /*
     |--------------------------------------------------------------------------
     | FOR MANAGING USER ROLES (MODAL) -- END

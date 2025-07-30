@@ -93,8 +93,7 @@
                     </div>
                 </div>
                 <div class="role-modal-actions">
-                    <button type="button" id="cancelUpdateRoleBtn">Close</button>
-                    <button type="submit" id="proceedToConfirmationBtn">Next</button>
+                    <button type="submit" id="proceedToConfirmationBtn">Proceed</button>
                 </div>
             </form>
         </div>
@@ -103,7 +102,7 @@
         <div id="updateRoleConfirmationStep" style="display: none;">
             <div class="role-modal-content">
                 <div class="role-modal-content-header">
-                    <h1>Confirm Role Update for [ <span id="modal-user-name-confirm"></span> ]</h1>
+                    <h1>Confirm Role Update</h1>
                     <p id="confirmationMessageArea"></p>
                 </div>
                 <div class="role-modal-content-body">
@@ -112,7 +111,7 @@
             </div>
             <div class="role-modal-actions">
                 <button type="button" class="btn btn-info" id="backToSelectionBtn">Back</button>
-                <button type="button" class="btn btn-success" id="confirmUpdateRoleBtn">Confirm Update</button>
+                <button type="button" class="btn btn-success" id="confirmUpdateRoleBtn">Update</button>
             </div>
         </div>
     </div>

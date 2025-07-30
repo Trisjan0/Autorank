@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon; // <--- ADD THIS LINE
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -121,7 +121,6 @@ class UserController extends Controller
         $userRole = Role::where('name', 'user')->first();
 
         // --- START: HIERARCHY-BASED AUTHORIZATION ---
-
         // A. Super Admin's role cannot be changed by anyone.
         if ($user->hasRole('super_admin')) {
             return response()->json([

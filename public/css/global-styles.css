@@ -11,6 +11,12 @@
     --secondaryColor: hsl(0, 0%, 30%);
     --secondaryColorHover: hsl(0, 0%, 45%);
     --green: #4DFF62;
+    --alertGreenH: #1a5c1a;
+    --alertGreenL: #e0ffe0;
+    --alertRedH: #8c1a1a;
+    --alertRedL: #ffe0e0;
+    --alertDefaultH: #545454;
+    --alertDefaultL: #ffffff;
 
     --navbarMarginDesktopSize: 2.5vw; /* 2.5vw or 40px */
     --navbarMarginMobileSize: 5vw;
