@@ -1,9 +1,5 @@
 /* INITIAL STYLING -- -- -- */
-* {
-    margin: 0;
-    box-sizing: border-box;
-    font-family: var(--mainFont);
-    
+:root {
     --mainFont: Rubik;
 
     --primaryColor: hsl(0, 0%, 15%);
@@ -23,10 +19,22 @@
 
     --tableHeaderPadding: 20px;
     --tableDataPadding: 25px;
+
+    --pageBackgroundColor: white;
+    --textColor: #000000;
+}
+
+* {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: var(--mainFont);
 }
 
 body {
     position: relative;
+    background-color: var(--pageBackgroundColor);
+    color: var(--textColor);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {

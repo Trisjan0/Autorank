@@ -30,6 +30,7 @@
     </main>
 
     <script src="{{ asset('js/global-scripts.js') }}"></script>
+    <script src="{{ asset('js/system-settings-scripts.js') }}"></script>
 </body>
 
 </html>
