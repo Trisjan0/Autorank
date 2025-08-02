@@ -7,6 +7,19 @@
 <h1>change logo - admin</h1>
 <hr>
 <h1>change color scheme - admin</h1>
+@auth
+@can('manage users')
+<div class="color-picker-section">
+    <h2>Change color scheme</h2>
+    <div class="color-grid">
+        <div class="color-control">
+            <label for="primaryColor">Primary Color</label>
+            <input type="color" id="primaryColor">
+        </div>
+    </div>
+</div>
+@endcan
+@endauth
 <hr>
 <h1>customizable font - admin</h1>
 <hr>

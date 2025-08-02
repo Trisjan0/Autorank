@@ -7,7 +7,7 @@
     <div class="overall-completion-overview-container">
         <div class="research-publication-container">
             <div class="research-publication-top-part">
-                <h1>Research Publication</h1><i class="fa-solid fa-ellipsis-vertical" style="color: #00156a;"></i>
+                <h1>Research Publication</h1><i class="fa-solid fa-ellipsis-vertical"></i>
             </div>
             <div class="research-publication-bottom-part">
                 <div class="percentage-container">
@@ -21,7 +21,7 @@
         </div>
         <div class="event-participation-container">
             <div class="event-participation-top-part">
-                <h1>Event Participation</h1><i class="fa-solid fa-ellipsis-vertical" style="color: #00156a;"></i>
+                <h1>Event Participation</h1><i class="fa-solid fa-ellipsis-vertical"></i>
             </div>
             <div class="event-participation-bottom-part">
                 <div class="percentage-container">

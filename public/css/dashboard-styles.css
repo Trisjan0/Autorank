@@ -21,9 +21,13 @@
     text-align: left;
 }
 
+.overall-completion-overview-container h1, i {
+    color: var(--pageTextColor);
+}
+
 .research-publication-container {
-    background-color: white;
-    border: 5px solid var(--primaryColor);
+    background-color: var(--cardBackgroundColorL);
+    border: 5px solid var(--cardBorderColorL);
     width: 49%;
     height: 300px;
     display: flex;
@@ -52,11 +56,6 @@
     scale: 1.1;
 }
 
-.research-publication-top-part h1 {
-    font-family: var(--mainFont);
-    color: var(--primaryColor);
-}
-
 .research-publication-bottom-part {
     width: 100%;
     height: auto;
@@ -67,7 +66,7 @@
 }
 
 .event-participation-container {
-    background-color: white;
+    background-color: var(--cardBackgroundColorL);
     border: 5px solid var(--primaryColor);
     width: 49%;
     height: 300px;
@@ -97,11 +96,6 @@
     scale: 1.1;
 }
 
-.event-participation-top-part h1 {
-    font-family: var(--mainFont);
-    color: var(--primaryColor);
-}
-
 .event-participation-bottom-part {
     width: 100%;
     height: auto;
@@ -128,17 +122,17 @@
 }
 
 .research-publication-progress {
-    background-color: var(--green);
+    background-color: var(--progressBarFillColor);
     width: 90%; /* subject to change: how the percentage is applied when data is actually collected from a database */
 }
 
 .event-participation-progress {
-    background-color: var(--green);
+    background-color: var(--progressBarFillColor);
     width: 30%; /* subject to change: how the percentage is applied when data is actually collected from a database */
 }
 
 .bar {
-    background-color: lightgrey;
+    background-color: var(--progressBarEmptyColor);
     height: 30px;
     border-radius: 1.5px;
     flex: 1;
@@ -153,7 +147,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    color: white;
+    color: var(--pageTextColorOnBlack);
     padding: 20px;
 }
 
@@ -165,12 +159,7 @@
     justify-content: space-between;
 }
 
-.online-faculty-evaluation-top-part h1:nth-child(1){
-    font-family: var(--mainFont);
-}
-
 .online-faculty-evaluation-top-part h1:nth-child(2){
-    font-family: var(--mainFont);
     font-weight: 550;
 }
 
@@ -181,7 +170,11 @@
 
 .online-faculty-evaluation-bottom-part button {
     float: right;
-    background-color: var(--secondaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     border: none;
     border-radius: 5px;
     width: 95px;
@@ -192,7 +185,11 @@
 
 .online-faculty-evaluation-bottom-part button:hover {
     cursor: pointer;
-    background-color: var(--secondaryColorHover);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 25%)
+    );
 }
 
 /* LATEST RESEARCH TITLE STYLING -- -- -- */
@@ -209,11 +206,7 @@
     justify-content: start;
     align-items: center;
     padding-left: 20px;
-    color: white;
-}
-
-.latest-research-title-header h1 {
-    font-family: var(--mainFont);
+    color: var(--pageTextColorOnBlack);
 }
 
 .latest-research-title-table-container {
@@ -223,26 +216,26 @@
 }
 
 .latest-research-title-container table {
+    background-color: var(--tableBackgroundColor);
     width: 100%;
     height: auto;
     border-collapse: collapse;
 }
 
-.latest-research-title-container table th {
-    border: 2px solid var(--primaryColor);
-    background-color: var(--primaryColor);
-    color: white;
-    padding: 20px;
-}
-
 .latest-research-title-container table td {
-    border: 2px solid lightgray;
+    border: 2px solid var(--tableDataBorderColor);
+    border-top: var(--primaryColor);
+    color: var(--pageTextColor);
     padding: 30px;
     text-align: center;
 }
 
 .latest-research-title-container table td button {
-    background-color: var(--secondaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     border: none;
     border-radius: 5px;
     width: 95px;
@@ -253,5 +246,9 @@
 
 .latest-research-title-container table td button:hover {
     cursor: pointer;
-    background-color: var(--secondaryColorHover);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 25%)
+    );
 }

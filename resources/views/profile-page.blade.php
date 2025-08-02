@@ -29,7 +29,7 @@ Profile | Autorank
                         <h5 id="username">{{ $user->name }}</h5>
                     </div>
                     <div class="basic-info-action" title="Copy Instructor Name" onclick="copyInstructorsName();">
-                        <i class="fa-regular fa-copy" style="color: #000000;"></i>
+                        <i class="fa-regular fa-copy"></i>
                     </div>
                 </div>
                 <div class="basic-info-fields">
@@ -38,7 +38,7 @@ Profile | Autorank
                         <h5 id="instructorsNumber">{{ $user->instructor_number ?? 'TBC' }}</h5>
                     </div>
                     <div class="basic-info-action" title="Copy Instructor Number" onclick="copyInstructorNumber();">
-                        <i class="fa-regular fa-copy" style="color: #000000;"></i>
+                        <i class="fa-regular fa-copy"></i>
                     </div>
                 </div>
                 <div class="basic-info-fields">
@@ -69,7 +69,7 @@ Profile | Autorank
                     @if (!$isOwnProfile)
                     <div class="basic-info-action">
                         <a href="mailto:{{ $user->email }}" title="Email Instructor">
-                            <i class="fa-regular fa-envelope" style="color: #000000;"></i>
+                            <i class="fa-regular fa-envelope"></i>
                         </a>
                     </div>
                     @endif
@@ -82,13 +82,13 @@ Profile | Autorank
                     @if ($isOwnProfile)
                     <div class="basic-info-action">
                         <a id="openPhoneNumberModalBtn" href="#" title="Edit">
-                            <i class="fa-regular fa-pen-to-square" style="color: #000000;"></i>
+                            <i class="fa-regular fa-pen-to-square"></i>
                         </a>
                     </div>
                     @else
                     <div class="basic-info-action">
                         <a href="tel:{{ $user->phone_number }}" title="Call Instructor">
-                            <i class="fa-solid fa-phone-flip" style="color: #000000;"></i>
+                            <i class="fa-solid fa-phone-flip"></i>
                         </a>
                     </div>
                     @endif

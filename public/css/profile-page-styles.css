@@ -30,7 +30,7 @@
 .profile-img-container {
     width: 100%;
     height: auto;
-    border: .5px solid gray;
+    /* border: .5px solid gray; */
 }
 
 .profile-img-container img {
@@ -106,6 +106,7 @@
 }
 
 .basic-info-fields .basic-info-action i {
+    color: var(--pageTextColor);
     opacity: .3;
 }
 
@@ -133,10 +134,6 @@
     display: flex;
     flex-direction: column;
     gap: 35px;
-}
-
-.reclassification-progress-container h1 {
-    font-family: var(--mainFont);
 }
 
 .progress-bars-container {
@@ -174,22 +171,22 @@
 }
 
 .current-tenure-progress {
-    background-color: var(--green);
+    background-color: var(--progressBarFillColor);
     width: 50%; /* subject to change: how the percentage is applied when data is actually collected from a database */
 }
 
 .research-output-progress {
-    background-color: var(--green);
+    background-color: var(--progressBarFillColor);
     width: 30%; /* subject to change: how the percentage is applied when data is actually collected from a database */
 }
 
 .evaluation-progress {
-    background-color: var(--green);
+    background-color: var(--progressBarFillColor);
     width: 80%; /* subject to change: how the percentage is applied when data is actually collected from a database */
 }
 
 .bar {
-    background-color: lightgrey;
+    background-color: var(--progressBarEmptyColor);
     height: 30px;
     border-radius: 1.5px;
     flex: 1;
@@ -204,7 +201,11 @@
 }
 
 .apply-for-reranking-container button {
-    background-color: var(--secondaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     border: none;
     border-radius: 5px;
     width: 80%;
@@ -216,7 +217,11 @@
 
 .apply-for-reranking-container button:hover {
     cursor: pointer;
-    background-color: var(--secondaryColorHover);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 25%)
+    );
 }
 
 /* PERFORMANCE METRICS STYLING -- -- */
@@ -236,6 +241,7 @@
 }
 
 .performance-metrics-container table {
+    background-color: var(--tableBackgroundColor);
     width: 100%;
     height: auto;
     border-collapse: collapse;
@@ -247,10 +253,11 @@
     color: white;
     padding: 15px;
     font-weight: 600;
+    z-index: 100;
 }
 
 .performance-metrics-container table td {
-    border: 2px solid lightgray;
+    border: 2px solid var(--tableDataBorderColor);
     padding: 30px;
     text-align: center;
     font-weight: 600;
@@ -266,7 +273,11 @@
 }
 
 .performance-metrics-container table td button {
-    background-color: var(--secondaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     border: none;
     border-radius: 5px;
     width: 95px;
@@ -277,7 +288,11 @@
 
 .performance-metrics-container table td button:hover {
     cursor: pointer;
-    background-color: var(--secondaryColorHover);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 25%)
+    );
 }
 
 .performance-metrics-container .table-navigation a {
@@ -293,10 +308,6 @@
 
 .performance-metrics-container h1, h2 {
     font-family: var(--mainFont);
-}
-
-.performance-metrics-container h1 {
-    color: var(--primaryColor);
 }
 
 .performance-metrics-container .subtitle {
@@ -349,7 +360,7 @@ body.modal-open {
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.700);
-    color: white;
+    color: var(--pageTextColorOnBlack);
     z-index: 1000;
 }
 
@@ -484,7 +495,11 @@ body.modal-open {
 }
 
 .phone-num-modal-confirmation button {
-    background-color: var(--secondaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     border: none;
     width: 100%;
     height: 100%;
@@ -495,5 +510,9 @@ body.modal-open {
 
 .phone-num-modal-confirmation button:hover {
     cursor: pointer;
-    background-color: var(--secondaryColorHover);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 25%)
+    );
 }

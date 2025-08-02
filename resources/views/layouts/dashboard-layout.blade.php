@@ -15,6 +15,7 @@
 
     <!-- CSS Links -->
     <link rel="stylesheet" href="{{ asset('css/global-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/system-settings-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive-styles.css') }}">
 
@@ -30,6 +31,7 @@
     </main>
 
     <script src="{{ asset('js/global-scripts.js') }}"></script>
+    <script src="{{ asset('js/system-settings-scripts.js') }}"></script>
 </body>
 
 </html>

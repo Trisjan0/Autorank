@@ -9,9 +9,7 @@
 }
 
 .header h1 {
-    font-family: var(--mainFont);
     font-weight: 700;
-    color: var(--primaryColor);
 }
 
 /* DATA DISPLAY TABLE STYLING -- -- -- */
@@ -25,6 +23,7 @@
 }
 
 .performance-metric-container table {
+    background-color: var(--tableBackgroundColor);
     width: 90%;
     height: auto;
     border-collapse: collapse;
@@ -33,7 +32,7 @@
 }
 
 .performance-metric-container table th {
-    border: 2px solid var(--primaryColor);
+    border-bottom: 2px solid var(--primaryColor);
     background-color: var(--primaryColor);
     color: white;
     padding: var(--tableHeaderPadding);
@@ -41,7 +40,7 @@
 }
 
 .performance-metric-container table td {
-    border: 2px solid lightgray;
+    border: 2px solid var(--tableDataBorderColor);
     padding: var(--tableDataPadding);
     text-align: center;
     font-weight: 600;
@@ -62,7 +61,11 @@
 }
 
 .performance-metric-container table td button {
-    background-color: var(--secondaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     border: none;
     border-radius: 5px;
     width: auto;
@@ -76,7 +79,11 @@
 
 .performance-metric-container table td button:hover {
     cursor: pointer;
-    background-color: var(--secondaryColorHover);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 25%)
+    );
 }
 
 /* SEARCH BAR STYLING -- -- -- */
@@ -117,7 +124,6 @@
 .search-bar-container form button:hover {
     cursor: pointer;
     scale: 1.1;
-    color: var(--secondaryColor);
 }
 
 /* LOAD MORE STYLING -- -- -- */
@@ -134,7 +140,11 @@
 }
 
 .load-more-container button {
-    background-color: var(--primaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     border: none;
     color: white;
     border-radius: 5px;
@@ -145,5 +155,9 @@
 
 .load-more-container button:hover {
     cursor: pointer;
-    background-color: var(--primaryColorHover);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 25%)
+    );
 }

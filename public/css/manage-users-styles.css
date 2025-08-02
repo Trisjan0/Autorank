@@ -121,7 +121,11 @@ body.modal-open {
 }
 
 .role-modal-confirmation button {
-    background-color: var(--secondaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
@@ -151,22 +155,38 @@ body.modal-open {
 }
 
 .role-modal-actions button:nth-child(1) {
-    background-color: var(--secondaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     width: 20%;
 }
 
 .role-modal-actions button:nth-child(1):hover {
-    background-color: var(--secondaryColorHover);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 25%)
+    );
     width: 20%;
 }
 
 .role-modal-actions button:nth-child(2), #proceedToConfirmationBtn {
-    background-color: var(--secondaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     width: 35%;
 }
 
 .role-modal-actions button:nth-child(2):hover, #proceedToConfirmationBtn:hover {
-    background-color: var(--secondaryColorHover);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 25%)
+    );
     width: 35%;
 }
 

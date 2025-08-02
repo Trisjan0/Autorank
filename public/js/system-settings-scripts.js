@@ -11,10 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
         '--secondaryColorHover': 'hsl(0, 0%, 45%)',
         // Website Colors
         '--pageBackgroundColor': '#ffffff',
-        '--textColor': '#000000',
+        '--pageTextColor': '#000000',
     };
 
-    // References for default colors
+    // References for dark mode colors
     const darkModeColors = {
         // Base Colors
         '--primaryColor': 'hsl(0, 0%, 15%)',
@@ -22,8 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
         '--secondaryColor': 'hsl(0, 0%, 30%)',
         '--secondaryColorHover': 'hsl(0, 0%, 45%)',
         // Website Colors
-        '--pageBackgroundColor': '#0d1117',
-        '--textColor': '#ffffff',
+        '--pageBackgroundColor': '#191919',
+        '--pageTextColor': '#ffffff',
+        // Element Colors
     };
 
     /*

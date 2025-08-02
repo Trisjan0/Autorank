@@ -15,6 +15,7 @@
 
     <!-- CSS Links -->
     <link rel="stylesheet" href="{{ asset('css/global-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/system-settings-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/view-all-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/manage-users-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive-styles.css') }}">
@@ -31,6 +32,7 @@
     </main>
 
     <script src="{{ asset('js/global-scripts.js') }}"></script>
+    <script src="{{ asset('js/system-settings-scripts.js') }}"></script>
     <script src="{{ asset('js/manage-users-scripts.js') }}"></script>
 </body>
 
