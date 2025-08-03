@@ -67,7 +67,7 @@
 
 .event-participation-container {
     background-color: var(--cardBackgroundColorL);
-    border: 5px solid var(--primaryColor);
+    border: 5px solid var(--cardBorderColorL);
     width: 49%;
     height: 300px;
     display: flex;

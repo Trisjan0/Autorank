@@ -14,6 +14,15 @@ body.dark-mode {
 }
 
 /* SETTING CONTAINER STYLING -- -- -- */
+.color-picker-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+/* SETTING CONTAINER STYLING -- -- -- */
 .settingContainer {
     display: flex;
     justify-content: center;

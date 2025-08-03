@@ -3,7 +3,7 @@
         <div class="navbar-left-side">
             <i id="menu-toggle-button" class="fa-solid fa-bars" style="color: #ffffff;"></i>
             <div class="navbar-logo-container">
-                <img src="{{ asset('images/autorank_logo.png') }}" alt="website logo">
+                <img src="https://dhvsu.edu.ph/images/about_pampanga_state_u/pampanga-state-u-logo-small.png" alt="website logo">
                 <h1>AutoRank</h1>
             </div>
         </div>
