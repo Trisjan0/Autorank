@@ -365,7 +365,10 @@ body.modal-open {
 }
 
 .phone-num-modal {
-    background-color: var(--primaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    var(--base-lightness-primary));
     width: 425px;
     height: 388px;
     display: flex;

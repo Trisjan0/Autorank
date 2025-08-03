@@ -140,7 +140,17 @@
 
 /* FACULTY EVALUATION STYLING -- -- -- */
 .online-faculty-evaluation-container {
-    background-color: var(--primaryColor);
+    background-image: linear-gradient(
+        to right, 
+        var(--primaryColor),
+        rgba(0, 0, 0, 0.7)
+    ), 
+    url('https://tiebreakertimes.com.ph/wp-content/uploads/2021/08/FILE-PHOTO-Don-Honorio-Ventura-State-University-1024x576.jpg');
+    background-color: var(--primaryColor); /* fallback color */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+
     width: 90%;
     height: 300px;
     display: flex;

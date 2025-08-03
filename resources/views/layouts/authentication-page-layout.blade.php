@@ -15,6 +15,7 @@
 
     <!-- CSS Links -->
     <link rel="stylesheet" href="{{ asset('css/global-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/system-settings-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/authentication-page-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive-styles.css') }}">
 
@@ -28,6 +29,8 @@
     <main>
         @yield('content')
     </main>
+
+    <script src="{{ asset('js/system-settings-scripts.js') }}"></script>
 </body>
 
 </html>

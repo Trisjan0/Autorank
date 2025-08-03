@@ -89,7 +89,10 @@ nav {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: var(--primaryColor);
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    var(--base-lightness-primary));
     width: 380px;
     max-width: 90%;
     height: auto;
