@@ -12,103 +12,44 @@
             <tr>
                 <th>ID Number</th>
                 <th>Name</th>
-                <th>Ranking</th>
-                <th>Requirements</th>
+                <th>Current Rank</th>
+                <th>Aimed Rank</th>
+                <th>Estimated Score</th>
                 <th>Evaluation</th>
                 <th>Date of Application</th>
                 <th>Action</th>
             </tr>
+            @foreach($applications as $application)
             <tr>
-                <td>12345</td>
-                <td>Consuelo Reyes</td>
-                <td>Instructor I</td>
-                <td style="color: rgb(31, 212, 31)">Complete</td>
-                <td style="color: rgb(31, 212, 31)">Passed</td>
-                <td>December 15, 2024</td>
+                <td>{{ $application->id }}</td>
+                <td>{{ $application->instructor_name }}</td>
+                <td>{{ $application->current_rank }}</td>
+                <td>{{ $application->aimed_rank }}</td>
+                <td>{{ $application->estimated_score }}</td>
+                <td>{{ $application->evaluation }}</td>
+                <td>{{ $application->created_at }}</td>
                 <td>
                     <a href="{{ route('review-documents-page') }}">
-                        <button>Revise</button>
+                        <button>Review</button>
                     </a>
                 </td>
             </tr>
-            <tr>
-                <td>67890</td>
-                <td>Roberto Reyes</td>
-                <td>Instructor III</td>
-                <td style="color: rgb(31, 212, 31)">Complete</td>
-                <td style="color: rgb(31, 212, 31)">Passed</td>
-                <td>January 15, 2025</td>
-                <td>
-                    <a href="{{ route('review-documents-page') }}">
-                        <button>Revise</button>
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td>24681</td>
-                <td>Josefina Santos</td>
-                <td>Instructor I</td>
-                <td style="color: rgb(31, 212, 31)">Complete</td>
-                <td style="color: rgb(31, 212, 31)">Passed</td>
-                <td>February 9, 2025</td>
-                <td>
-                    <a href="{{ route('review-documents-page') }}">
-                        <button>Revise</button>
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td>36912</td>
-                <td>Salvador Santos</td>
-                <td>Instructor I</td>
-                <td style="color: rgb(31, 212, 31)">Complete</td>
-                <td style="color: rgb(31, 212, 31)">Passed</td>
-                <td>February 16, 2025</td>
-                <td>
-                    <a href="{{ route('review-documents-page') }}">
-                        <button>Revise</button>
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td>48121</td>
-                <td>Teresita Garcia</td>
-                <td>Instructor I</td>
-                <td style="color: rgb(237, 150, 69)">90%</td>
-                <td style="color: rgb(31, 212, 31)">Passed</td>
-                <td>March 17, 2025</td>
-                <td>
-                    <a href="{{ route('review-documents-page') }}">
-                        <button>Revise</button>
-                    </a>
-                </td>
-            </tr>
-            <tr>
+            @endforeach
+
+            <!-- <tr>
                 <td>51015</td>
                 <td>Eduardo Garcia</td>
                 <td>Instructor II</td>
+                <td>Instructor II</td>
                 <td style="color: rgb(31, 212, 31)">Complete</td>
-                <td style="color: rgb(31, 212, 31)">Passed</td>
+                <td style="color: rgb(31, 212, 31)">87.6</td>
                 <td>April 2, 2025</td>
                 <td>
                     <a href="{{ route('review-documents-page') }}">
-                        <button>Revise</button>
+                        <button>Review</button>
                     </a>
                 </td>
-            </tr>
-            <tr>
-                <td>61261</td>
-                <td>Magdalena Cruz</td>
-                <td>Instructor I</td>
-                <td style="color: rgb(237, 150, 69)">90%</td>
-                <td style="color: rgb(31, 212, 31)">Passed</td>
-                <td>April 15, 2025</td>
-                <td>
-                    <a href="{{ route('review-documents-page') }}">
-                        <button>Revise</button>
-                    </a>
-                </td>
-            </tr>
+            </tr> -->
         </tbody>
     </table>
 </div>

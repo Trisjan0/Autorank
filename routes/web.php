@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SystemSettingsController;
@@ -72,6 +73,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role_or_permission:admin|access applications page'])->group(function () {
         // Route for the Review Applications Page
         Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');
+
+        Route::get('/applications', [ApplicationController::class, 'index'])->name('application-page');
 
         // Route for the Review Documents Page
         Route::get('/review-documents', [PageController::class, 'showReviewDocumentsPage'])->name('review-documents-page');
