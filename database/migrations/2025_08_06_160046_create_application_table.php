@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('application_table', function (Blueprint $table) {
             $table->id();
+            $table->string('instructor_name');
+            $table->string('current_rank');
+            $table->string('aimed_rank');
+            $table->float('estimated_score')->nullable();
+            $table->string('evaluation')->nullable();
             $table->timestamps();
         });
     }
