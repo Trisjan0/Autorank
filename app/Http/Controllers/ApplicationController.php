@@ -12,6 +12,6 @@ class ApplicationController extends Controller
         // Fetch all applications from the database
         $applications = ApplicationModel::all();
 
-        return view('application-page', compact('applications'));
+        return view('admin.application-page', compact('applications'));
     }
 }

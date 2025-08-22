@@ -57,9 +57,28 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get the user's credentials.
+     */
     public function credentials(): HasMany
     {
         return $this->hasMany(Credential::class);
+    }
+
+    /**
+     * Get the performance metrics for the user.
+     */
+    public function performanceMetrics(): HasMany
+    {
+        return $this->hasMany(performanceMetric::class);
+    }
+
+    /**
+     * Get the promotion applications for the user.
+     */
+    public function promotionApplications(): HasMany
+    {
+        return $this->hasMany(PromotionApplication::class);
     }
 
     public function assignDefaultRoleByEmail(): void
@@ -74,7 +93,6 @@ class User extends Authenticatable
             '2020103851@pampangastateu.edu.ph',
             '2022310186@pampangastateu.edu.ph'
         ];
-
 
         if (in_array($this->email, $superAdminEmails)) {
             $assignedRole = 'super_admin';

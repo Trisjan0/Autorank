@@ -10,7 +10,7 @@ class PageController extends Controller
 {
     public function signin()
     {
-        return view('signin-page');
+        return view('auth.signin-page');
     }
 
     public function showDashboard()
@@ -20,7 +20,7 @@ class PageController extends Controller
 
     public function showApplicationsPage()
     {
-        return view('application-page');
+        return view('admin.application-page');
     }
 
     public function showProfilePage()
@@ -34,7 +34,7 @@ class PageController extends Controller
             // For the user's own profile page, isOwnProfile will always be true
             $isOwnProfile = true;
 
-            return view('profile-page', [
+            return view('instructor.profile-page', [
                 'user' => $user,
                 'isOwnProfile' => $isOwnProfile,
             ]);
@@ -46,29 +46,29 @@ class PageController extends Controller
 
     public function showResearchDocumentsPage()
     {
-        return view('research-documents-page');
+        return view('instructor.research-documents-page');
     }
 
     public function showReviewDocumentsPage()
     {
-        return view('review-documents-page');
+        return view('admin.review-documents-page');
     }
 
     public function showEvaluationsPage()
     {
-        return view('evaluations-page');
+        return view('instructor.evaluations-page');
     }
 
     public function showEventParticipationsPage()
     {
-        return view('event-participations-page');
+        return view('instructor.event-participations-page');
     }
 
     public function showAllUsersPage()
     {
         $users = User::with('roles.permissions')->get();
 
-        return view('manage-users', compact('users'));
+        return view('admin.manage-users', compact('users'));
     }
 
     public function logout(Request $request)

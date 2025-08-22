@@ -67,7 +67,7 @@ class UserController extends Controller
             $totalUsersMatchingSearch = $query->count(); // Count total matching users for initial check
             $initialHasMore = ($perPage < $totalUsersMatchingSearch);
 
-            return view('manage-users', compact('users', 'allRoles', 'initialHasMore', 'perPage')); // Pass perPage as initialOffset
+            return view('admin.manage-users', compact('users', 'allRoles', 'initialHasMore', 'perPage'));
         }
     }
 
@@ -170,7 +170,7 @@ class UserController extends Controller
         }
 
         // C. Super Admin Authorization: If we reach here and the user is 'super_admin',
-        //    they are implicitly allowed to assign any valid role. No further checks needed.
+        //     they are implicitly allowed to assign any valid role. No further checks needed.
 
         // --- END: HIERARCHY-BASED AUTHORIZATION ---
 
@@ -229,7 +229,7 @@ class UserController extends Controller
 
         // Return the existing 'profile-page' view, passing both the target user
         // and the flag indicating if it's the authenticated user's own profile.
-        return view('profile-page', [
+        return view('instructor.profile-page', [
             'user' => $user, // The user object for the profile being displayed
             'isOwnProfile' => $isOwnProfile, // True if the logged-in user is viewing their own profile
         ]);

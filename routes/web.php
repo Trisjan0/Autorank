@@ -5,8 +5,10 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SystemSettingsController;
-use App\Http\Controllers\Admin\UserController; // Ensure this is correctly aliased
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\SocialiteLoginController;
+use App\Http\Controllers\AhpController;
+use App\Http\Controllers\InstructorMetricsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,6 +39,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Route for the Profile Page
     Route::get('/profile', [PageController::class, 'showProfilePage'])->name('profile-page');
+
+    // Routes for Instructor Metrics
+    Route::get('/my-metrics', [InstructorMetricsController::class, 'showForm'])->name('instructor.metrics.form');
+    Route::post('/my-metrics', [InstructorMetricsController::class, 'store'])->name('instructor.metrics.store');
 
     // Route for the Research Documents Page
     Route::get('/research-documents', [PageController::class, 'showResearchDocumentsPage'])->name('research-documents-page');
@@ -87,5 +93,9 @@ Route::middleware(['auth'])->group(function () {
 
         // Route for viewing a specific user's profile
         Route::get('/users/{user}', [UserController::class, 'show'])->name('user.profile');
+
+        // Routes for AHP Weights
+        Route::get('/ahp/weights', [AhpController::class, 'showWeightsForm'])->name('ahp.weights.form');
+        Route::post('/ahp/weights', [AhpController::class, 'updateWeights'])->name('ahp.weights.update');
     });
 });
