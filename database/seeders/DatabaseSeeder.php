@@ -17,6 +17,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndPermissionsSeeder::class,
             RolesTableSeeder::class,
+            EvaluationSeeder::class,
+            MaterialSeeder::class,
         ]);
+
+        // comment to unseed? the users
+        User::factory(10)->create();
     }
 }
