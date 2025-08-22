@@ -65,6 +65,17 @@ class User extends Authenticatable
         return $this->hasMany(Credential::class);
     }
 
+    // This part tells the user model about its relationships with evaluations and materials
+    public function evaluations()
+    {
+        return $this->hasMany(Evaluation::class);
+    }
+
+    public function materials()
+    {
+        return $this->hasMany(Material::class);
+    }
+
     /**
      * Get the performance metrics for the user.
      */

@@ -53,11 +53,29 @@ class PageController extends Controller
     {
         return view('admin.review-documents-page');
     }
-
+    //Controller used for showing evaluations page
     public function showEvaluationsPage()
     {
-        return view('instructor.evaluations-page');
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('signin-page')->with('error', 'You must be logged in to view evaluations.');
+        }
+
+        // Ensure $user is an Eloquent model instance
+        $userModel = User::find($user->id);
+        if ($userModel) {
+            $userModel->load('evaluations', 'materials');
+            return view('instructor.evaluations-page', [
+                'evaluations' => $userModel->evaluations()->latest()->get(),
+                'materials' => $userModel->materials()->latest()->get()
+            ]);
+        } else {
+            return redirect()->route('signin-page')->with('error', 'User not found.');
+        }
     }
+
+
+
 
     public function showEventParticipationsPage()
     {
