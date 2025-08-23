@@ -88,7 +88,7 @@ class PageController extends Controller
         }
 
         return view('instructor.research-documents-page', [
-            'research_Documents' => $query->get()
+            'research_documents' => $query->get()
         ]);
     }
 
