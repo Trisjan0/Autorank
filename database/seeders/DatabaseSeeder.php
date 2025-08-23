@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             EvaluationSeeder::class,
             MaterialSeeder::class,
+            ResearchDocumentSeeder::class,
         ]);
         $this->command->info('Database seeded successfully.');
     }

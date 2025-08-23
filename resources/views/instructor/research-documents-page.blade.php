@@ -4,73 +4,58 @@
 
 @section('content')
 <div class="header">
-    <h1>Your Research Documents</h1>
+    <h1>KRA II Research Output</h1>
 </div>
 <div class="performance-metric-container">
     <table>
         <tbody>
             <tr>
-                <th>ID Number</th>
+                <th>ID</th>
                 <th>Title</th>
-                <th>Publication Date</th>
-                <th>Status</th>
+                <th>Type</th>
+                <th>Category</th>
                 <th>
+                    {{-- The Search Bar Form --}}
                     <div class="search-bar-container">
-                        <form action="">
-                            <input type="text" placeholder="Search..">
+                        <form action="{{ route('research-documents-page') }}" method="GET">
+                            <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
                             <button type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i></button>
                         </form>
                     </div>
                 </th>
-            </tr>
+                </thead>
+        <tbody>
+            @forelse($research_documents as $document)
             <tr>
-                <td>72</td>
-                <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                <td>N/A</td>
-                <td>Ongoing</td>
-                <td><button>Upload</button></td>
+                <td>{{ $document->id }}</td>
+                <td>{{ $document->title }}</td>
+                <td>{{ $document->type }}</td>
+                <td>{{ $document->category }}</td>
+                <td>
+                    <div>
+                        @if($document->link)
+                        <a href="{{ $document->link }}" target="_blank"><button>View</button></a>
+                        <button>Edit</button>
+                        @else
+                        <button>Upload</button>
+                        @endif
+                    </div>
+                </td>
             </tr>
+            @empty
             <tr>
-                <td>71</td>
-                <td>Sed do eiusmod tempor incididunt ut labore</td>
-                <td>July 12, 2024</td>
-                <td>Done</td>
-                <td><button>View</button></td>
+                <td colspan="5" style="text-align: center;">No research documents found.</td>
             </tr>
+            @endforelse
+            {{-- Static row for uploading a new document --}}
             <tr>
-                <td>70</td>
-                <td>Eiusmod do tempor incididunt ut labore</td>
-                <td>June 2, 2024</td>
-                <td>Done</td>
-                <td><button>View</button></td>
-            </tr>
-            <tr>
-                <td>69</td>
-                <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                <td>February 16, 2024</td>
-                <td>Done</td>
-                <td><button>View</button></td>
-            </tr>
-            <tr>
-                <td>68</td>
-                <td>Sed do eiusmod tempor incididunt ut labore</td>
-                <td>March 17, 2024</td>
-                <td>Done</td>
-                <td><button>View</button></td>
-            </tr>
-            <tr>
-                <td>67</td>
-                <td>Eiusmod do tempor incididunt ut labore</td>
-                <td>April 2, 2024</td>
-                <td>Done</td>
-                <td><button>View</button></td>
-            </tr>
-            <tr>
-                <td>66</td>
-                <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                <td>April 15, 2024</td>
-                <td>Done</td>
-                <td><button>View</button></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>
+                    <button>Upload New</button>
+                </td>
             </tr>
         </tbody>
     </table>

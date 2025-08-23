@@ -43,11 +43,7 @@ class PageController extends Controller
             return redirect()->route('signin-page')->with('error', 'You must be logged in to view your profile.');
         }
     }
-
-    public function showResearchDocumentsPage()
-    {
-        return view('instructor.research-documents-page');
-    }
+    //Controller used for showing review documents page
 
     public function showReviewDocumentsPage()
     {
@@ -72,6 +68,28 @@ class PageController extends Controller
         } else {
             return redirect()->route('signin-page')->with('error', 'User not found.');
         }
+    }
+
+    public function showResearchDocumentsPage(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('signin-page')->with('error', 'You must be logged in to view evaluations.');
+        }
+        $query = $user->researchDocuments()->latest();
+
+        if ($request->has('search') && $request->search != '') {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('type', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('category', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        return view('instructor.research-documents-page', [
+            'research_Documents' => $query->get()
+        ]);
     }
 
 

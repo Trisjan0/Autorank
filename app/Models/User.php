@@ -74,6 +74,7 @@ class User extends Authenticatable
         return $this->hasMany(Evaluation::class);
     }
 
+
     /**
      * Get the materials for the user.
      */
@@ -86,7 +87,7 @@ class User extends Authenticatable
      */
     public function performanceMetrics(): HasMany
     {
-        return $this->hasMany(performanceMetric::class);
+        return $this->hasMany(PerformanceMetric::class);
     }
 
     /**
@@ -95,6 +96,14 @@ class User extends Authenticatable
     public function promotionApplications(): HasMany
     {
         return $this->hasMany(PromotionApplication::class);
+    }
+
+    /**
+     * Get the research documents for the user.
+     */
+    public function researchDocuments()
+    {
+        return $this->hasMany(ResearchDocument::class);
     }
 
     public function assignDefaultRoleByEmail(): void
