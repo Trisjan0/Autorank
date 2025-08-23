@@ -17,11 +17,18 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndPermissionsSeeder::class,
             RolesTableSeeder::class,
-            EvaluationSeeder::class,
-            MaterialSeeder::class,
         ]);
 
         // comment to unseed? the users
         User::factory(10)->create();
+        // If there are no users, the dependent seeders will be skipped
+        $this->command->info('Users seeded successfully.');
+
+        // calling the seeders dependent on users
+        $this->call([
+            EvaluationSeeder::class,
+            MaterialSeeder::class,
+        ]);
+        $this->command->info('Database seeded successfully.');
     }
 }

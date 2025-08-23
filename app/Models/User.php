@@ -66,16 +66,21 @@ class User extends Authenticatable
     }
 
     // This part tells the user model about its relationships with evaluations and materials
+    /**
+     * Get the evaluations for the user.
+     */
     public function evaluations()
     {
         return $this->hasMany(Evaluation::class);
     }
 
+    /**
+     * Get the materials for the user.
+     */
     public function materials()
     {
         return $this->hasMany(Material::class);
     }
-
     /**
      * Get the performance metrics for the user.
      */
