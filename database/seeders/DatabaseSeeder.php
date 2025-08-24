@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // comment to unseed? the users
-        User::factory(10)->create();
+        // User::factory(5)->create();
         // If there are no users, the dependent seeders will be skipped
         $this->command->info('Users seeded successfully.');
 

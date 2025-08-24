@@ -24,7 +24,7 @@
                     </div>
                 </th>
             </tr>
-            @forelse ($evaluations as $evaluation)
+            @foreach ($evaluations as $evaluation)
             <tr>
                 <td>{{ $evaluation->id  }}</td>
                 <td>{{ $evaluation->title  }}</td>
@@ -38,11 +38,11 @@
                     </div>
                 </td>
             </tr>
-            @empty
+
             <tr>
                 <td colspan="6" style="text-align: center;">No evaluations found.</td>
             </tr>
-            @endforelse
+            @endforeach
             <tr>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -82,7 +82,7 @@
                     </div>
                 </th>
             </tr>
-            @forelse ($materials as $material)
+            @foreach ($materials as $material)
             <tr>
                 <td>{{ $material->id  }}</td>
                 <td>{{ $material->title  }}</td>
@@ -96,11 +96,11 @@
                     </div>
                 </td>
             </tr>
-            @empty
+
             <tr>
                 <td colspan="6" style="text-align: center;">No instructional materials uploaded.</td>
             </tr>
-            @endforelse
+            @endforeach
             <tr>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>

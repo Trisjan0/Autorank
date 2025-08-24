@@ -50,8 +50,13 @@ Route::middleware(['auth'])->group(function () {
     // Route for the Evaluations Page
     Route::get('/evaluations', [PageController::class, 'showEvaluationsPage'])->name('evaluations-page');
 
-    // Route for the Event Participations Page
-    Route::get('/event-participations', [PageController::class, 'showEventParticipationsPage'])->name('event-participations-page');
+    // route for the Extension Services Page
+
+    Route::get('/extension-services', [PageController::class, 'showExtensionServicesPage'])->name('extension-services-page');
+
+    // route for the Professional Developments Page
+
+    Route::get('/professional-developments', [PageController::class, 'showProfessionalDevelopmentsPage'])->name('professional-developments-page');
 
     // Route for the System Settings
     Route::get('/settings', [SystemSettingsController::class, 'showSystemSettings'])->name('system-settings');

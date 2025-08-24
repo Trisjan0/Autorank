@@ -93,12 +93,22 @@
             </div>
         </a>
 
-        <a href="{{ route('event-participations-page') }}">
+        <a href="{{ route('extension-services-page') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-calendar-day" style="color: #ffffff;"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>Event Participations</p>
+                <p>Extension Services</p>
+            </div>
+        </a>
+
+        {{-- NEWLY ADDED LINK --}}
+        <a href="{{ route('professional-developments-page') }}">
+            <div class="hidden-menu-icon">
+                <i class="fa-solid fa-person-chalkboard" style="color: #ffffff;"></i>
+            </div>
+            <div class="hidden-menu-title">
+                <p>Professional Development</p>
             </div>
         </a>
 

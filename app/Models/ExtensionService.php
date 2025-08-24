@@ -2,23 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Material extends Model
+class ExtensionService extends Model
 {
     use HasFactory;
-    protected $table = 'Materials';
+
     protected $fillable = [
-        'id',
+        'user_id',
         'title',
-        'Type',
-        'Category',
+        'service_type',
+        'date',
         'link',
-        'created_at',
     ];
-
-
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+
 
 /**
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Credential[] $credentials
@@ -80,6 +79,7 @@ class PageController extends Controller
             return redirect()->route('signin-page')->with('error', 'User not found.');
         }
     }
+
     public function showResearchDocumentsPage(Request $request)
     {
         $user = Auth::user();
@@ -91,10 +91,10 @@ class PageController extends Controller
         // Get the search term from the request
         $searchTerm = $request->input('search');
 
-        // Start the query and conditionally apply the search filter
-        $research_documents = $user->research()
+        // Starting the query and conditionally apply the search filter
+        $research_documents = $user->researchDocuments()
             ->when($searchTerm, function ($query, $searchTerm) {
-                // This entire function only runs if $searchTerm is not null or empty
+                // This entire function only runs if $searchTerm has something in it
                 return $query->where(function ($subQuery) use ($searchTerm) {
                     $subQuery->where('title', 'like', '%' . $searchTerm . '%')
                         ->orWhere('type', 'like', '%' . $searchTerm . '%')
@@ -110,8 +110,51 @@ class PageController extends Controller
         ]);
     }
 
+    public function showExtensionServicesPage(Request $request)
+    {
+        $user = Auth::user();
 
+        if (!$user) {
+            return redirect()->route('signin-page')->with('error', 'You must be logged in to view this page.');
+        }
 
+        $searchTerm = $request->input('search');
+
+        $extension_services = $user->extensionServices()
+            ->when($searchTerm, function ($query, $searchTerm) {
+                return $query->where('title', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('service_type', 'like', '%' . $searchTerm . '%');
+            })
+            ->latest()
+            ->get();
+
+        return view('instructor.extension-services-page', [
+            'extension_services' => $extension_services
+        ]);
+    }
+
+    public function showProfessionalDevelopmentsPage(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('signin-page')->with('error', 'You must be logged in to view this page.');
+        }
+
+        $searchTerm = $request->input('search');
+
+        $professional_developments = $user->professionalDevelopments() // Corrected relationship name
+            ->when($searchTerm, function ($query, $searchTerm) {
+                return $query->where('title', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('category', 'like', '%' . $searchTerm . '%');
+            })
+            ->latest()
+            ->get();
+
+        return view('instructor.professional-developments-page', [
+            'professional_developments' => $professional_developments
+        ]);
+    }
 
     public function showEventParticipationsPage()
     {

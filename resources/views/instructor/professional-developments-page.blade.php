@@ -1,10 +1,10 @@
 @extends('layouts.view-all-layout')
 
-@section('title', 'Research Documents | Autorank')
+@section('title', 'Professional Development | Autorank')
 
 @section('content')
 <div class="header">
-    <h1>KRA II Research Output</h1>
+    <h1>KRA IV Professional Development</h1>
 </div>
 <div class="performance-metric-container">
     <table>
@@ -12,39 +12,35 @@
             <tr>
                 <th>ID</th>
                 <th>Title</th>
-                <th>Type</th>
                 <th>Category</th>
+                <th>Date</th>
                 <th>
                     {{-- The Search Bar Form --}}
                     <div class="search-bar-container">
-                        <form action="{{ route('research-documents-page') }}" method="GET">
+                        <form action="{{ route('professional-developments-page') }}" method="GET">
                             <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
                             <button type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i></button>
                         </form>
                     </div>
                 </th>
+            </tr>
         </thead>
         <tbody>
-            @forelse($research_documents as $document)
+            @forelse($professional_developments as $development)
             <tr>
-                <td>{{ $document->id }}</td>
-                <td>{{ $document->title }}</td>
-                <td>{{ $document->type }}</td>
-                <td>{{ $document->category }}</td>
+                <td>{{ $development->id }}</td>
+                <td>{{ $development->title }}</td>
+                <td>{{ $development->category }}</td>
+                <td>{{ $development->date }}</td>
                 <td>
                     <div>
-                        @if($document->link)
-                        <a href="{{ $document->link }}" target="_blank"><button>View</button></a>
                         <button>Edit</button>
-                        @else
-                        <button>Upload</button>
-                        @endif
                     </div>
                 </td>
             </tr>
             @empty
             <tr>
-                <td colspan="5" style="text-align: center;">No research documents found.</td>
+                <td colspan="5" style="text-align: center;">No professional development records found.</td>
             </tr>
             @endforelse
             {{-- Static row for uploading a new document --}}
@@ -64,4 +60,10 @@
     <button onclick="goBack()">Back</button>
     <button>Load More +</button>
 </div>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 @endsection

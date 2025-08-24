@@ -1,10 +1,10 @@
 @extends('layouts.view-all-layout')
 
-@section('title', 'Research Documents | Autorank')
+@section('title', 'Extension Services | Autorank')
 
 @section('content')
 <div class="header">
-    <h1>KRA II Research Output</h1>
+    <h1>KRA III Extension Services</h1>
 </div>
 <div class="performance-metric-container">
     <table>
@@ -12,43 +12,48 @@
             <tr>
                 <th>ID</th>
                 <th>Title</th>
-                <th>Type</th>
-                <th>Category</th>
+                <th>Service Type</th>
+                <th>Date</th>
+                <th>Link</th>
                 <th>
                     {{-- The Search Bar Form --}}
                     <div class="search-bar-container">
-                        <form action="{{ route('research-documents-page') }}" method="GET">
+                        <form action="{{ route('extension-services-page') }}" method="GET">
                             <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
                             <button type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i></button>
                         </form>
                     </div>
                 </th>
+            </tr>
         </thead>
         <tbody>
-            @forelse($research_documents as $document)
+            @forelse($extension_services as $service)
             <tr>
-                <td>{{ $document->id }}</td>
-                <td>{{ $document->title }}</td>
-                <td>{{ $document->type }}</td>
-                <td>{{ $document->category }}</td>
+                <td>{{ $service->id }}</td>
+                <td>{{ $service->title }}</td>
+                <td>{{ $service->service_type }}</td>
+                <td>{{ $service->date }}</td>
+                <td>
+                    @if($service->link)
+                    <a href="{{ $service->link }}" target="_blank"><button>View</button></a>
+                    @else
+                    <span>No Link</span>
+                    @endif
+                </td>
                 <td>
                     <div>
-                        @if($document->link)
-                        <a href="{{ $document->link }}" target="_blank"><button>View</button></a>
                         <button>Edit</button>
-                        @else
-                        <button>Upload</button>
-                        @endif
                     </div>
                 </td>
             </tr>
             @empty
             <tr>
-                <td colspan="5" style="text-align: center;">No research documents found.</td>
+                <td colspan="6" style="text-align: center;">No extension services found.</td>
             </tr>
             @endforelse
             {{-- Static row for uploading a new document --}}
             <tr>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -64,4 +69,10 @@
     <button onclick="goBack()">Back</button>
     <button>Load More +</button>
 </div>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 @endsection

@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Permission\Traits\HasRoles;
 use Carbon\Carbon;
+use App\Models\ProfessionalDevelopment;
 
 
 
@@ -79,9 +80,9 @@ class User extends Authenticatable
     /**
      * Get the research documents for the user.
      */
-    public function research(): HasMany
+    public function researchDocuments()
     {
-        return $this->hasMany(\App\Models\ResearchDocument::class, 'user_id');
+        return $this->hasMany(ResearchDocument::class);
     }
 
     /**
@@ -107,6 +108,22 @@ class User extends Authenticatable
         return $this->hasMany(PromotionApplication::class);
     }
 
+    /**
+     * Get the extension services files for the user.
+     */
+    public function extensionServices()
+    {
+        return $this->hasMany(ExtensionService::class);
+    }
+
+    /**
+     * Get the professional developments for the user.
+     */
+
+    public function professionalDevelopments()
+    {
+        return $this->hasMany(ProfessionalDevelopment::class);
+    }
 
     public function assignDefaultRoleByEmail(): void
     {
