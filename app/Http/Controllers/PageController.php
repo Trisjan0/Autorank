@@ -5,6 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+/**
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Credential[] $credentials
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Evaluation[] $evaluations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Material[] $materials
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ResearchDocument[] $researchDocuments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PerformanceMetric[] $performanceMetrics
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PromotionApplication[] $promotionApplications
+ */
 
 class PageController extends Controller
 {
@@ -69,26 +80,33 @@ class PageController extends Controller
             return redirect()->route('signin-page')->with('error', 'User not found.');
         }
     }
-
     public function showResearchDocumentsPage(Request $request)
     {
         $user = Auth::user();
+
         if (!$user) {
-            return redirect()->route('signin-page')->with('error', 'You must be logged in to view evaluations.');
-        }
-        $query = $user->researchDocuments()->latest();
-
-        if ($request->has('search') && $request->search != '') {
-            $searchTerm = $request->search;
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('title', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('type', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('category', 'like', '%' . $searchTerm . '%');
-            });
+            return redirect()->route('signin-page')->with('error', 'You must be logged in to view this page.');
         }
 
+        // Get the search term from the request
+        $searchTerm = $request->input('search');
+
+        // Start the query and conditionally apply the search filter
+        $research_documents = $user->research()
+            ->when($searchTerm, function ($query, $searchTerm) {
+                // This entire function only runs if $searchTerm is not null or empty
+                return $query->where(function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('title', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('type', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('category', 'like', '%' . $searchTerm . '%');
+                });
+            })
+            ->latest()
+            ->get();
+
+        // Pass the final results to the view
         return view('instructor.research-documents-page', [
-            'research_documents' => $query->get()
+            'research_documents' => $research_documents
         ]);
     }
 

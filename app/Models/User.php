@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Permission\Traits\HasRoles;
 use Carbon\Carbon;
 
+
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -74,6 +76,13 @@ class User extends Authenticatable
         return $this->hasMany(Evaluation::class);
     }
 
+    /**
+     * Get the research documents for the user.
+     */
+    public function research(): HasMany
+    {
+        return $this->hasMany(\App\Models\ResearchDocument::class, 'user_id');
+    }
 
     /**
      * Get the materials for the user.
@@ -98,13 +107,6 @@ class User extends Authenticatable
         return $this->hasMany(PromotionApplication::class);
     }
 
-    /**
-     * Get the research documents for the user.
-     */
-    public function researchDocuments()
-    {
-        return $this->hasMany(ResearchDocument::class);
-    }
 
     public function assignDefaultRoleByEmail(): void
     {
