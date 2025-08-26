@@ -60,26 +60,38 @@ class PageController extends Controller
         return view('admin.review-documents-page');
     }
     //Controller used for showing evaluations page
-    public function showEvaluationsPage()
+
+    public function showEvaluationsPage(Request $request)
     {
         $user = Auth::user();
         if (!$user) {
-            return redirect()->route('signin-page')->with('error', 'You must be logged in to view evaluations.');
+            return redirect()->route('signin-page')->with('error', 'You must be logged in to view this page.');
         }
 
-        // Ensure $user is an Eloquent model instance
-        $userModel = User::find($user->id);
-        if ($userModel) {
-            $userModel->load('evaluations', 'materials');
-            return view('instructor.evaluations-page', [
-                'evaluations' => $userModel->evaluations()->latest()->get(),
-                'materials' => $userModel->materials()->latest()->get()
-            ]);
-        } else {
-            return redirect()->route('signin-page')->with('error', 'User not found.');
-        }
+        // --- SEARCH LOGIC FOR EVALUATIONS ---
+        $evaluationsSearchTerm = $request->input('search_evaluations');
+        $evaluations = $user->evaluations()
+            ->when($evaluationsSearchTerm, function ($query, $searchTerm) {
+                return $query->where('title', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('category', 'like', '%' . $searchTerm . '%');
+            })
+            ->latest()
+            ->get();
+
+        // --- SEARCH LOGIC FOR MATERIALS ---
+        $materialsSearchTerm = $request->input('search_materials');
+        $materials = $user->materials()
+            ->when($materialsSearchTerm, function ($query, $searchTerm) {
+                return $query->where('title', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('category', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('type', 'like', '%' . $searchTerm . '%');
+            })
+            ->latest()
+            ->get();
+
+        return view('instructor.evaluations-page', compact('evaluations', 'materials'));
     }
-
+    //show research documents page
     public function showResearchDocumentsPage(Request $request)
     {
         $user = Auth::user();

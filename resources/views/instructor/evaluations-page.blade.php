@@ -4,6 +4,7 @@
 
 @section('content')
 
+{{-- Success and Error Messages --}}
 @if(session('success'))
 <div class="alert alert-success" style="padding: 10px; margin-bottom: 20px; border: 1px solid green; color: green; background-color: #e6ffed;">
     {{ session('success') }}
@@ -61,10 +62,10 @@
                 <td colspan="7" style="text-align: center;">No evaluations found.</td>
             </tr>
             @endforelse
-
+            {{-- CORRECTED: Static row for uploading a new evaluation --}}
             <tr>
                 <td colspan="6">&nbsp;</td>
-                <td><button id="upload-evaluation-button">Upload New</button></td>
+                <td><button id="upload-evaluation-button" class="upload-new-button">Upload New</button></td>
             </tr>
         </tbody>
     </table>
@@ -116,9 +117,10 @@
                 <td colspan="7" style="text-align: center;">No materials found.</td>
             </tr>
             @endforelse
+            {{-- CORRECTED: Static row for uploading a new material --}}
             <tr>
                 <td colspan="6">&nbsp;</td>
-                <td><button id="upload-material-button">Upload New</button></td>
+                <td><button id="upload-material-button" class="upload-new-button">Upload New</button></td>
             </tr>
         </tbody>
     </table>
@@ -126,7 +128,7 @@
 
 
 {{-- ====================================================== --}}
-{{-- =================FLOATING WINDOWS START=============== --}}
+{{-- START: FLOATING WINDOWS --}}
 {{-- ====================================================== --}}
 
 <div id="upload-evaluation-window-container" class="floating-window-container" style="display: none;">
@@ -178,7 +180,7 @@
 </div>
 
 {{-- ====================================================== --}}
-{{-- ==================FLOATING WINDOWS END================ --}}
+{{-- END: FLOATING WINDOWS --}}
 {{-- ====================================================== --}}
 
 <div class="load-more-container">
@@ -193,6 +195,7 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
+        // --- Setup for Evaluation Modal ---
         const evalModal = {
             openBtn: document.getElementById('upload-evaluation-button'),
             window: document.getElementById('upload-evaluation-window-container'),
@@ -235,7 +238,7 @@
             });
         }
 
-
+        // --- Setup for Material Modal ---
         const materialModal = {
             openBtn: document.getElementById('upload-material-button'),
             window: document.getElementById('upload-material-window-container'),
@@ -278,11 +281,11 @@
             });
         }
 
+        // --- General click outside to close ---
         window.addEventListener('click', (e) => {
             if (evalModal.window && e.target == evalModal.window) evalModal.window.style.display = 'none';
             if (materialModal.window && e.target == materialModal.window) materialModal.window.style.display = 'none';
         });
-
     });
 </script>
 @endsection

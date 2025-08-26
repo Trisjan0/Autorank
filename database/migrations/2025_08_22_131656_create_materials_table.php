@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title');
-            $table->string('Type')->nullable();
-            $table->string('Category')->nullable();
+            $table->string('type')->nullable();
+            $table->string('category')->nullable();
             $table->string('link')->nullable();
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }
