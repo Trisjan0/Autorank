@@ -105,5 +105,8 @@ Route::middleware(['auth'])->group(function () {
 
         // Route to store created evaluation
         Route::post('/evaluations', [InstructorMetricsController::class, 'storeEvaluation'])->name('evaluations.store');
+
+        // Route to store created material
+        Route::post('/materials', [InstructorMetricsController::class, 'storeMaterial'])->name('materials.store');
     });
 });

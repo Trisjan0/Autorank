@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PerformanceMetric;
 use App\Models\Evaluation;
+use App\Models\Material;
 use App\Models\AhpCriterion;
 use App\Models\AhpWeight;
 use App\Models\User;
@@ -107,6 +108,35 @@ class InstructorMetricsController extends Controller
         } catch (\Exception $e) {
             Log::error('Error uploading evaluation: ' . $e->getMessage());
             return redirect()->back()->with('error', 'There was a problem uploading your evaluation. Please try again.');
+        }
+    }
+    //store material
+    public function storeMaterial(Request $request)
+    {
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'material_file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,jpg,png|max:10240', // Max 10MB
+            ]);
+
+            $filePath = null;
+            if ($request->hasFile('material_file')) {
+                // Store the file in 'storage/app/public/materials'
+                $filePath = $request->file('material_file')->store('materials', 'public');
+            }
+
+            Material::create([
+                'user_id' => Auth::id(),
+                'title' => $request->title,
+                'description' => $request->description,
+                'file_path' => $filePath,
+            ]);
+
+            return redirect()->route('evaluations-page')->with('success', 'Material uploaded successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error uploading material: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'There was a problem uploading your material. Please try again.');
         }
     }
 
