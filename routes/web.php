@@ -108,5 +108,14 @@ Route::middleware(['auth'])->group(function () {
 
         // Route to store created material
         Route::post('/materials', [InstructorMetricsController::class, 'storeMaterial'])->name('materials.store');
+
+        // Route to store created research document
+        Route::post('/research-documents', [InstructorMetricsController::class, 'storeResearchDocument'])->name('research-documents.store');
+
+        // Route to store created research document
+        Route::post('/extension-services', [InstructorMetricsController::class, 'storeExtensionService'])->name('extension-services.store');
+
+        //route to store created professional development
+        Route::post('/professional-developments', [InstructorMetricsController::class, 'storeProfessionalDevelopment'])->name('professional-developments.store');
     });
 });

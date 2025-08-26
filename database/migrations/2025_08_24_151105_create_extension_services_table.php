@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('service_type');
             $table->date('date');
             $table->string('link')->nullable();
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }

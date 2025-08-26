@@ -15,6 +15,7 @@ class ExtensionService extends Model
         'service_type',
         'date',
         'link',
+        'file_path',
     ];
     public function user()
     {

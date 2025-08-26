@@ -4,7 +4,6 @@
 
 @section('content')
 
-{{-- Success and Error Messages --}}
 @if(session('success'))
 <div class="alert alert-success" style="padding: 10px; margin-bottom: 20px; border: 1px solid green; color: green; background-color: #e6ffed;">
     {{ session('success') }}
@@ -26,7 +25,7 @@
             <tr>
                 <th>ID</th>
                 <th>Title</th>
-                <th>Category</th> {{-- RESTORED --}}
+                <th>Category</th>
                 <th>Date</th>
                 <th>Score</th>
                 <th>File</th>
@@ -45,7 +44,7 @@
             <tr>
                 <td>{{ $evaluation->id }}</td>
                 <td>{{ Str::title($evaluation->title) }}</td>
-                <td>{{ Str::title($evaluation->category) }}</td> {{-- RESTORED --}}
+                <td>{{ Str::title($evaluation->category) }}</td>
                 <td>{{ \Carbon\Carbon::parse($evaluation->date)->format('m/d/Y') }}</td>
                 <td>{{ $evaluation->score }}</td>
                 <td>
@@ -62,7 +61,7 @@
                 <td colspan="7" style="text-align: center;">No evaluations found.</td>
             </tr>
             @endforelse
-            {{-- Static row for uploading a new evaluation --}}
+
             <tr>
                 <td colspan="6">&nbsp;</td>
                 <td><button id="upload-evaluation-button">Upload New</button></td>
@@ -81,7 +80,9 @@
             <tr>
                 <th>ID</th>
                 <th>Title</th>
-                <th>Description</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Type</th>
                 <th>File</th>
                 <th>
                     <div class="search-bar-container">
@@ -98,7 +99,9 @@
             <tr>
                 <td>{{ $material->id }}</td>
                 <td>{{ $material->title }}</td>
-                <td>{{ $material->description }}</td>
+                <td>{{ Str::title(str_replace('_', ' ', $material->category)) }}</td>
+                <td>{{ \Carbon\Carbon::parse($material->date)->format('m/d/Y') }}</td>
+                <td>{{ $material->type }}</td>
                 <td>
                     @if($material->file_path)
                     <a href="{{ asset('storage/' . $material->file_path) }}" target="_blank">View File</a>
@@ -110,11 +113,11 @@
             </tr>
             @empty
             <tr>
-                <td colspan="5" style="text-align: center;">No materials found.</td>
+                <td colspan="7" style="text-align: center;">No materials found.</td>
             </tr>
             @endforelse
             <tr>
-                <td colspan="4">&nbsp;</td>
+                <td colspan="6">&nbsp;</td>
                 <td><button id="upload-material-button">Upload New</button></td>
             </tr>
         </tbody>
@@ -123,7 +126,7 @@
 
 
 {{-- ====================================================== --}}
-{{-- START: FLOATING WINDOWS --}}
+{{-- =================FLOATING WINDOWS START=============== --}}
 {{-- ====================================================== --}}
 
 <div id="upload-evaluation-window-container" class="floating-window-container" style="display: none;">
@@ -132,7 +135,6 @@
         <h2>UPLOAD EVALUATION</h2>
         <form id="upload-evaluation-form" action="{{ route('evaluations.store') }}" method="POST" class="floating-window-form" enctype="multipart/form-data">
             @csrf
-            {{-- CATEGORY CHECKBOXES RESTORED --}}
             <div class="form-group">
                 <label>Category:</label>
                 <div class="checkbox-group">
@@ -157,8 +159,18 @@
         <h2>UPLOAD INSTRUCTIONAL MATERIAL</h2>
         <form id="upload-material-form" action="{{ route('materials.store') }}" method="POST" class="floating-window-form" enctype="multipart/form-data">
             @csrf
+            <div class="form-group">
+                <label>Category:</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="category-sole-author" name="category" value="sole_author">
+                    <label for="category-sole-author">Sole Author</label>
+                    <input type="checkbox" id="category-co-author" name="category" value="co_author">
+                    <label for="category-co-author">Co-Author</label>
+                </div>
+            </div>
             <div class="form-group"><label for="material-title">Title:</label><input type="text" id="material-title" name="title" required></div>
-            <div class="form-group"><label for="material-description">Description:</label><input type="text" id="material-description" name="description"></div>
+            <div class="form-group"><label for="material-date">Date:</label><input type="date" id="material-date" name="date" required></div>
+            <div class="form-group"><label for="material-type">Type:</label><input type="text" id="material-type" name="type" required></div>
             <div class="form-group"><label for="material_file">Upload File:</label><input type="file" id="material_file" name="material_file" required></div>
             <div class="form-actions"><button type="submit" id="submit-material-button" disabled>Upload</button></div>
         </form>
@@ -166,7 +178,7 @@
 </div>
 
 {{-- ====================================================== --}}
-{{-- FLOATING WINDOWS --}}
+{{-- ==================FLOATING WINDOWS END================ --}}
 {{-- ====================================================== --}}
 
 <div class="load-more-container">
@@ -180,68 +192,97 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        function setupModal(openBtnId, windowContainerId, formId, submitBtnId) {
-            const openButton = document.getElementById(openBtnId);
-            const windowContainer = document.getElementById(windowContainerId);
-            if (!openButton || !windowContainer) return;
 
-            const closeButton = windowContainer.querySelector('.close-button');
-            const form = document.getElementById(formId);
-            const submitButton = document.getElementById(submitBtnId);
+        const evalModal = {
+            openBtn: document.getElementById('upload-evaluation-button'),
+            window: document.getElementById('upload-evaluation-window-container'),
+            form: document.getElementById('upload-evaluation-form'),
+            submitBtn: document.getElementById('submit-evaluation-button'),
+            studentCheck: document.getElementById('category-student'),
+            supervisorCheck: document.getElementById('category-supervisor'),
+            inputs: document.querySelectorAll('#eval-title, #eval-date, #eval-score, #evaluation_file')
+        };
 
-            const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
-            const categoryCheckboxes = form.querySelectorAll('input[name="category"]');
-
-            function validateForm() {
-                let isCategoryValid = true;
-                if (formId === 'upload-evaluation-form') {
-                    isCategoryValid = form.querySelector('input[name="category"]:checked');
+        function validateEvalForm() {
+            const isCategorySelected = evalModal.studentCheck.checked || evalModal.supervisorCheck.checked;
+            let areInputsFilled = true;
+            evalModal.inputs.forEach(input => {
+                if (input.type === 'file') {
+                    if (input.files.length === 0) areInputsFilled = false;
+                } else if (!input.value.trim()) {
+                    areInputsFilled = false;
                 }
-
-                let areOtherFieldsValid = true;
-                inputs.forEach(input => {
-                    if (input.type === 'file') {
-                        if (input.files.length === 0) areOtherFieldsValid = false;
-                    } else {
-                        if (!input.value.trim()) areOtherFieldsValid = false;
-                    }
-                });
-
-                submitButton.disabled = !(isCategoryValid && areOtherFieldsValid);
-            }
-
-            //handling for evaluation category checkboxes
-            if (categoryCheckboxes.length > 0) {
-                const studentCheck = form.querySelector('#category-student');
-                const supervisorCheck = form.querySelector('#category-supervisor');
-                studentCheck.addEventListener('change', () => {
-                    if (studentCheck.checked) supervisorCheck.checked = false;
-                    validateForm();
-                });
-                supervisorCheck.addEventListener('change', () => {
-                    if (supervisorCheck.checked) studentCheck.checked = false;
-                    validateForm();
-                });
-            }
-
-            form.addEventListener('input', validateForm);
-            openButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                windowContainer.style.display = 'flex';
             });
-            closeButton.addEventListener('click', () => {
-                windowContainer.style.display = 'none';
-            });
-            window.addEventListener('click', (e) => {
-                if (e.target == windowContainer) windowContainer.style.display = 'none';
-            });
-
-            validateForm();
+            evalModal.submitBtn.disabled = !(isCategorySelected && areInputsFilled);
         }
 
-        // --- SETUP ALL MODALS ---
-        setupModal('upload-evaluation-button', 'upload-evaluation-window-container', 'upload-evaluation-form', 'submit-evaluation-button');
-        setupModal('upload-material-button', 'upload-material-window-container', 'upload-material-form', 'submit-material-button');
+        if (evalModal.openBtn) {
+            evalModal.openBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                evalModal.window.style.display = 'flex';
+            });
+            evalModal.window.querySelector('.close-button').addEventListener('click', () => {
+                evalModal.window.style.display = 'none';
+            });
+            evalModal.form.addEventListener('input', validateEvalForm);
+            evalModal.studentCheck.addEventListener('change', () => {
+                if (evalModal.studentCheck.checked) evalModal.supervisorCheck.checked = false;
+                validateEvalForm();
+            });
+            evalModal.supervisorCheck.addEventListener('change', () => {
+                if (evalModal.supervisorCheck.checked) evalModal.studentCheck.checked = false;
+                validateEvalForm();
+            });
+        }
+
+
+        const materialModal = {
+            openBtn: document.getElementById('upload-material-button'),
+            window: document.getElementById('upload-material-window-container'),
+            form: document.getElementById('upload-material-form'),
+            submitBtn: document.getElementById('submit-material-button'),
+            soleAuthorCheck: document.getElementById('category-sole-author'),
+            coAuthorCheck: document.getElementById('category-co-author'),
+            inputs: document.querySelectorAll('#material-title, #material-date, #material-type, #material_file')
+        };
+
+        function validateMaterialForm() {
+            const isCategorySelected = materialModal.soleAuthorCheck.checked || materialModal.coAuthorCheck.checked;
+            let areInputsFilled = true;
+            materialModal.inputs.forEach(input => {
+                if (input.type === 'file') {
+                    if (input.files.length === 0) areInputsFilled = false;
+                } else if (!input.value.trim()) {
+                    areInputsFilled = false;
+                }
+            });
+            materialModal.submitBtn.disabled = !(isCategorySelected && areInputsFilled);
+        }
+
+        if (materialModal.openBtn) {
+            materialModal.openBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                materialModal.window.style.display = 'flex';
+            });
+            materialModal.window.querySelector('.close-button').addEventListener('click', () => {
+                materialModal.window.style.display = 'none';
+            });
+            materialModal.form.addEventListener('input', validateMaterialForm);
+            materialModal.soleAuthorCheck.addEventListener('change', () => {
+                if (materialModal.soleAuthorCheck.checked) materialModal.coAuthorCheck.checked = false;
+                validateMaterialForm();
+            });
+            materialModal.coAuthorCheck.addEventListener('change', () => {
+                if (materialModal.coAuthorCheck.checked) materialModal.soleAuthorCheck.checked = false;
+                validateMaterialForm();
+            });
+        }
+
+        window.addEventListener('click', (e) => {
+            if (evalModal.window && e.target == evalModal.window) evalModal.window.style.display = 'none';
+            if (materialModal.window && e.target == materialModal.window) materialModal.window.style.display = 'none';
+        });
+
     });
 </script>
 @endsection

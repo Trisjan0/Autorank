@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\PerformanceMetric;
 use App\Models\Evaluation;
 use App\Models\Material;
+use App\Models\ResearchDocument;
+use App\Models\ExtensionService;
+use App\Models\ProfessionalDevelopment;
 use App\Models\AhpCriterion;
 use App\Models\AhpWeight;
 use App\Models\User;
@@ -115,21 +118,24 @@ class InstructorMetricsController extends Controller
     {
         try {
             $request->validate([
+                'category' => 'required|string|in:sole_author,co_author',
                 'title' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'material_file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,jpg,png|max:10240', // Max 10MB
+                'date' => 'required|date',
+                'type' => 'required|string|max:255',
+                'material_file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,jpg,png|max:10240',
             ]);
 
             $filePath = null;
             if ($request->hasFile('material_file')) {
-                // Store the file in 'storage/app/public/materials'
                 $filePath = $request->file('material_file')->store('materials', 'public');
             }
 
             Material::create([
                 'user_id' => Auth::id(),
                 'title' => $request->title,
-                'description' => $request->description,
+                'type' => $request->type,
+                'category' => $request->category,
+                'date' => $request->date,
                 'file_path' => $filePath,
             ]);
 
@@ -137,6 +143,102 @@ class InstructorMetricsController extends Controller
         } catch (\Exception $e) {
             Log::error('Error uploading material: ' . $e->getMessage());
             return redirect()->back()->with('error', 'There was a problem uploading your material. Please try again.');
+        }
+    }
+    //store research document
+    public function storeResearchDocument(Request $request)
+    {
+        try {
+            $request->validate([
+                'type' => 'required|string|in:Book,Monograph,Journal,Chapter',
+                'title' => 'required|string|max:255',
+                'date' => 'required|date',
+                'category' => 'required|string|max:255',
+                'document_file' => 'required|file|mimes:pdf,doc,docx|max:10240', // Max 10MB
+            ]);
+
+            $filePath = null;
+            if ($request->hasFile('document_file')) {
+                // Store the file in 'storage/app/public/research_documents'
+                $filePath = $request->file('document_file')->store('research_documents', 'public');
+            }
+
+            ResearchDocument::create([
+                'user_id' => Auth::id(),
+                'type' => $request->type,
+                'title' => $request->title,
+                'date' => $request->date,
+                'category' => $request->category,
+                'file_path' => $filePath,
+            ]);
+
+            return redirect()->route('research-documents-page')->with('success', 'Research document uploaded successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error uploading research document: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'There was a problem uploading your document. Please try again.');
+        }
+    }
+    //store extension service
+    public function storeExtensionService(Request $request)
+    {
+        try {
+            $request->validate([
+                'service_type' => 'required|string|in:Institution,Community,Extension Involvement',
+                'title' => 'required|string|max:255',
+                'date' => 'required|date',
+                'evidence_file' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:10240', // Max 10MB
+            ]);
+
+            $filePath = null;
+            if ($request->hasFile('evidence_file')) {
+                // Store the file in 'storage/app/public/extension_services'
+                $filePath = $request->file('evidence_file')->store('extension_services', 'public');
+            }
+
+            ExtensionService::create([
+                'user_id' => Auth::id(),
+                'service_type' => $request->service_type,
+                'title' => $request->title,
+                'date' => $request->date,
+                'file_path' => $filePath,
+            ]);
+
+            return redirect()->route('extension-services-page')->with('success', 'Extension service uploaded successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error uploading extension service: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'There was a problem uploading your evidence. Please try again.');
+        }
+    }
+
+    //store professional development
+    public function storeProfessionalDevelopment(Request $request)
+    {
+        try {
+            $request->validate([
+                'category' => 'required|string|in:Professional Organization Involvement,Continuing Development,Awards,Experience',
+                'title' => 'required|string|max:255',
+                'date' => 'required|date',
+                'evidence_file' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:10240', // Max 10MB
+            ]);
+
+            $filePath = null;
+            if ($request->hasFile('evidence_file')) {
+                // Store the file in 'storage/app/public/professional_developments'
+                $filePath = $request->file('evidence_file')->store('professional_developments', 'public');
+            }
+
+            ProfessionalDevelopment::create([
+                'user_id' => Auth::id(),
+                'category' => $request->category,
+                'title' => $request->title,
+                'date' => $request->date,
+                'file_path' => $filePath,
+            ]);
+
+            return redirect()->route('professional-developments-page')->with('success', 'Professional development evidence uploaded successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error uploading professional development evidence: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'There was a problem uploading your evidence. Please try again.');
         }
     }
 

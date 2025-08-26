@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('category');
             $table->date('date');
+            $table->string('link')->nullable();
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }

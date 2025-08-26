@@ -14,6 +14,9 @@ class ProfessionalDevelopment extends Model
         'title',
         'category',
         'date',
+        'link',
+        'file_path',
+        'created_at',
     ];
 
 
