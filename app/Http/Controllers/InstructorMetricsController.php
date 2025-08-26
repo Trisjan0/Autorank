@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PerformanceMetric;
+use App\Models\Evaluation;
 use App\Models\AhpCriterion;
 use App\Models\AhpWeight;
-use App\Models\User; // Add the User model
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -74,23 +76,53 @@ class InstructorMetricsController extends Controller
     }
 
     /**
+     * Store created evaluation
+     */
+    public function storeEvaluation(Request $request)
+    {
+        try {
+            $request->validate([
+                'category' => 'required|string|in:student,supervisor',
+                'title' => 'required|string|max:255',
+                'date' => 'required|date',
+                'score' => 'required|numeric|min:0',
+                'evaluation_file' => 'required|file|mimes:pdf,doc,docx,jpg,png|min:100|max:5120',
+            ]);
+
+            $filePath = null;
+            if ($request->hasFile('evaluation_file')) {
+                $filePath = $request->file('evaluation_file')->store('evaluations', 'public');
+            }
+
+            Evaluation::create([
+                'user_id' => Auth::id(),
+                'category' => $request->category,
+                'title' => $request->title,
+                'date' => $request->date,
+                'score' => $request->score,
+                'file_path' => $filePath,
+            ]);
+
+            return redirect()->route('evaluations-page')->with('success', 'Evaluation uploaded successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error uploading evaluation: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'There was a problem uploading your evaluation. Please try again.');
+        }
+    }
+
+
+    /**
      * Calculate the AHP score for a given user and save it.
-     * This method is a helper to keep the store() method clean.
-     *
-     * @param \App\Models\User $user
      */
     protected function calculateAndSaveAhpScore(User $user)
     {
-        // Define maximum possible scores for normalization. These can be stored in a config file
-        // or a dedicated database table later for easier admin management.
         $maxScores = [
-            'Instruction Score' => 100, // Score is 0-100
-            'Research Count' => 50, // Example: max of 50 publications
-            'Extension Activities' => 20, // Example: max of 20 activities
-            'Professional Development Hours' => 100, // Example: max of 100 hours
+            'Instruction Score' => 100,
+            'Research Count' => 50,
+            'Extension Activities' => 20,
+            'Professional Development Hours' => 100,
         ];
 
-        // Fetch the performance metrics and AHP weights
         $userMetrics = $user->performanceMetrics->pluck('value', 'name');
         $ahpWeights = AhpWeight::with('criterion')->get()->keyBy(function ($item) {
             return $item->criterion->name;
@@ -98,31 +130,21 @@ class InstructorMetricsController extends Controller
 
         $finalAhpScore = 0;
 
-        // Iterate through each AHP criterion to calculate the score
         if ($ahpWeights->isNotEmpty() && $userMetrics->isNotEmpty()) {
             foreach ($ahpWeights as $criterionName => $weight) {
-                // Find the corresponding metric value
                 $metricValue = $userMetrics[$this->getMetricNameForCriterion($criterionName)] ?? 0;
-
-                // Get the max score for normalization
                 $maxScore = $maxScores[$this->getMetricNameForCriterion($criterionName)] ?? 1;
-
-                // Normalize the metric value to a 0-1 scale
                 $normalizedScore = ($metricValue > 0 && $maxScore > 0) ? min($metricValue / $maxScore, 1) : 0;
-
-                // Add the weighted score to the final total
                 $finalAhpScore += ($normalizedScore * $weight);
             }
         }
 
-        // Save the final calculated AHP score to the user's record
         $user->ahp_score = $finalAhpScore;
         $user->save();
     }
 
     /**
      * Helper method to map AHP criterion names to metric names.
-     * This is a simple way to handle the mapping for now.
      */
     protected function getMetricNameForCriterion(string $criterionName): string
     {

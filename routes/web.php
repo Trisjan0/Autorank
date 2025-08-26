@@ -102,5 +102,8 @@ Route::middleware(['auth'])->group(function () {
         // Routes for AHP Weights
         Route::get('/ahp/weights', [AhpController::class, 'showWeightsForm'])->name('ahp.weights.form');
         Route::post('/ahp/weights', [AhpController::class, 'updateWeights'])->name('ahp.weights.update');
+
+        // Route to store created evaluation
+        Route::post('/evaluations', [InstructorMetricsController::class, 'storeEvaluation'])->name('evaluations.store');
     });
 });

@@ -16,6 +16,7 @@ class Evaluation extends Model
         'category',
         'score',
         'link',
+        'file_path',
         'created_at',
     ];
 

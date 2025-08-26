@@ -15,6 +15,7 @@ class Material extends Model
         'Type',
         'Category',
         'link',
+        'file_path',
         'created_at',
     ];
 
