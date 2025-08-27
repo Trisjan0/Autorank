@@ -121,9 +121,9 @@ class InstructorMetricsController extends Controller
         try {
             $request->validate([
                 'title' => 'required|string|max:255',
+                'type' => 'required|string|max:255',
                 'category' => 'required|string|in:sole_author,co_author',
                 'date' => 'required|date',
-                'type' => 'required|string|max:255',
                 'material_file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,jpg,png|max:10240',
             ]);
 
@@ -135,9 +135,9 @@ class InstructorMetricsController extends Controller
             Material::create([
                 'user_id' => Auth::id(),
                 'title' => $request->title,
+                'type' => $request->type,
                 'category' => $request->category,
                 'date' => $request->date,
-                'type' => $request->type,
                 'file_path' => $filePath,
             ]);
 

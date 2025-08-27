@@ -10,12 +10,13 @@ class Material extends Model
     use HasFactory;
     protected $table = 'Materials';
     protected $fillable = [
-        'id',
+        'user_id',
         'title',
         'type',
         'category',
         'link',
         'file_path',
+        'created_at',
     ];
 
 
