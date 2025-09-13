@@ -9,46 +9,41 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Services\DataSearchService;
 
 class UserController extends Controller
 {
     /**
-     * Display user table with search bar. Limits initial rows to 5.
+     * Display user table with search and "load more" functionality.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Services\DataSearchService $searchService
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request, DataSearchService $searchService)
     {
-        $perPage = 5; // Number of users to load initially and per "load more"
+        $perPage = 5;
 
-        $query = User::with('roles.permissions')->orderBy('created_at', 'desc'); // Always order by latest
+        // Start the base query
+        $query = User::with('roles.permissions')->orderBy('created_at', 'desc');
 
-        // Apply search filter if present
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('email', 'like', '%' . $search . '%')
-                    ->orWhere('id', 'like', '%' . $search . '%'); // Added ID search
-            });
-        }
+        // Define which columns are searchable for the User model
+        $searchableColumns = ['name', 'email', 'id'];
+        $searchTerm = $request->input('search');
+
+        // The service will modify the $query object directly.
+        $searchService->applySearch($query, $searchTerm, $searchableColumns);
 
         if ($request->ajax()) {
-            // This part handles AJAX requests for "Load More"
-            $offset = $request->input('offset', 0); // Get the current offset from the request
+            $offset = $request->input('offset', 0);
+            $users = (clone $query)->skip($offset)->take($perPage)->get();
 
-            $users = $query->skip($offset)->take($perPage)->get();
-
-            // Render new rows using a partial Blade view
             $html = '';
             foreach ($users as $user) {
                 $html .= view('partials._user_table_row', ['user' => $user])->render();
             }
 
-            // Determine if there are more users to load (for the "Load More" button)
-            $totalUsersMatchingSearch = $query->count(); // Count only matching users if searching
-
+            $totalUsersMatchingSearch = (clone $query)->count();
             $hasMore = ($offset + $perPage) < $totalUsersMatchingSearch;
 
             return response()->json([
@@ -57,14 +52,10 @@ class UserController extends Controller
                 'nextOffset' => $offset + $perPage
             ]);
         } else {
-            // This part handles the initial page load
-            $users = $query->take($perPage)->get(); // Get only the first 'perPage' users
-
-            // Fetch all roles by rank to pass to the modal for selection
+            // Note: We clone the query for the count to avoid issues with the main query's take() limit
+            $totalUsersMatchingSearch = (clone $query)->count();
+            $users = $query->take($perPage)->get();
             $allRoles = Role::orderBy('rank', 'asc')->get();
-
-            // Determine initial hasMore for the "Load More" button
-            $totalUsersMatchingSearch = $query->count(); // Count total matching users for initial check
             $initialHasMore = ($perPage < $totalUsersMatchingSearch);
 
             return view('admin.manage-users', compact('users', 'allRoles', 'initialHasMore', 'perPage'));
@@ -170,7 +161,7 @@ class UserController extends Controller
         }
 
         // C. Super Admin Authorization: If we reach here and the user is 'super_admin',
-        //     they are implicitly allowed to assign any valid role. No further checks needed.
+        //    they are implicitly allowed to assign any valid role. No further checks needed.
 
         // --- END: HIERARCHY-BASED AUTHORIZATION ---
 
@@ -229,7 +220,7 @@ class UserController extends Controller
 
         // Return the existing 'profile-page' view, passing both the target user
         // and the flag indicating if it's the authenticated user's own profile.
-        return view('instructor.profile-page', [
+        return view('profile-page', [
             'user' => $user, // The user object for the profile being displayed
             'isOwnProfile' => $isOwnProfile, // True if the logged-in user is viewing their own profile
         ]);

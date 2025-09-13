@@ -7,7 +7,7 @@
     </td>
     <td id="assigned-at-{{ $user->id }}">
         @if ($user->role_assigned_at)
-        {{ $user->role_assigned_at->timezone('Asia/Manila')->format('F d, Y | h:iA') }}
+        {{ $user->role_assigned_at->timezone('Asia/Manila')->format('m/d/y H:i') }}
         @else
         N/A
         @endif

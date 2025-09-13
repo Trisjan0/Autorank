@@ -1,6 +1,6 @@
 @extends('layouts.view-all-layout')
 
-@section('title', 'Professional Development | Autorank')
+@section('title', 'KRA IV: Professional Development | Autorank')
 
 @section('content')
 
@@ -16,7 +16,7 @@
 @endif
 
 <div class="header">
-    <h1>KRA IV Professional Development</h1>
+    <h1>KRA IV: Professional Development</h1>
 </div>
 <div class="performance-metric-container">
     <table>
@@ -29,7 +29,7 @@
                 <th>File</th>
                 <th>
                     <div class="search-bar-container">
-                        <form action="{{ route('professional-developments-page') }}" method="GET">
+                        <form action="{{ route('instructor.professional-developments-page') }}" method="GET">
                             <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
                             <button type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i></button>
                         </form>
@@ -62,8 +62,7 @@
             @endforelse
             {{-- Static row for uploading a new document --}}
             <tr>
-                <td colspan="5">&nbsp;</td>
-                <td>
+                <td colspan="7">
                     <button id="upload-evidence-button">Upload New</button>
                 </td>
             </tr>

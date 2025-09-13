@@ -34,22 +34,31 @@
         </div>
     </div>
     <div id="hidden-menu">
-        {{-- Always show Dashboard, Profile, Settings, Performance Metric Pages, and Logout for any authenticated user --}}
+        {{-- Always show Dashboard, Profile, Settings, and Logout for any authenticated user --}}
         <a href="{{ route('dashboard') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-chart-simple" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-chart-simple"></i>
             </div>
             <div class="hidden-menu-title">
                 <p>Dashboard</p>
             </div>
         </a>
 
-        {{-- ADMIN/SUPER_ADMIN specific links --}}
+        <a href="{{ route('profile-page') }}">
+            <div class="hidden-menu-icon">
+                <i class="fa-solid fa-address-book"></i>
+            </div>
+            <div class="hidden-menu-title">
+                <p>Profile</p>
+            </div>
+        </a>
+
+        {{-- ADMIN/SUPER_ADMIN only links --}}
         @auth
         @can('manage users')
         <a href="{{ route('application-page') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-file-circle-check" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-file-circle-check"></i>
             </div>
             <div class="hidden-menu-title">
                 <p>Review Applications</p>
@@ -57,7 +66,7 @@
         </a>
         <a href="{{ route('manage-users') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-users" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-users"></i>
             </div>
             <div class="hidden-menu-title">
                 <p>Manage Users</p>
@@ -66,55 +75,71 @@
         @endcan
         @endauth
 
-        <a href="{{ route('profile-page') }}">
+        {{-- EVALUATOR only links --}}
+        @auth
+        @can('access evaluate applications page')
+        <a href="{{ route('evaluator.evaluate-applications') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-address-book" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-file-circle-check"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>Profile</p>
+                <p>Evaluate Applications</p>
+            </div>
+        </a>
+        @endcan
+        @endauth
+
+        {{-- INSTRUCTOR only links --}}
+        @unless (auth()->user()->hasAnyRole(['admin', 'evaluator']))
+        <a href="{{ route('instructor.evaluations-page') }}">
+            <div class="hidden-menu-icon">
+                <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <div class="hidden-menu-title">
+                <p>KRA I-A: Evaluations</p>
             </div>
         </a>
 
-        <a href="{{ route('research-documents-page') }}">
+        <a href="{{ route('instructor.instructional-materials-page') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-file-lines" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-folder-open"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>Research Documents</p>
+                <p>KRA I-B: Instructional Materials</p>
             </div>
         </a>
 
-        <a href="{{ route('evaluations-page') }}">
+        <a href="{{ route('instructor.research-documents-page') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-chart-pie" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-file-signature"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>Evaluations</p>
+                <p>KRA II: Research Output</p>
             </div>
         </a>
 
-        <a href="{{ route('extension-services-page') }}">
+        <a href="{{ route('instructor.extension-services-page') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-calendar-day" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-handshake"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>Extension Services</p>
+                <p>KRA III: Extension Services</p>
             </div>
         </a>
 
-        {{-- NEWLY ADDED LINK --}}
-        <a href="{{ route('professional-developments-page') }}">
+        <a href="{{ route('instructor.professional-developments-page') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-person-chalkboard" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-arrow-trend-up"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>Professional Development</p>
+                <p>KRA IV: Professional Development</p>
             </div>
         </a>
+        @endunless
 
         <a href="{{ route('system-settings') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-gear" style="color: #ffffff;"></i>
+                <i class="fa-solid fa-gear"></i>
             </div>
             <div class="hidden-menu-title">
                 <p>Settings</p>
@@ -125,7 +150,7 @@
             @csrf
             <button type="submit">
                 <div class="button-menu-icon">
-                    <i class="fa-solid fa-key" style="color: #ffffff;"></i>
+                    <i class="fa-solid fa-key"></i>
                 </div>
                 <div class="button-menu-title">
                     <p>Log Out</p>

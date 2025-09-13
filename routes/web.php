@@ -1,14 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\Admin\AhpController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ApplicationController;
+use App\Http\Controllers\Evaluator\EvaluatorController;
+use App\Http\Controllers\Instructor\InstructorMetricsController;
+use App\Http\Controllers\Instructor\EvaluationsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SystemSettingsController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\SocialiteLoginController;
-use App\Http\Controllers\AhpController;
-use App\Http\Controllers\InstructorMetricsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,9 +19,8 @@ use Illuminate\Support\Facades\Auth;
 | Public Routes (Accessible without login)
 |--------------------------------------------------------------------------
 */
-
 // Route for the initial page load, index page load
-Route::get('/', [PageController::class, 'signin'])->name('signin-page');
+Route::get('/', [PageController::class, 'signin'])->name('login');
 
 // Route for Google OAuth Redirect
 Route::get('/auth/google/redirect', [SocialiteLoginController::class, 'redirectGoogleAuth'])->name('auth.google.redirect');
@@ -32,7 +33,6 @@ Route::get('/auth/google/callback', [SocialiteLoginController::class, 'handleGoo
 | Authenticated Routes (Accessible only to logged-in users)
 |--------------------------------------------------------------------------
 */
-
 Route::middleware(['auth'])->group(function () {
     // Route for the Home Page
     Route::get('/dashboard', [PageController::class, 'showDashboard'])->name('dashboard');
@@ -43,20 +43,6 @@ Route::middleware(['auth'])->group(function () {
     // Routes for Instructor Metrics
     Route::get('/my-metrics', [InstructorMetricsController::class, 'showForm'])->name('instructor.metrics.form');
     Route::post('/my-metrics', [InstructorMetricsController::class, 'store'])->name('instructor.metrics.store');
-
-    // Route for the Research Documents Page
-    Route::get('/research-documents', [PageController::class, 'showResearchDocumentsPage'])->name('research-documents-page');
-
-    // Route for the Evaluations Page
-    Route::get('/evaluations', [PageController::class, 'showEvaluationsPage'])->name('evaluations-page');
-
-    // route for the Extension Services Page
-
-    Route::get('/extension-services', [PageController::class, 'showExtensionServicesPage'])->name('extension-services-page');
-
-    // route for the Professional Developments Page
-
-    Route::get('/professional-developments', [PageController::class, 'showProfessionalDevelopmentsPage'])->name('professional-developments-page');
 
     // Route for the System Settings
     Route::get('/settings', [SystemSettingsController::class, 'showSystemSettings'])->name('system-settings');
@@ -80,10 +66,9 @@ Route::middleware(['auth'])->group(function () {
     | Admin Only Routes
     |--------------------------------------------------------------------------
     */
-
     Route::middleware(['role_or_permission:admin|access applications page'])->group(function () {
         // Route for the Review Applications Page
-        Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page');
+        Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page'); // this can be deleted
 
         Route::get('/applications', [ApplicationController::class, 'index'])->name('application-page');
 
@@ -103,9 +88,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ahp/weights', [AhpController::class, 'showWeightsForm'])->name('ahp.weights.form');
         Route::post('/ahp/weights', [AhpController::class, 'updateWeights'])->name('ahp.weights.update');
 
-        // Route to store created evaluation
-        Route::post('/evaluations', [InstructorMetricsController::class, 'storeEvaluation'])->name('evaluations.store');
-
         // Route to store created material
         Route::post('/materials', [InstructorMetricsController::class, 'storeMaterial'])->name('materials.store');
 
@@ -117,5 +99,38 @@ Route::middleware(['auth'])->group(function () {
 
         //route to store created professional development
         Route::post('/professional-developments', [InstructorMetricsController::class, 'storeProfessionalDevelopment'])->name('professional-developments.store');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Evaluator Only Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware(['auth', 'permission:access evaluate applications page'])->group(function () {
+        Route::get('/evaluator/evaluate-applications', [EvaluatorController::class, 'showEvaluateApplications'])->name('evaluator.evaluate-applications');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Instructor Only Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware(['role:super_admin|user'])->group(function () {
+        // Route for the KRA I-A: Evaluations Page
+        Route::get('/evaluations', [EvaluationsController::class, 'index'])->name('instructor.evaluations-page');
+        // Route to store created evaluation
+        Route::post('/evaluations', [EvaluationsController::class, 'storeEvaluation'])->name('instructor.evaluations.store');
+
+        // Route for the KRA I-B: Instructional Materials Page
+        Route::get('/instructional-materials', [PageController::class, 'showInstructionalMaterialsPage'])->name('instructor.instructional-materials-page');
+
+        // Route for the KRA II: Research Documents Page
+        Route::get('/research-outputs', [PageController::class, 'showResearchDocumentsPage'])->name('instructor.research-documents-page');
+
+        // Route for the KRA III: Extension Services Page
+        Route::get('/extension-services', [PageController::class, 'showExtensionServicesPage'])->name('instructor.extension-services-page');
+
+        // Route for the KRA IV: Professional Developments Page
+        Route::get('/professional-developments', [PageController::class, 'showProfessionalDevelopmentsPage'])->name('instructor.professional-developments-page');
     });
 });

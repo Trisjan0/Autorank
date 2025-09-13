@@ -103,38 +103,30 @@ Profile | Autorank
                 <div class="progress-bars-container">
                     <div class="current-tenure-container">
                         <div class="subtitle">
-                            <h4>Current Tenure</h4>
+                            <h4>Years of Teaching</h4>
                             <h5>50% Before Eligibility</h5>
                         </div>
-                        <div class="current-tenure-progress-bar-container">
-                            <div class="current-tenure-progress"></div>
+                        <div class="years-of-teaching-progress-bar-container">
+                            <div class="years-of-teaching-progress"></div>
                             <div class="bar"></div>
                         </div>
                         <div class="bottom-note">
                             <h5>Requirement: 4 years</h5>
                         </div>
                     </div>
-                    <div class="research-output-container">
+                    <div class="degree-container">
                         <div class="subtitle">
-                            <h4>Research Output</h4>
-                            <h5>30% Before Eligibility</h5>
+                            <h4>Degrees Achieved</h4>
+                            <h5></h5>
                         </div>
-                        <div class="research-output-progress-bar-container">
-                            <div class="research-output-progress"></div>
+                        <div class="degree-progress-bar-container">
+                            <div class="degree-progress"></div>
                             <div class="bar"></div>
                         </div>
-                        <div class="bottom-note">
-                            <h5>Requirement: 10</h5>
-                        </div>
-                    </div>
-                    <div class="evaluation-container">
-                        <div class="subtitle">
-                            <h4>Evaluation</h4>
-                            <h5>80% Passed&nbsp;<i class="fa-solid fa-check" style="color: #16f34e;"></i></h5>
-                        </div>
-                        <div class="evaluation-progress-bar-container">
-                            <div class="evaluation-progress"></div>
-                            <div class="bar"></div>
+                        <div class="degree-bottom-note">
+                            <h5>|&nbsp;&nbsp;Bachelor's</h5>
+                            <h5>|&nbsp;&nbsp;Master's</h5>
+                            <h5>|&nbsp;&nbsp;Doctorate</h5>
                         </div>
                     </div>
                 </div>
@@ -146,13 +138,14 @@ Profile | Autorank
             </div>
             <div class="performance-metrics-container">
                 <div class="title">
-                    <h1>Performance Metrics</h1>
+                    <h1>Key Result Areas</h1>
                 </div>
                 <div class="performance-metrics">
+                    <!-- KRA I-A: EVALUATIONS -->
                     <div class="subtitle">
-                        <h2>Research Documents</h2>
+                        <h2>KRA I-A: Evalutions</h2>
                     </div>
-                    <div class="research-documents-container">
+                    <div class="metric-table-container">
                         <table>
                             <tbody>
                                 <tr>
@@ -180,8 +173,42 @@ Profile | Autorank
                                     @endif
                                 </tr>
                                 <tr>
-                                    <td>Eiusmod do tempor incididunt ut labore</td>
-                                    <td>June 2, 2024</td>
+                                    @if ($isOwnProfile)
+                                    <th class="table-navigation" colspan="4"><a href='{{ route("instructor.evaluations-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
+                                    @else
+                                    <th class="table-navigation" colspan="3">Latest Evaluations</th>
+                                    @endif
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- KRA I-B: Instructional Materials -->
+                    <div class="subtitle">
+                        <h2>KRA I-A: Instructional Materials</h2>
+                    </div>
+                    <div class="metric-table-container">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Publication Date</th>
+                                    <th>Status</th>
+                                    @if ($isOwnProfile)
+                                    <th>Action</th>
+                                    @endif
+                                </tr>
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
+                                    <td>N/A</td>
+                                    <td>Ongoing</td>
+                                    @if ($isOwnProfile)
+                                    <td><button>View</button></td>
+                                    @endif
+                                </tr>
+                                <tr>
+                                    <td>Sed do eiusmod tempor incididunt ut labore</td>
+                                    <td>July 12, 2024</td>
                                     <td>Done</td>
                                     @if ($isOwnProfile)
                                     <td><button>Upload</button></td>
@@ -189,117 +216,135 @@ Profile | Autorank
                                 </tr>
                                 <tr>
                                     @if ($isOwnProfile)
-                                    <th class="table-navigation" colspan="4"><a href='{{ route("research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
+                                    <th class="table-navigation" colspan="4"><a href='{{ route("instructor.instructional-materials-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
                                     @else
-                                    <th class="table-navigation" colspan="3">Latest Research Documents</th>
+                                    <th class="table-navigation" colspan="3">Latest Instructional Materials</th>
                                     @endif
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- KRA II: Research Outputs -->
                     <div class="subtitle">
-                        <h2>Evaluations</h2>
+                        <h2>KRA II: Research Outputs</h2>
                     </div>
-                    <div class="evaluations-container">
+                    <div class="metric-table-container">
                         <table>
                             <tbody>
                                 <tr>
-                                    <th>Type</th>
-                                    <th>Date</th>
+                                    <th>Title</th>
+                                    <th>Publication Date</th>
                                     <th>Status</th>
                                     @if ($isOwnProfile)
                                     <th>Action</th>
                                     @endif
                                 </tr>
                                 <tr>
-                                    <td>Student Evaluation</td>
-                                    <td>May 7, 2024</td>
-                                    <td>Uploaded</td>
-                                    @if ($isOwnProfile)
-                                    <td>
-                                        <div><button>View</button><button>Edit</button></div>
-                                    </td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Faculty/Peer Evaluation</td>
-                                    <td>December 2, 2023</td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
+                                    <td>N/A</td>
                                     <td>Ongoing</td>
                                     @if ($isOwnProfile)
-                                    <td>
-                                        <div><button>View</button><button>Edit</button></div>
-                                    </td>
+                                    <td><button>View</button></td>
                                     @endif
                                 </tr>
                                 <tr>
-                                    <td>Student Evaluation</td>
-                                    <td>September 12, 2023</td>
-                                    <td>Uploaded</td>
+                                    <td>Sed do eiusmod tempor incididunt ut labore</td>
+                                    <td>July 12, 2024</td>
+                                    <td>Done</td>
                                     @if ($isOwnProfile)
-                                    <td>
-                                        <div><button>View</button><button>Edit</button></div>
-                                    </td>
+                                    <td><button>Upload</button></td>
                                     @endif
                                 </tr>
                                 <tr>
                                     @if ($isOwnProfile)
-                                    <th class="table-navigation" colspan="4"><a href='{{ route("research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
+                                    <th class="table-navigation" colspan="4"><a href='{{ route("instructor.research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
                                     @else
-                                    <th class="table-navigation" colspan="3">Latest Public Evaluations</th>
+                                    <th class="table-navigation" colspan="3">Latest Research Outputs</th>
                                     @endif
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- KRA III: Extension Services -->
                     <div class="subtitle">
-                        <h2>Event Participation</h2>
+                        <h2>KRA III: Extension Services</h2>
                     </div>
-                    <div class="event-participation-container">
+                    <div class="metric-table-container">
                         <table>
                             <tbody>
                                 <tr>
-                                    <th>Type</th>
-                                    <th>Date</th>
+                                    <th>Title</th>
+                                    <th>Publication Date</th>
                                     <th>Status</th>
                                     @if ($isOwnProfile)
                                     <th>Action</th>
                                     @endif
                                 </tr>
                                 <tr>
-                                    <td>Seminar</td>
-                                    <td>October 14, 2023</td>
-                                    <td>Uploaded</td>
-                                    @if ($isOwnProfile)
-                                    <td>
-                                        <div><button>View</button><button>Edit</button></div>
-                                    </td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Seminar</td>
-                                    <td>July 30, 2023</td>
-                                    <td>Uploaded</td>
-                                    @if ($isOwnProfile)
-                                    <td>
-                                        <div><button>View</button><button>Edit</button></div>
-                                    </td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Seminar</td>
-                                    <td>June 3, 2023</td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
+                                    <td>N/A</td>
                                     <td>Ongoing</td>
                                     @if ($isOwnProfile)
-                                    <td>
-                                        <div><button>View</button><button>Edit</button></div>
-                                    </td>
+                                    <td><button>View</button></td>
+                                    @endif
+                                </tr>
+                                <tr>
+                                    <td>Sed do eiusmod tempor incididunt ut labore</td>
+                                    <td>July 12, 2024</td>
+                                    <td>Done</td>
+                                    @if ($isOwnProfile)
+                                    <td><button>Upload</button></td>
                                     @endif
                                 </tr>
                                 <tr>
                                     @if ($isOwnProfile)
-                                    <th class="table-navigation" colspan="4"><a href='{{ route("research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
+                                    <th class="table-navigation" colspan="4"><a href='{{ route("instructor.extension-services-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
                                     @else
-                                    <th class="table-navigation" colspan="3">Latest Public Events</th>
+                                    <th class="table-navigation" colspan="3">Latest Extension Services</th>
+                                    @endif
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- KRA IV: Professional Developments -->
+                    <div class="subtitle">
+                        <h2>KRA IV: Professional Developments</h2>
+                    </div>
+                    <div class="metric-table-container">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Publication Date</th>
+                                    <th>Status</th>
+                                    @if ($isOwnProfile)
+                                    <th>Action</th>
+                                    @endif
+                                </tr>
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
+                                    <td>N/A</td>
+                                    <td>Ongoing</td>
+                                    @if ($isOwnProfile)
+                                    <td><button>View</button></td>
+                                    @endif
+                                </tr>
+                                <tr>
+                                    <td>Sed do eiusmod tempor incididunt ut labore</td>
+                                    <td>July 12, 2024</td>
+                                    <td>Done</td>
+                                    @if ($isOwnProfile)
+                                    <td><button>Upload</button></td>
+                                    @endif
+                                </tr>
+                                <tr>
+                                    @if ($isOwnProfile)
+                                    <th class="table-navigation" colspan="4"><a href='{{ route("instructor.professional-developments-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
+                                    @else
+                                    <th class="table-navigation" colspan="3">Latest Professional Developments</th>
                                     @endif
                                 </tr>
                             </tbody>

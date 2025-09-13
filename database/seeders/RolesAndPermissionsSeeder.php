@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\PermissionRegistrar; // Import the registrar
+use Spatie\Permission\PermissionRegistrar;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -23,6 +23,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage users',
             'manage roles',
             'access applications page',
+            'access evaluate applications page',
             'view dashboard',
             'view profile',
             'view research documents',
@@ -46,6 +47,11 @@ class RolesAndPermissionsSeeder extends Seeder
                 'access applications page',
                 'manage users',
                 'manage roles',
+            ],
+            'evaluator' => [
+                'view dashboard',
+                'view profile',
+                'access evaluate applications page',
             ],
             'user' => [
                 'view dashboard',

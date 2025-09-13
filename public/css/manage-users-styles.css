@@ -78,7 +78,6 @@ body.modal-open {
     align-items: start;
     flex-direction: column;
     gap: 7px;
-    margin-bottom: 25px;
 }
 
 .role-modal-content-header h1 {
@@ -91,13 +90,13 @@ body.modal-open {
 }
 
 .role-modal-content-body {
+    padding: 30px 0 30px 0;
     flex: 1;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: start;
     flex-direction: column;
-    gap: 10px;
 }
 
 /* BUTTONS STYLING */
@@ -112,7 +111,7 @@ body.modal-open {
     cursor: pointer;
 }
 
-.role-modal-form-check-input {
+.role-modal-container input[type="radio"] {
     margin-right: 8px;
     width: 20px;
     height: 20px;
@@ -121,22 +120,6 @@ body.modal-open {
 .role-modal-form-check-label {
     font-size: 1rem;
     color: white;
-}
-
-.role-modal-confirmation button {
-    background-color: hsl(
-    var(--base-hue-primary),
-    var(--base-saturation-primary),
-    calc(var(--base-lightness-primary) + 15%)
-    );
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 650;
-    cursor: pointer;
-    flex-grow: 0;
-    flex-shrink: 0; 
 }
 
 .role-modal-actions {
@@ -149,48 +132,26 @@ body.modal-open {
 }
 
 .role-modal-actions button {
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
     border: none;
     border-radius: 5px;
     font-size: 1rem;
     font-weight: 650;
     cursor: pointer;
     height: 100%;
+    flex-grow: 1;
 }
 
-.role-modal-actions button:nth-child(1) {
-    background-color: hsl(
-    var(--base-hue-primary),
-    var(--base-saturation-primary),
-    calc(var(--base-lightness-primary) + 15%)
-    );
-    width: 20%;
-}
-
-.role-modal-actions button:nth-child(1):hover {
+.role-modal-actions button:hover {
     background-color: hsl(
     var(--base-hue-primary),
     var(--base-saturation-primary),
     calc(var(--base-lightness-primary) + 25%)
     );
-    width: 20%;
-}
-
-.role-modal-actions button:nth-child(2), #proceedToConfirmationBtn {
-    background-color: hsl(
-    var(--base-hue-primary),
-    var(--base-saturation-primary),
-    calc(var(--base-lightness-primary) + 15%)
-    );
-    width: 35%;
-}
-
-.role-modal-actions button:nth-child(2):hover, #proceedToConfirmationBtn:hover {
-    background-color: hsl(
-    var(--base-hue-primary),
-    var(--base-saturation-primary),
-    calc(var(--base-lightness-primary) + 25%)
-    );
-    width: 35%;
 }
 
 /* MODAL ALERTS STYLING */
@@ -227,7 +188,7 @@ body.modal-open {
     color: var(--alertDefaultH);
 }
 
-#modal-messages, #finalStatusMessageArea {
+#role-modal-message, #finalStatusMessageArea {
     width: 100%; 
     padding: 0; 
     box-sizing: border-box;

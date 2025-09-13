@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Models\AhpCriterion;
 use App\Models\AhpWeight;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class AhpController extends Controller
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Instructor;
 
 use Illuminate\Http\Request;
 use App\Models\PerformanceMetric;
@@ -15,6 +15,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class InstructorMetricsController extends Controller
 {
@@ -77,41 +78,6 @@ class InstructorMetricsController extends Controller
         });
 
         return redirect()->back()->with('success', 'Your performance metrics have been saved and your score has been updated!');
-    }
-
-    /**
-     * Store created evaluation
-     */
-    public function storeEvaluation(Request $request)
-    {
-        try {
-            $request->validate([
-                'category' => 'required|string|in:student,supervisor',
-                'title' => 'required|string|max:255',
-                'date' => 'required|date',
-                'score' => 'required|numeric|min:0',
-                'evaluation_file' => 'required|file|mimes:pdf,doc,docx,jpg,png|min:100|max:5120',
-            ]);
-
-            $filePath = null;
-            if ($request->hasFile('evaluation_file')) {
-                $filePath = $request->file('evaluation_file')->store('evaluations', 'public');
-            }
-
-            Evaluation::create([
-                'user_id' => Auth::id(),
-                'category' => $request->category,
-                'title' => $request->title,
-                'date' => $request->date,
-                'score' => $request->score,
-                'file_path' => $filePath,
-            ]);
-
-            return redirect()->route('evaluations-page')->with('success', 'Evaluation uploaded successfully!');
-        } catch (\Exception $e) {
-            Log::error('Error uploading evaluation: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'There was a problem uploading your evaluation. Please try again.');
-        }
     }
 
     //store material

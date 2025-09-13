@@ -1,6 +1,6 @@
 @extends('layouts.view-all-layout')
 
-@section('title', 'Research Documents | Autorank')
+@section('title', 'KRA II: Research Documents | Autorank')
 
 @section('content')
 
@@ -16,7 +16,7 @@
 @endif
 
 <div class="header">
-    <h1>KRA II Research Output</h1>
+    <h1>KRA II: Research Outputs</h1>
 </div>
 <div class="performance-metric-container">
     <table>
@@ -29,7 +29,7 @@
                 <th>File</th>
                 <th>
                     <div class="search-bar-container">
-                        <form action="{{ route('research-documents-page') }}" method="GET">
+                        <form action="{{ route('instructor.research-documents-page') }}" method="GET">
                             <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
                             <button type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i></button>
                         </form>
@@ -62,8 +62,7 @@
             @endforelse
 
             <tr>
-                <td colspan="5">&nbsp;</td>
-                <td>
+                <td colspan="7">
                     <button id="upload-document-button">Upload New</button>
                 </td>
             </tr>
@@ -123,63 +122,4 @@
     <button onclick="goBack()">Back</button>
     <button>Load More +</button>
 </div>
-
-<script>
-    function goBack() {
-        window.history.back();
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const uploadWindow = document.getElementById('upload-window-container');
-        const openButton = document.getElementById('upload-document-button');
-        const closeButton = uploadWindow.querySelector('.close-button');
-        const form = document.getElementById('upload-document-form');
-        const submitButton = document.getElementById('submit-upload-button');
-
-        const typeCheckboxes = form.querySelectorAll('input[name="type"]');
-        const requiredInputs = form.querySelectorAll('input[required]');
-
-        function validateForm() {
-            let isTypeSelected = false;
-            typeCheckboxes.forEach(checkbox => {
-                if (checkbox.checked) isTypeSelected = true;
-            });
-
-            let areInputsFilled = true;
-            requiredInputs.forEach(input => {
-                if (input.type === 'file') {
-                    if (input.files.length === 0) areInputsFilled = false;
-                } else if (!input.value.trim()) {
-                    areInputsFilled = false;
-                }
-            });
-
-            submitButton.disabled = !(isTypeSelected && areInputsFilled);
-        }
-
-        typeCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                // Uncheck all other boxes
-                typeCheckboxes.forEach(otherCheckbox => {
-                    if (otherCheckbox !== this) {
-                        otherCheckbox.checked = false;
-                    }
-                });
-                validateForm();
-            });
-        });
-
-        form.addEventListener('input', validateForm);
-        openButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            uploadWindow.style.display = 'flex';
-        });
-        closeButton.addEventListener('click', () => {
-            uploadWindow.style.display = 'none';
-        });
-        window.addEventListener('click', (e) => {
-            if (e.target == uploadWindow) uploadWindow.style.display = 'none';
-        });
-    });
-</script>
 @endsection

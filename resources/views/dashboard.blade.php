@@ -4,6 +4,23 @@
 
 @section('content')
 <div class="main-content-container">
+    <div class="available-positions-container">
+        <div class="available-positions-header">
+            <h1>Available Positions</h1>
+        </div>
+        <div class="available-positions-body">
+            <ul>
+                <li>
+                    <span>Instructor I</span>
+                    <button class="apply-button">Apply</button>
+                </li>
+                <li>
+                    <span>Instructor II</span>
+                    <button class="apply-button">Apply</button>
+                </li>
+            </ul>
+        </div>
+    </div>
     <div class="overall-completion-overview-container">
         <div class="research-publication-container">
             <div class="research-publication-top-part">

@@ -9,17 +9,34 @@ class Evaluation extends Model
 {
     use HasFactory;
 
-    protected $table = 'Evaluations';
+    /**
+     * The table associated with the model.
+     */
+    protected $table = 'evaluations';
+
+    /**
+     * The attributes that are mass assignable.
+     */
     protected $fillable = [
         'user_id',
         'title',
         'category',
         'score',
-        'link',
         'file_path',
-        'created_at',
+        'publish_date',
+        'link',
     ];
 
+    /**
+     * The attributes that should be cast.
+     */
+    protected $casts = [
+        'publish_date' => 'datetime',
+    ];
+
+    /**
+     * Get the user that owns the evaluation.
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

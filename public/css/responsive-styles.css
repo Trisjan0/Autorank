@@ -71,11 +71,21 @@
   .phone-num-modal {
       width: 90vw;
   }
+
+  /* MANAGE USERS PAGE -- -- -- */
+  .role-modal {
+      width: 90vw;
+  }
 }
 
 @media (max-width: 450px) {
   /* PROFILE PAGE -- -- -- */
   .phone-num-modal {
+      width: 90vw;
+  }
+
+  /* MANAGE USERS PAGE -- -- -- */
+  .role-modal {
       width: 90vw;
   }
 }

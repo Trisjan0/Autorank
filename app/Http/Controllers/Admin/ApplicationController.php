@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\ApplicationModel;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ApplicationController extends Controller
 {

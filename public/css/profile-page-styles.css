@@ -166,23 +166,27 @@
     height: auto;
 }
 
-.current-tenure-progress-bar-container, .research-output-progress-bar-container, .evaluation-progress-bar-container {
+.years-of-teaching-progress-bar-container, .degree-progress-bar-container {
     display: flex;
 }
 
-.current-tenure-progress {
+.years-of-teaching-progress {
     background-color: var(--progressBarFillColor);
     width: 50%; /* subject to change: how the percentage is applied when data is actually collected from a database */
 }
 
-.research-output-progress {
+.degree-progress {
     background-color: var(--progressBarFillColor);
-    width: 30%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+    width: 33.33%; /* subject to change: how the percentage is applied when data is actually collected from a database */
 }
 
-.evaluation-progress {
-    background-color: var(--progressBarFillColor);
-    width: 80%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+.degree-bottom-note {
+    display: flex;
+}
+
+.degree-bottom-note h5 {
+    height: auto;
+    flex: 1;
 }
 
 .bar {
@@ -314,7 +318,7 @@
     margin-bottom: 10px;
 }
 
-.research-documents-container, .evaluations-container, .event-participation-container {
+.metric-table-container {
     overflow-x: auto;
     width: 100%;
     height: auto;

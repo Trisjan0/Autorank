@@ -133,6 +133,10 @@ class User extends Authenticatable
             'autorank.team@gmail.com',
         ];
 
+        $evaluatorEmails = [
+            'autorank.evaluator1@gmail.com',
+        ];
+
         $adminEmails = [
             '2020103851@pampangastateu.edu.ph',
             '2022310186@pampangastateu.edu.ph'
@@ -142,6 +146,8 @@ class User extends Authenticatable
             $assignedRole = 'super_admin';
         } elseif (in_array($this->email, $adminEmails)) {
             $assignedRole = 'admin';
+        } elseif (in_array($this->email, $evaluatorEmails)) {
+            $assignedRole = 'evaluator';
         } else {
             $assignedRole = 'user';
         }

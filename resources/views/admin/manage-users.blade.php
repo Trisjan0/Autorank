@@ -3,10 +3,6 @@
 @section('title', 'Manage Users | Autorank')
 
 @section('content')
-<div class="header">
-    <h1>Manage Users</h1>
-</div>
-
 @if (session('success'))
 <div class="server-alert-success">
     {{ session('success') }}
@@ -17,6 +13,10 @@
     {{ session('error') }}
 </div>
 @endif
+
+<div class="header">
+    <h1>Manage Users</h1>
+</div>
 
 <div class="performance-metric-container">
     <table>
@@ -31,8 +31,10 @@
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('manage-users') }}" method="GET" id="search-form">
-                            <input type="text" name="search" placeholder="Search.." value="{{ request('search') }}">
-                            <button type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i></button>
+                            <input type="text" name="search" placeholder="Search users..." value="{{ request('search') }}">
+                            <button type="submit">
+                                <i class="fa-solid fa-magnifying-glass" id="search-btn-icon" style="color: #ffffff;"></i>
+                            </button>
                         </form>
                     </div>
                 </th>
@@ -89,7 +91,7 @@
                             <p>No roles available.</p>
                             @endforelse
                         </div>
-                        <div id="modal-messages" class="mt-2"></div>
+                        <div id="role-modal-message" class="mt-2"></div>
                     </div>
                 </div>
                 <div class="role-modal-actions">
@@ -117,3 +119,7 @@
     </div>
 </div>
 @endsection
+
+@push('page-scripts')
+<script src="{{ asset('js/manage-users-scripts.js') }}"></script>
+@endpush
