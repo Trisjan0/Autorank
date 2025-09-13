@@ -96,22 +96,22 @@ Profile | Autorank
             </div>
         </div>
         <div class="content-right-side">
-            <div class="reclassification-progress-container">
+            <div class="credentials-and-experience-container">
                 <div class="title">
-                    <h1>Reclassification Progress</h1>
+                    <h1>Credentials & Experience</h1>
                 </div>
                 <div class="progress-bars-container">
-                    <div class="current-tenure-container">
+                    <div class="years-of-teaching-container">
                         <div class="subtitle">
                             <h4>Years of Teaching</h4>
-                            <h5>50% Before Eligibility</h5>
+                            <h5></h5>
                         </div>
                         <div class="years-of-teaching-progress-bar-container">
                             <div class="years-of-teaching-progress"></div>
                             <div class="bar"></div>
                         </div>
-                        <div class="bottom-note">
-                            <h5>Requirement: 4 years</h5>
+                        <div class="years-of-teaching-bottom-note">
+                            <h5>5 years</h5>
                         </div>
                     </div>
                     <div class="degree-container">

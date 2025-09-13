@@ -128,7 +128,7 @@
 }
 
 /* RECLASSIFICATION PROGRESS STYLING -- -- */
-.reclassification-progress-container {
+.credentials-and-experience-container {
     width: 100%;
     height: auto;
     display: flex;
@@ -173,6 +173,13 @@
 .years-of-teaching-progress {
     background-color: var(--progressBarFillColor);
     width: 50%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+}
+
+.years-of-teaching-bottom-note {
+    height: auto;
+    width: 50%;
+    display: flex;
+    justify-content: end;
 }
 
 .degree-progress {
