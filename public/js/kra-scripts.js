@@ -1,206 +1,151 @@
 document.addEventListener('DOMContentLoaded', () => {
     /*
     |--------------------------------------------------------------------------
-    | FOR KRA I-A: EVALUATIONS MODAL -- START
+    | REUSABLE KRA MODAL & AJAX LOGIC
     |--------------------------------------------------------------------------
     */
-    const uploadEvalModal = document.getElementById('uploadEvaluationModal');
+    const uploadModal = document.getElementById('kra-upload-modal');
 
-    if (uploadEvalModal) {
-        const openUploadModalBtn = document.getElementById('upload-evaluations-button');
-        const closeUploadModalBtn = document.getElementById('closeUploadEvalModalBtn');
-        const evalForm = document.getElementById('upload-evaluations-form');
-        const uploadEvaluationInitialStep = document.getElementById('uploadEvaluationInitialStep');
-        const proceedToEvalConfirmationBtn = document.getElementById('proceedToEvalConfirmationBtn');
-        const evalModalMessages = document.getElementById('eval-modal-messages');
-        const uploadEvaluationConfirmationStep = document.getElementById('uploadEvaluationConfirmationStep');
-        const backToEvalSelectionBtn = document.getElementById('backToEvalSelectionBtn');
-        const confirmUploadEvalBtn = document.getElementById('confirmUploadEvalBtn');
-        const evalConfirmationMessageArea = document.getElementById('evalConfirmationMessageArea');
-        const evalFinalStatusMessageArea = document.getElementById('evalFinalStatusMessageArea');
+    if (uploadModal) {
+        // --- Modal Element Selectors ---
+        const openUploadModalBtn = document.getElementById('upload-kra-button');
+        const closeUploadModalBtn = document.getElementById('kra-modal-close-btn');
+        const kraForm = document.getElementById('kra-upload-form');
+        const initialStep = document.getElementById('kra-modal-initial-step');
+        const confirmationStep = document.getElementById('kra-modal-confirmation-step');
+        const proceedBtn = document.getElementById('kra-proceed-to-confirmation-btn');
+        const backBtn = document.getElementById('kra-back-to-selection-btn');
+        const confirmBtn = document.getElementById('kra-confirm-upload-btn');
+        const messages = {
+            initial: document.getElementById('kra-modal-messages'),
+            confirmation: document.getElementById('kra-confirmation-message-area'),
+            finalStatus: document.getElementById('kra-final-status-message-area'),
+        };
+        const pageRefreshDelay = 1250;
 
-        const pageRefreshDelay = 1250; // Consistent delay for user to read messages
+        // --- Modal Control Functions ---
+        const showStep = (step) => {
+            if (!initialStep || !confirmationStep) return;
+            initialStep.style.display = (step === 'initial') ? 'block' : 'none';
+            confirmationStep.style.display = (step === 'confirmation') ? 'block' : 'none';
+        };
 
-        function showUploadModal(step = 'initial') {
-            uploadEvalModal.style.display = 'flex';
+        const showModal = () => {
+            uploadModal.style.display = 'flex';
             document.body.classList.add('modal-open');
-            showUploadStep(step);
-        }
+            showStep('initial');
+        };
 
-        function hideUploadModal() {
-            uploadEvalModal.style.display = 'none';
+        const hideModal = () => {
+            uploadModal.style.display = 'none';
             document.body.classList.remove('modal-open');
-            // Clear all messages and reset state when closing
-            if (evalModalMessages) evalModalMessages.innerHTML = '';
-            if (evalFinalStatusMessageArea) evalFinalStatusMessageArea.innerHTML = '';
-            if (evalConfirmationMessageArea) evalConfirmationMessageArea.innerHTML = '';
-            // Re-enable buttons if they were disabled
-            if (confirmUploadEvalBtn) confirmUploadEvalBtn.disabled = false;
-            if (backToEvalSelectionBtn) backToEvalSelectionBtn.disabled = false;
-            if (closeUploadModalBtn) closeUploadModalBtn.disabled = false;
-        }
+            Object.values(messages).forEach(el => { if (el) el.innerHTML = ''; });
+            if (kraForm) kraForm.reset();
+            [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => { if (btn) btn.disabled = false; });
+        };
 
-        function showUploadStep(step) {
-            if (uploadEvaluationInitialStep && uploadEvaluationConfirmationStep) {
-                if (step === 'initial') {
-                    uploadEvaluationInitialStep.style.display = 'block';
-                    uploadEvaluationConfirmationStep.style.display = 'none';
-                } else if (step === 'confirmation') {
-                    uploadEvaluationInitialStep.style.display = 'none';
-                    uploadEvaluationConfirmationStep.style.display = 'block';
-                }
-            }
-        }
+        // --- Event Listeners ---
+        if (openUploadModalBtn) openUploadModalBtn.addEventListener('click', showModal);
+        if (closeUploadModalBtn) closeUploadModalBtn.addEventListener('click', hideModal);
+        uploadModal.addEventListener('click', (e) => { if (e.target === uploadModal) hideModal(); });
+        if (backBtn) backBtn.addEventListener('click', () => {
+            showStep('initial');
+            if (messages.finalStatus) messages.finalStatus.innerHTML = '';
+        });
 
-        if (openUploadModalBtn) {
-            openUploadModalBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (evalForm) evalForm.reset();
-                showUploadModal('initial');
-            });
-        }
-
-        if (closeUploadModalBtn) {
-            closeUploadModalBtn.addEventListener('click', hideUploadModal);
-        }
-
-        if (uploadEvalModal) {
-            uploadEvalModal.addEventListener('click', function(event) {
-                if (event.target === uploadEvalModal) {
-                    hideUploadModal();
-                }
-            });
-        }
-
-        if (proceedToEvalConfirmationBtn) {
-            proceedToEvalConfirmationBtn.addEventListener('click', function() {
-                if (evalModalMessages) evalModalMessages.innerHTML = '';
-                if (!evalForm.checkValidity()) {
-                    if (evalModalMessages) evalModalMessages.innerHTML = '<div class="alert-danger">Please fill out all required fields.</div>';
+        if (proceedBtn) {
+            proceedBtn.addEventListener('click', () => {
+                if (messages.initial) messages.initial.innerHTML = '';
+                if (!kraForm.checkValidity()) {
+                    if (messages.initial) messages.initial.innerHTML = '<div class="alert-danger">Please fill out all required fields.</div>';
                     return;
                 }
 
-                // Get form values to show in the confirmation message
-                const title = document.getElementById('eval-title').value;
-                const categoryRadio = evalForm.querySelector('input[name="category"]:checked');
-                const score = document.getElementById('eval-score').value;
-                const fileInput = document.getElementById('evaluation_file');
-                const publishDateInput = document.getElementById('eval-publish-date');
+                let confirmationHtml = 'Please confirm the following details:<br><br>';
+                const formData = new FormData(kraForm);
+                const processedFields = new Set();
 
-                const category = categoryRadio ? categoryRadio.value : 'N/A';
-                const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file selected';
-                const publishDate = publishDateInput.value ? publishDateInput.value : 'N/A';
+                formData.forEach((value, key) => {
+                    const input = kraForm.querySelector(`[name="${key}"]`);
+                    if (!input || (input.type === 'radio' && !input.checked)) return;
+                    if (processedFields.has(key)) return;
 
-                // Populate confirmation message
-                evalConfirmationMessageArea.innerHTML = `Please confirm the following details:<br><br>
-                    <strong>Title:</strong> ${title}<br>
-                    <strong>Category:</strong> ${category}<br>
-                    <strong>Publish Date:</strong> ${publishDate}<br>
-                    <strong>Score:</strong> ${score}<br>
-                    <strong>File:</strong> ${fileName}`;
+                    const label = input.getAttribute('data-label') || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    let displayValue = (value instanceof File) ? value.name : value;
 
-                showUploadStep('confirmation');
+                    confirmationHtml += `<strong>${label}:</strong> ${displayValue}<br>`;
+                    processedFields.add(key);
+                });
+
+                messages.confirmation.innerHTML = confirmationHtml;
+                showStep('confirmation');
             });
         }
 
-        // *** MODIFIED TO MATCH REFERENCE PATTERN ***
-        if (confirmUploadEvalBtn) {
-            confirmUploadEvalBtn.addEventListener('click', async function() {
-                const url = evalForm.getAttribute('action');
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', async () => {
+                const url = kraForm.getAttribute('action');
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                const formData = new FormData(evalForm);
+                const formData = new FormData(kraForm);
 
-                // Disable buttons to prevent multiple submissions
-                confirmUploadEvalBtn.disabled = true;
-                if (backToEvalSelectionBtn) backToEvalSelectionBtn.disabled = true;
-                if (closeUploadModalBtn) closeUploadModalBtn.disabled = true;
-
-                evalFinalStatusMessageArea.innerHTML = '<div class="alert-info">Uploading... Please wait.</div>';
+                [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = true);
+                messages.finalStatus.innerHTML = '<div class="alert-info">Uploading... Please wait.</div>';
 
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: formData
+                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                        body: formData,
                     });
-
-                    const responseData = await response.json();
-
+                    const data = await response.json();
                     if (response.ok) {
-                        evalFinalStatusMessageArea.innerHTML = `<div class="alert-success">${responseData.message}</div>`;
-                        setTimeout(() => {
-                            hideUploadModal();
-                            window.location.reload(); // Reload page to show new data
-                        }, pageRefreshDelay);
+                        messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
+                        setTimeout(() => window.location.reload(), pageRefreshDelay);
                     } else {
-                        let errorMessage = 'An error occurred. Please try again.';
-                        if (response.status === 422 && responseData.errors) {
-                            errorMessage = '<div class="alert-danger"><ul>';
-                            for (const key in responseData.errors) {
-                                errorMessage += `<li>${responseData.errors[key][0]}</li>`;
-                            }
-                            errorMessage += '</ul></div>';
-                        } else if (responseData.message) {
-                            errorMessage = `<div class="alert-danger">${responseData.message}</div>`;
+                        let errorMsg = data.message || 'An unknown error occurred.';
+                        if (response.status === 422 && data.errors) {
+                            errorMsg = '<ul>' + Object.values(data.errors).map(err => `<li>${err[0]}</li>`).join('') + '</ul>';
                         }
-                        evalFinalStatusMessageArea.innerHTML = errorMessage;
-
-                        // Re-enable buttons on error
-                        confirmUploadEvalBtn.disabled = false;
-                        if (backToEvalSelectionBtn) backToEvalSelectionBtn.disabled = false;
-                        if (closeUploadModalBtn) closeUploadModalBtn.disabled = false;
+                        messages.finalStatus.innerHTML = `<div class="alert-danger">${errorMsg}</div>`;
+                        [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = false);
                     }
                 } catch (error) {
-                    console.error('AJAX Error:', error);
-                    evalFinalStatusMessageArea.innerHTML = `<div class="alert-danger">Network error or unexpected response: ${error.message}</div>`;
-
-                    // Re-enable buttons on network error
-                    confirmUploadEvalBtn.disabled = false;
-                    if (backToEvalSelectionBtn) backToEvalSelectionBtn.disabled = false;
-                    if (closeUploadModalBtn) closeUploadModalBtn.disabled = false;
+                    messages.finalStatus.innerHTML = `<div class="alert-danger">Network error: ${error.message}</div>`;
+                    [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = false);
                 }
             });
         }
-
-
-        if (backToEvalSelectionBtn) {
-            backToEvalSelectionBtn.addEventListener('click', function() {
-                showUploadStep('initial');
-                // Clear messages and re-enable buttons
-                if (evalModalMessages) evalModalMessages.innerHTML = '';
-                if (evalFinalStatusMessageArea) evalFinalStatusMessageArea.innerHTML = '';
-                if (confirmUploadEvalBtn) confirmUploadEvalBtn.disabled = false;
-                if (backToEvalSelectionBtn) backToEvalSelectionBtn.disabled = false;
-                if (closeUploadModalBtn) closeUploadModalBtn.disabled = false; // Ensure close is enabled
-            });
-        }
     }
-    /*
-    |--------------------------------------------------------------------------
-    | FOR KRA I-A: EVALUATIONS MODAL -- END
-    |--------------------------------------------------------------------------
-    */
-
 
     /*
     |--------------------------------------------------------------------------
-    | FOR KRA I-A: EVALUATIONS (LOAD MORE & SEARCH) -- START
+    | REUSABLE KRA "LOAD MORE" & SEARCH LOGIC (Robust Version)
     |--------------------------------------------------------------------------
     */
-    const loadMoreBtn = document.getElementById('loadMoreEvaluationsBtn');
-    const tableBody = document.getElementById('evaluations-table-body');
-    const searchForm = document.getElementById('evaluations-search-form');
+    const loadMoreBtn = document.getElementById('load-more-kra-btn');
+    const tableBody = document.getElementById('kra-table-body');
+    const searchForm = document.getElementById('kra-search-form');
 
     if (loadMoreBtn && tableBody && searchForm) {
         const searchInput = searchForm.querySelector('input[name="search"]');
-        const searchBtnIcon = document.getElementById('eval-search-btn-icon');
+        const searchBtnIcon = document.getElementById('kra-search-btn-icon');
         let isLoading = false;
-        let isFiltered = false;
 
-        async function loadEvaluations(isSearch = false) {
+        // Function to update the search icon based on the input's content
+        const updateSearchIcon = () => {
+            if (searchInput.value.trim() !== '') {
+                searchBtnIcon.classList.remove('fa-magnifying-glass');
+                searchBtnIcon.classList.add('fa-xmark');
+            } else {
+                searchBtnIcon.classList.remove('fa-xmark');
+                searchBtnIcon.classList.add('fa-magnifying-glass');
+            }
+        };
+        
+        // Set the initial state of the icon when the page loads
+        updateSearchIcon();
+
+        async function loadData(isSearch = false) {
             if (isLoading) return;
             isLoading = true;
 
@@ -209,30 +154,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadMoreBtn.dataset.currentOffset = '0';
             }
 
-            const offset = parseInt(loadMoreBtn.dataset.currentOffset);
+            const offset = parseInt(loadMoreBtn.dataset.currentOffset, 10);
             const searchTerm = searchInput.value;
 
             loadMoreBtn.disabled = true;
             loadMoreBtn.textContent = 'Loading...';
 
             try {
-                const url = `/evaluations?ajax=true&offset=${offset}&search=${encodeURIComponent(searchTerm)}`;
+                const url = `${window.location.pathname}?ajax=true&offset=${offset}&search=${encodeURIComponent(searchTerm)}`;
                 const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const data = await response.json();
+                
+                const noResultsRow = document.getElementById('no-results-row');
+                if (noResultsRow) noResultsRow.remove();
+
                 tableBody.insertAdjacentHTML('beforeend', data.html);
                 loadMoreBtn.dataset.currentOffset = data.nextOffset;
                 loadMoreBtn.style.display = data.hasMore ? 'block' : 'none';
                 
                 if (tableBody.children.length === 0) {
-                    const noResultsRowHTML = '<tr id="no-evaluations-row"><td colspan="8" style="text-align: center;">No evaluations found.</td></tr>';
-                    tableBody.innerHTML = noResultsRowHTML;
+                    const colspan = tableBody.closest('table').querySelectorAll('thead th').length;
+                    tableBody.innerHTML = `<tr id="no-results-row"><td colspan="${colspan}" style="text-align: center;">No items found.</td></tr>`;
                     loadMoreBtn.style.display = 'none';
                 }
             } catch (error) {
-                console.error('Error loading evaluations:', error);
-                alert('Failed to load evaluations. Please try again.');
+                console.error('Error loading data:', error);
+                alert('Failed to load data. Please try again.');
             } finally {
                 isLoading = false;
                 loadMoreBtn.disabled = false;
@@ -242,33 +191,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         searchForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            await loadData(true); // Always trigger a new search on submit.
+            updateSearchIcon(); // Update the icon based on the result of the search.
+        });
 
-            if (isFiltered) {
-                searchInput.value = '';
-                await loadEvaluations(true);
-                
-                searchBtnIcon.classList.remove('fa-xmark');
-                searchBtnIcon.classList.add('fa-magnifying-glass');
-                isFiltered = false;
-            } else {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm.length === 0) return;
-
-                await loadEvaluations(true);
-                
-                searchBtnIcon.classList.remove('fa-magnifying-glass');
-                searchBtnIcon.classList.add('fa-xmark');
-                isFiltered = true;
+        // Add a click listener to the icon itself for clearing
+        searchBtnIcon.addEventListener('click', (e) => {
+             if (searchBtnIcon.classList.contains('fa-xmark')) {
+                e.preventDefault(); // Prevent form submission
+                searchInput.value = ''; // Clear the input
+                updateSearchIcon(); // Update the icon to a magnifying glass
+                loadData(true); // Reload the data with no filter
             }
         });
 
-        loadMoreBtn.addEventListener('click', () => {
-            loadEvaluations(false);
-        });
+        loadMoreBtn.addEventListener('click', () => loadData(false));
     }
-    /*
-    |--------------------------------------------------------------------------
-    | FOR KRA I-A: EVALUATIONS (LOAD MORE & SEARCH) -- END
-    |--------------------------------------------------------------------------
-    */
 });

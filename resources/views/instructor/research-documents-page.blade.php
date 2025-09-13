@@ -1,16 +1,16 @@
 @extends('layouts.view-all-layout')
 
-@section('title', 'KRA II: Research Documents | Autorank')
+@section('title', 'KRA II: Research Outputs | Autorank')
 
 @section('content')
 
 @if(session('success'))
-<div class="alert alert-success" style="padding: 10px; margin-bottom: 20px; border: 1px solid green; color: green; background-color: #e6ffed;">
+<div class="server-alert-success">
     {{ session('success') }}
 </div>
 @endif
 @if(session('error'))
-<div class="alert alert-danger" style="padding: 10px; margin-bottom: 20px; border: 1px solid red; color: red; background-color: #ffeeee;">
+<div class="server-alert-danger">
     {{ session('error') }}
 </div>
 @endif
@@ -18,6 +18,7 @@
 <div class="header">
     <h1>KRA II: Research Outputs</h1>
 </div>
+
 <div class="performance-metric-container">
     <table>
         <thead>
@@ -26,100 +27,110 @@
                 <th>Title</th>
                 <th>Type</th>
                 <th>Category</th>
-                <th>File</th>
                 <th>
                     <div class="search-bar-container">
-                        <form action="{{ route('instructor.research-documents-page') }}" method="GET">
+                        <form action="{{ route('instructor.research-documents-page') }}" method="GET" id="kra-search-form">
                             <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
-                            <button type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i></button>
+                            <button type="submit">
+                                <i class="fa-solid fa-magnifying-glass" id="kra-search-btn-icon"></i>
+                            </button>
                         </form>
                     </div>
                 </th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="kra-table-body">
             @forelse($research_documents as $document)
-            <tr>
-                <td>{{ $document->id }}</td>
-                <td>{{ $document->title }}</td>
-                <td>{{ $document->type }}</td>
-                <td>{{ $document->category }}</td>
-                <td>
-                    @if($document->file_path)
-                    <a href="{{ asset('storage/' . $document->file_path) }}" target="_blank">View File</a>
-                    @else
-                    N/A
-                    @endif
-                </td>
-                <td>
-                    <button>Edit</button>
-                </td>
-            </tr>
+            @include('partials._research_documents_table_row', ['document' => $document])
             @empty
-            <tr>
+            <tr id="no-results-row">
                 <td colspan="6" style="text-align: center;">No research documents found.</td>
             </tr>
             @endforelse
-
-            <tr>
-                <td colspan="7">
-                    <button id="upload-document-button">Upload New</button>
-                </td>
-            </tr>
         </tbody>
     </table>
 </div>
 
-{{-- Floating window Start --}}
-<div id="upload-window-container" class="floating-window-container" style="display: none;">
-    <div class="floating-window">
-        <span class="close-button">&times;</span>
-        <h2>UPLOAD DOCUMENT</h2>
+<div class="load-more-container">
+    <button onclick="window.history.back()">Back</button>
+    <button id="upload-kra-button" class="upload-new-button">Upload New</button>
+    <button id="load-more-kra-btn" data-current-offset="{{ $perPage }}"
+        @if (!$initialHasMore) style="display: none;" @endif>
+        Load More +
+    </button>
+</div>
 
-        <form id="upload-document-form" action="{{ route('research-documents.store') }}" method="POST" class="floating-window-form" enctype="multipart/form-data">
-            @csrf
+{{-- UPLOAD MODAL --}}
+<div class="role-modal-container" id="kra-upload-modal" style="display: none;">
+    <div class="role-modal">
+        <div class="role-modal-navigation">
+            <i class="fa-solid fa-xmark" style="color: #ffffff;" id="kra-modal-close-btn"></i>
+        </div>
 
-            <div class="form-group">
-                <label>Type:</label>
-                <div class="checkbox-group" style="flex-wrap: wrap; gap: 10px;">
-                    <input type="checkbox" id="type-book" name="type" value="Book"><label for="type-book">Book</label>
-                    <input type="checkbox" id="type-monograph" name="type" value="Monograph"><label for="type-monograph">Monograph</label>
-                    <input type="checkbox" id="type-journal" name="type" value="Journal"><label for="type-journal">Journal</label>
-                    <input type="checkbox" id="type-chapter" name="type" value="Chapter"><label for="type-chapter">Chapter</label>
+        {{-- STEP 1: Form Input --}}
+        <div id="kra-modal-initial-step">
+            <form id="kra-upload-form" action="{{ route('instructor.research-documents.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="role-modal-content">
+                    <div class="role-modal-content-header">
+                        <h1>Upload Research Document</h1>
+                        <p>Fill out the details below. You will be asked to confirm before the file is uploaded.</p>
+                    </div>
+                    <div class="role-modal-content-body">
+                        <div class="form-group">
+                            <label class="form-group-title">Type:</label>
+                            <div class="checkbox-group" style="flex-wrap: wrap; gap: 10px;">
+                                <div class="radio-option"><input type="radio" id="type-book" name="type" value="Book" required data-label="Type"><label for="type-book">Book</label></div>
+                                <div class="radio-option"><input type="radio" id="type-monograph" name="type" value="Monograph" required data-label="Type"><label for="type-monograph">Monograph</label></div>
+                                <div class="radio-option"><input type="radio" id="type-journal" name="type" value="Journal" required data-label="Type"><label for="type-journal">Journal</label></div>
+                                <div class="radio-option"><input type="radio" id="type-chapter" name="type" value="Chapter" required data-label="Type"><label for="type-chapter">Chapter</label></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-group-title" for="title">Title:</label>
+                            <input type="text" id="title" name="title" required data-label="Title">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-group-title" for="date">Publish Date:</label>
+                            <input type="date" id="date" name="date" style="color-scheme: dark;" required data-label="Date">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-group-title" for="category">Category:</label>
+                            <input type="text" id="category" name="category" required data-label="Category">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-group-title" for="document_file">Upload File:</label>
+                            <input type="file" id="document_file" name="document_file" required data-label="File">
+                        </div>
+                        <div id="kra-modal-messages" class="mt-2"></div>
+                    </div>
+                </div>
+                <div class="role-modal-actions">
+                    <button type="button" id="kra-proceed-to-confirmation-btn">Proceed</button>
+                </div>
+            </form>
+        </div>
+
+        {{-- STEP 2: Confirmation --}}
+        <div id="kra-modal-confirmation-step" style="display: none;">
+            <div class="role-modal-content">
+                <div class="role-modal-content-header">
+                    <h1>Confirm Upload</h1>
+                    <p id="kra-confirmation-message-area"></p>
+                </div>
+                <div class="role-modal-content-body">
+                    <div id="kra-final-status-message-area" class="mt-2"></div>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" required>
+            <div class="role-modal-actions">
+                <button type="button" class="btn btn-info" id="kra-back-to-selection-btn">Back</button>
+                <button type="button" class="btn btn-success" id="kra-confirm-upload-btn">Confirm & Upload</button>
             </div>
-
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" id="date" name="date" required>
-            </div>
-
-            <div class="form-group">
-                <label for="category">Category:</label>
-                <input type="text" id="category" name="category" required>
-            </div>
-
-            <div class="form-group">
-                <label for="document_file">Input File:</label>
-                <input type="file" id="document_file" name="document_file" required>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" id="submit-upload-button" disabled>Upload</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-{{-- Floating Window End --}}
-
-
-<div class="load-more-container">
-    <button onclick="goBack()">Back</button>
-    <button>Load More +</button>
-</div>
 @endsection
+
+@push('page-scripts')
+<script src="{{ asset('js/kra-scripts.js') }}"></script>
+@endpush

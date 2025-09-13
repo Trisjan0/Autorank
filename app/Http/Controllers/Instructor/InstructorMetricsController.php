@@ -80,40 +80,6 @@ class InstructorMetricsController extends Controller
         return redirect()->back()->with('success', 'Your performance metrics have been saved and your score has been updated!');
     }
 
-    //store material
-
-    public function storeMaterial(Request $request)
-    {
-        try {
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'type' => 'required|string|max:255',
-                'category' => 'required|string|in:sole_author,co_author',
-                'date' => 'required|date',
-                'material_file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,jpg,png|max:10240',
-            ]);
-
-            $filePath = null;
-            if ($request->hasFile('material_file')) {
-                $filePath = $request->file('material_file')->store('materials', 'public');
-            }
-
-            Material::create([
-                'user_id' => Auth::id(),
-                'title' => $request->title,
-                'type' => $request->type,
-                'category' => $request->category,
-                'date' => $request->date,
-                'file_path' => $filePath,
-            ]);
-
-            return redirect()->route('evaluations-page')->with('success', 'Material uploaded successfully!');
-        } catch (\Exception $e) {
-            Log::error('Error uploading material: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'There was a problem uploading your material. Please try again.');
-        }
-    }
-
     //store research document
     public function storeResearchDocument(Request $request)
     {

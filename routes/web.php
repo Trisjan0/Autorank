@@ -7,6 +7,10 @@ use App\Http\Controllers\Admin\ApplicationController;
 use App\Http\Controllers\Evaluator\EvaluatorController;
 use App\Http\Controllers\Instructor\InstructorMetricsController;
 use App\Http\Controllers\Instructor\EvaluationsController;
+use App\Http\Controllers\Instructor\InstructionalMaterialsController;
+use App\Http\Controllers\Instructor\ResearchDocumentsController;
+use App\Http\Controllers\Instructor\ExtensionServicesController;
+use App\Http\Controllers\Instructor\ProfessionalDevelopmentsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SystemSettingsController;
@@ -87,18 +91,6 @@ Route::middleware(['auth'])->group(function () {
         // Routes for AHP Weights
         Route::get('/ahp/weights', [AhpController::class, 'showWeightsForm'])->name('ahp.weights.form');
         Route::post('/ahp/weights', [AhpController::class, 'updateWeights'])->name('ahp.weights.update');
-
-        // Route to store created material
-        Route::post('/materials', [InstructorMetricsController::class, 'storeMaterial'])->name('materials.store');
-
-        // Route to store created research document
-        Route::post('/research-documents', [InstructorMetricsController::class, 'storeResearchDocument'])->name('research-documents.store');
-
-        // Route to store created research document
-        Route::post('/extension-services', [InstructorMetricsController::class, 'storeExtensionService'])->name('extension-services.store');
-
-        //route to store created professional development
-        Route::post('/professional-developments', [InstructorMetricsController::class, 'storeProfessionalDevelopment'])->name('professional-developments.store');
     });
 
     /*
@@ -116,21 +108,24 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::middleware(['role:super_admin|user'])->group(function () {
-        // Route for the KRA I-A: Evaluations Page
+        // Route for KRA I-A: Evaluations Page
         Route::get('/evaluations', [EvaluationsController::class, 'index'])->name('instructor.evaluations-page');
-        // Route to store created evaluation
         Route::post('/evaluations', [EvaluationsController::class, 'storeEvaluation'])->name('instructor.evaluations.store');
 
-        // Route for the KRA I-B: Instructional Materials Page
-        Route::get('/instructional-materials', [PageController::class, 'showInstructionalMaterialsPage'])->name('instructor.instructional-materials-page');
+        // Route for KRA I-B: Instructional Materials Page
+        Route::get('/instructional-materials', [InstructionalMaterialsController::class, 'index'])->name('instructor.instructional-materials-page');
+        Route::post('/instructional-materials', [InstructionalMaterialsController::class, 'store'])->name('instructor.instructional-materials.store');
 
-        // Route for the KRA II: Research Documents Page
-        Route::get('/research-outputs', [PageController::class, 'showResearchDocumentsPage'])->name('instructor.research-documents-page');
+        // Route for KRA II: Research Documents Page
+        Route::get('/research-outputs', [ResearchDocumentsController::class, 'index'])->name('instructor.research-documents-page');
+        Route::post('/research-outputs', [ResearchDocumentsController::class, 'store'])->name('instructor.research-documents.store');
 
-        // Route for the KRA III: Extension Services Page
-        Route::get('/extension-services', [PageController::class, 'showExtensionServicesPage'])->name('instructor.extension-services-page');
+        // Route for KRA III: Extension Services Page
+        Route::get('/extension-services', [ExtensionServicesController::class, 'index'])->name('instructor.extension-services-page');
+        Route::post('/extension-services', [ExtensionServicesController::class, 'store'])->name('instructor.extension-services.store');
 
-        // Route for the KRA IV: Professional Developments Page
-        Route::get('/professional-developments', [PageController::class, 'showProfessionalDevelopmentsPage'])->name('instructor.professional-developments-page');
+        // Route for KRA IV: Professional Developments Page
+        Route::get('/professional-developments', [ProfessionalDevelopmentsController::class, 'index'])->name('instructor.professional-developments-page');
+        Route::post('/professional-developments', [ProfessionalDevelopmentsController::class, 'store'])->name('instructor.professional-developments.store');
     });
 });

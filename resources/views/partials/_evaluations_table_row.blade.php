@@ -3,9 +3,7 @@
     <td>{{ $evaluation->id }}</td>
     <td>{{ Str::title($evaluation->title) }}</td>
     <td>{{ Str::title($evaluation->category) }}</td>
-
     <td>{{ $evaluation->created_at->format('m/d/Y') }}</td>
-
     <td>
         @if($evaluation->publish_date)
         {{ \Carbon\Carbon::parse($evaluation->publish_date)->format('m/d/Y') }}
@@ -13,7 +11,6 @@
         N/A
         @endif
     </td>
-
     <td>{{ $evaluation->score }}</td>
     <td>
         <div class="action-container">
@@ -22,7 +19,7 @@
             @else
             N/A
             @endif
-            <button class="edit-evaluations-btn" data-evaluation-id="{{ $evaluation->id }}">Edit</button>
+            <button id="edit-evaluations-btn" data-evaluation-id="{{ $evaluation->id }}">Edit</button>
         </div>
     </td>
 </tr>
