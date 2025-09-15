@@ -19,7 +19,7 @@
             @else
             N/A
             @endif
-            <button id="edit-evaluations-btn" data-evaluation-id="{{ $evaluation->id }}">Edit</button>
+            <button class="edit-evaluations-btn" data-evaluation-id="{{ $evaluation->id }}">Edit</button>
         </div>
     </td>
 </tr>

@@ -30,7 +30,6 @@
 .profile-img-container {
     width: 100%;
     height: auto;
-    /* border: .5px solid gray; */
 }
 
 .profile-img-container img {
@@ -118,12 +117,11 @@
 
 /* CONTENT RIGHT SIDE STYLING -- -- -- */
 .content-right-side {
-    width: 75%; 
+    width: 75%;
     height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: center; */
     gap: 60px;
 }
 
@@ -166,13 +164,64 @@
     height: auto;
 }
 
-.years-of-teaching-progress-bar-container, .degree-progress-bar-container {
-    display: flex;
+/* PROGRESS BAR STYLES -- -- */
+
+.years-of-teaching-progress-bar-container,
+.degree-progress-bar-container {
+    position: relative;
+    height: 30px;
+    width: 100%;
 }
 
 .years-of-teaching-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
     background-color: var(--progressBarFillColor);
-    width: 50%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+    width: 50%; /* subject to change */
+    border-radius: 1.5px;
+    z-index: 1;
+}
+
+.degree-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: var(--progressBarFillColor);
+    width: 66.66%; /* subject to change */
+    border-radius: 1.5px;
+    z-index: 1;
+}
+
+.bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--progressBarEmptyColor);
+    border-radius: 1.5px;
+}
+
+.degree-progress-bar-container::before,
+.degree-progress-bar-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 3.5px;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 2;
+}
+
+.degree-progress-bar-container::before {
+    left: 33.33%;
+}
+
+.degree-progress-bar-container::after {
+    left: 66.66%;
 }
 
 .years-of-teaching-bottom-note {
@@ -182,24 +231,12 @@
     justify-content: end;
 }
 
-.degree-progress {
-    background-color: var(--progressBarFillColor);
-    width: 33.33%; /* subject to change: how the percentage is applied when data is actually collected from a database */
-}
-
 .degree-bottom-note {
     display: flex;
 }
 
 .degree-bottom-note h5 {
     height: auto;
-    flex: 1;
-}
-
-.bar {
-    background-color: var(--progressBarEmptyColor);
-    height: 30px;
-    border-radius: 1.5px;
     flex: 1;
 }
 

@@ -124,9 +124,9 @@ Profile | Autorank
                             <div class="bar"></div>
                         </div>
                         <div class="degree-bottom-note">
-                            <h5>|&nbsp;&nbsp;Bachelor's</h5>
-                            <h5>|&nbsp;&nbsp;Master's</h5>
-                            <h5>|&nbsp;&nbsp;Doctorate</h5>
+                            <h5>Bachelor's</h5>
+                            <h5>Master's</h5>
+                            <h5>Doctorate</h5>
                         </div>
                     </div>
                 </div>
