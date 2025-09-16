@@ -1,25 +1,22 @@
-{{-- This file controls the display of a single row in the evaluations table --}}
-<tr id="evaluations-row-{{ $evaluation->id }}">
+{{-- In resources/views/partials/_evaluations_table_row.blade.php --}}
+<tr id="evaluation-row-{{ $evaluation->id }}">
     <td>{{ $evaluation->id }}</td>
-    <td>{{ Str::title($evaluation->title) }}</td>
-    <td>{{ Str::title($evaluation->category) }}</td>
-    <td>{{ $evaluation->created_at->format('m/d/Y') }}</td>
+    <td>{{ $evaluation->title }}</td>
+    <td>{{ ucfirst($evaluation->category) }}</td>
+    <td>{{ $evaluation->created_at->format('F j, Y') }}</td>
+    <td>{{ $evaluation->publish_date ? \Carbon\Carbon::parse($evaluation->publish_date)->format('F j, Y') : 'N/A' }}</td>
+    <td>{{ rtrim(rtrim(number_format($evaluation->score, 2), '0'), '.') }}</td>
+
     <td>
-        @if($evaluation->publish_date)
-        {{ \Carbon\Carbon::parse($evaluation->publish_date)->format('m/d/Y') }}
+        @if($evaluation->google_drive_file_id)
+        <button class="view-file-btn"
+            data-fileid="{{ $evaluation->google_drive_file_id }}"
+            data-filename="{{ $evaluation->title }}">
+            <i class="fa-solid fa-up-right-from-square" style="color: #ffffff;"></i>
+            <span>&nbsp;View File</span>
+        </button>
         @else
-        N/A
+        <span class="table-data-secondary-text">No File</span>
         @endif
-    </td>
-    <td>{{ $evaluation->score }}</td>
-    <td>
-        <div class="action-container">
-            @if($evaluation->file_path)
-            <button><a href="{{ asset('storage/' . $evaluation->file_path) }}" target="_blank">View File</a></button>
-            @else
-            N/A
-            @endif
-            <button class="edit-evaluations-btn" data-evaluation-id="{{ $evaluation->id }}">Edit</button>
-        </div>
     </td>
 </tr>

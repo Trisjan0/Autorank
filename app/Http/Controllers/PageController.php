@@ -6,16 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-
-/**
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Credential[] $credentials
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Evaluation[] $evaluations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Material[] $materials
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ResearchDocument[] $researchDocuments
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PerformanceMetric[] $performanceMetrics
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PromotionApplication[] $promotionApplications
- */
-
 class PageController extends Controller
 {
     public function signin()
@@ -53,132 +43,10 @@ class PageController extends Controller
             return redirect()->route('signin-page')->with('error', 'You must be logged in to view your profile.');
         }
     }
-    //Controller used for showing review documents page
 
     public function showReviewDocumentsPage()
     {
         return view('admin.review-documents-page');
-    }
-    //Controller used for showing evaluations page
-
-    public function showExtensionServicesPage(Request $request)
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return redirect()->route('signin-page')->with('error', 'You must be logged in to view this page.');
-        }
-
-        $searchTerm = $request->input('search');
-
-        $extension_services = $user->extensionServices()
-            ->when($searchTerm, function ($query, $searchTerm) {
-                return $query->where('title', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('service_type', 'like', '%' . $searchTerm . '%');
-            })
-            ->latest()
-            ->get();
-
-        return view('instructor.extension-services-page', [
-            'extension_services' => $extension_services
-        ]);
-    }
-
-    public function showProfessionalDevelopmentsPage(Request $request)
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return redirect()->route('signin-page')->with('error', 'You must be logged in to view this page.');
-        }
-
-        $searchTerm = $request->input('search');
-
-        $professional_developments = $user->professionalDevelopments() // Corrected relationship name
-            ->when($searchTerm, function ($query, $searchTerm) {
-                return $query->where('title', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('category', 'like', '%' . $searchTerm . '%');
-            })
-            ->latest()
-            ->get();
-
-        return view('instructor.professional-developments-page', [
-            'professional_developments' => $professional_developments
-        ]);
-    }
-
-    // KRA I-A
-    public function showEvaluationsPage(Request $request)
-    {
-        $user = Auth::user();
-        if (!$user) {
-            return redirect()->route('signin-page')->with('error', 'You must be logged in to view this page.');
-        }
-
-        // --- SEARCH LOGIC FOR EVALUATIONS ---
-        $evaluationsSearchTerm = $request->input('search_evaluations');
-        $evaluations = $user->evaluations()
-            ->when($evaluationsSearchTerm, function ($query, $searchTerm) {
-                return $query->where('title', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('category', 'like', '%' . $searchTerm . '%');
-            })
-            ->latest()
-            ->get();
-
-        return view('instructor.evaluations-page', compact('evaluations'));
-    }
-
-    // KRA I-B
-    public function showInstructionalMaterialsPage(Request $request)
-    {
-        $user = Auth::user();
-        if (!$user) {
-            return redirect()->route('signin-page')->with('error', 'You must be logged in to view this page.');
-        }
-
-        // --- SEARCH LOGIC FOR MATERIALS ---
-        $materialsSearchTerm = $request->input('search_materials');
-        $materials = $user->materials()
-            ->when($materialsSearchTerm, function ($query, $searchTerm) {
-                return $query->where('title', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('category', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('type', 'like', '%' . $searchTerm . '%');
-            })
-            ->latest()
-            ->get();
-
-        return view('instructor.instructional-materials-page', compact('materials'));
-    }
-
-    // KRA II
-    public function showResearchDocumentsPage(Request $request)
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return redirect()->route('signin-page')->with('error', 'You must be logged in to view this page.');
-        }
-
-        // Get the search term from the request
-        $searchTerm = $request->input('search');
-
-        // Starting the query and conditionally apply the search filter
-        $research_documents = $user->researchDocuments()
-            ->when($searchTerm, function ($query, $searchTerm) {
-                // This entire function only runs if $searchTerm has something in it
-                return $query->where(function ($subQuery) use ($searchTerm) {
-                    $subQuery->where('title', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('type', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('category', 'like', '%' . $searchTerm . '%');
-                });
-            })
-            ->latest()
-            ->get();
-
-        // Pass the final results to the view
-        return view('instructor.research-documents-page', [
-            'research_documents' => $research_documents
-        ]);
     }
 
     public function showAllUsersPage()
@@ -195,6 +63,6 @@ class PageController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/signin');
+        return redirect('/signin-page');
     }
 }

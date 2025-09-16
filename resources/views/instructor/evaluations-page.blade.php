@@ -29,6 +29,7 @@
                 <th>Date Uploaded</th>
                 <th>Publish Date</th>
                 <th>Score</th>
+                {{-- REVISED: The search bar is now the 7th and final header --}}
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.evaluations-page') }}" method="GET" id="kra-search-form">
@@ -46,6 +47,7 @@
             @include('partials._evaluations_table_row', ['evaluation' => $evaluation])
             @empty
             <tr id="no-results-row">
+                {{-- REVISED: Colspan is now 7 to match the new number of columns --}}
                 <td colspan="7" style="text-align: center;">No evaluations found.</td>
             </tr>
             @endforelse
@@ -132,6 +134,21 @@
                 <button type="button" class="btn btn-info" id="kra-back-to-selection-btn">Back</button>
                 <button type="button" class="btn btn-success" id="kra-confirm-upload-btn">Confirm & Upload</button>
             </div>
+        </div>
+    </div>
+</div>
+
+{{-- VIEW FILE MODAL --}}
+<div class="modal-container" id="fileViewerModal" style="display: none;">
+    <div class="modal-content modal-fullscreen">
+        <div class="modal-header">
+            <h5 class="modal-title" id="fileViewerModalLabel">Viewing File</h5>
+            <button class="close-modal-btn" id="closeModalBtn">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <iframe id="fileViewerIframe" src="" width="100%" height="600px" frameborder="0"></iframe>
         </div>
     </div>
 </div>

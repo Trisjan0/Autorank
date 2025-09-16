@@ -11,8 +11,6 @@ use Spatie\Permission\Traits\HasRoles;
 use Carbon\Carbon;
 use App\Models\ProfessionalDevelopment;
 
-
-
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -34,6 +32,8 @@ class User extends Authenticatable
         'phone_number',
         'role_assigned_at',
         'role_assigned_by',
+        'google_token',
+        'google_refresh_token',
     ];
 
     /**
@@ -68,7 +68,6 @@ class User extends Authenticatable
         return $this->hasMany(Credential::class);
     }
 
-    // This part tells the user model about its relationships with evaluations and materials
     /**
      * Get the evaluations for the user.
      */
@@ -78,7 +77,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the research documents for the user.
+     * Get the research documents for the.
      */
     public function researchDocuments()
     {

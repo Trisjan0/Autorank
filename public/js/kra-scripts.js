@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     /*
     |--------------------------------------------------------------------------
-    | REUSABLE KRA MODAL & AJAX LOGIC
+    | FOR THE REUSABLE KRA MODAL & AJAX LOGIC -- START
     |--------------------------------------------------------------------------
     */
     const uploadModal = document.getElementById('kra-upload-modal');
@@ -116,10 +116,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+    /*
+    |--------------------------------------------------------------------------
+    | FOR THE REUSABLE KRA MODAL & AJAX LOGIC -- END
+    |--------------------------------------------------------------------------
+    */
+
 
     /*
     |--------------------------------------------------------------------------
-    | REUSABLE KRA "LOAD MORE" & SEARCH LOGIC (Robust Version)
+    | FOR THE REUSABLE KRA "LOAD MORE" & SEARCH LOGIC -- START
     |--------------------------------------------------------------------------
     */
     const loadMoreBtn = document.getElementById('load-more-kra-btn');
@@ -208,4 +214,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
         loadMoreBtn.addEventListener('click', () => loadData(false));
     }
+    /*
+    |--------------------------------------------------------------------------
+    | FOR THE REUSABLE KRA "LOAD MORE" & SEARCH LOGIC -- END
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | FOR UPLOADING THE FILES -- START
+    |--------------------------------------------------------------------------
+    */
+    const modal = document.getElementById('fileViewerModal');
+    const iframe = document.getElementById('fileViewerIframe');
+    const modalLabel = document.getElementById('fileViewerModalLabel');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // Use event delegation to handle clicks on buttons that may be loaded via AJAX
+    document.body.addEventListener('click', function(event) {
+        if (event.target.closest('.view-file-btn')) {
+            const button = event.target.closest('.view-file-btn');
+            const fileId = button.dataset.fileid;
+            const fileName = button.dataset.filename;
+
+            if (fileId) {
+                // Construct the Google Drive embed URL
+                const embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+
+                // Set the iframe source and modal title
+                iframe.src = embedUrl;
+                modalLabel.textContent = `Viewing: ${fileName}`;
+
+                // Show the modal
+                modal.style.display = 'flex';
+            }
+        }
+    });
+
+    // Function to close the modal
+    const closeModal = () => {
+        modal.style.display = 'none';
+        iframe.src = ''; // Clear the iframe src to stop any background loading
+    };
+
+    // Event listeners for closing the modal
+    if(closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeModal);
+    }
+
+    // Also close if the user clicks on the modal background
+    if(modal) {
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    }
+    /*
+    |--------------------------------------------------------------------------
+    | FOR UPLOADING THE FILES -- END
+    |--------------------------------------------------------------------------
+    */
 });

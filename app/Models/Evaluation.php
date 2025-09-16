@@ -25,6 +25,7 @@ class Evaluation extends Model
         'file_path',
         'publish_date',
         'link',
+        'google_drive_file_id',
     ];
 
     /**

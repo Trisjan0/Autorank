@@ -43,21 +43,8 @@ Profile | Autorank
                 </div>
                 <div class="basic-info-fields">
                     <div class="basic-info">
-                        <h3>Rank</h3>
+                        <h3>Faculty Rank</h3>
                         <h5>{{ $user->rank ?? 'TBC' }}</h5>
-                    </div>
-                    <div class="basic-info-action"></div>
-                </div>
-                <div class="basic-info-fields">
-                    <div class="basic-info">
-                        <h3>Credentials</h3>
-                        @if ($user->credentials->isNotEmpty())
-                        @foreach ($user->credentials as $credential)
-                        <h5>{{ $credential->name }}</h5>
-                        @endforeach
-                        @else
-                        <h5>TBC</h5>
-                        @endif
                     </div>
                     <div class="basic-info-action"></div>
                 </div>
@@ -185,7 +172,7 @@ Profile | Autorank
 
                     <!-- KRA I-B: Instructional Materials -->
                     <div class="subtitle">
-                        <h2>KRA I-A: Instructional Materials</h2>
+                        <h2>KRA I-B: Instructional Materials</h2>
                     </div>
                     <div class="metric-table-container">
                         <table>
