@@ -54,29 +54,21 @@
     cursor: pointer;
 }
 
-/* FILE VIEWING STYLING -- -- -- */
-/* ADD OR REPLACE THIS AT THE BOTTOM OF view-all-styles.css */
-
+/* FILE VIEWER STYLING -- -- -- */
 .modal-container {
-    /* --- Core Overlay Styles --- */
-    position: fixed;       /* This is the key: it positions the modal relative to the viewport */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1050;         /* Ensures it's on top of all other content */
-    background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent black background */
-    
-    /* --- Flexbox for Centering --- */
+    z-index: 1050;
+    background-color: rgba(0, 0, 0, 0.700);
     display: flex;
     justify-content: center;
     align-items: center;
-
-    /* --- Hide by default --- */
     display: none;
 }
 
-/* Styles for the fullscreen file viewer modal */
 .modal-content.modal-fullscreen {
     width: 100vw;
     height: 100vh;
@@ -85,6 +77,12 @@
     border-radius: 0;
     display: flex;
     flex-direction: column;
+}
+
+.modal-header {
+    width: 100%;
+    height: 5vh;
+    background-color: var(--primaryColor);
 }
 
 .modal-content.modal-fullscreen .modal-body {
@@ -96,4 +94,129 @@
 .modal-content.modal-fullscreen .modal-body iframe {
     height: 100%;
     width: 100%;
+}
+
+/* LOADER STYLING -- -- -- */
+.loader-container {
+    width: 100vw;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+}
+
+.loader div {
+  width: 8%;
+  height: 24%;
+  background: rgb(128, 128, 128);
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  opacity: 0;
+  border-radius: 50px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.2);
+  animation: fade458 1s linear infinite;
+}
+
+@keyframes fade458 {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.25;
+  }
+}
+
+.loader .bar1 {
+  transform: rotate(0deg) translate(0, -130%);
+  animation-delay: 0s;
+}
+
+.loader .bar2 {
+  transform: rotate(30deg) translate(0, -130%);
+  animation-delay: -1.1s;
+}
+
+.loader .bar3 {
+  transform: rotate(60deg) translate(0, -130%);
+  animation-delay: -1s;
+}
+
+.loader .bar4 {
+  transform: rotate(90deg) translate(0, -130%);
+  animation-delay: -0.9s;
+}
+
+.loader .bar5 {
+  transform: rotate(120deg) translate(0, -130%);
+  animation-delay: -0.8s;
+}
+
+.loader .bar6 {
+  transform: rotate(150deg) translate(0, -130%);
+  animation-delay: -0.7s;
+}
+
+.loader .bar7 {
+  transform: rotate(180deg) translate(0, -130%);
+  animation-delay: -0.6s;
+}
+
+.loader .bar8 {
+  transform: rotate(210deg) translate(0, -130%);
+  animation-delay: -0.5s;
+}
+
+.loader .bar9 {
+  transform: rotate(240deg) translate(0, -130%);
+  animation-delay: -0.4s;
+}
+
+.loader .bar10 {
+  transform: rotate(270deg) translate(0, -130%);
+  animation-delay: -0.3s;
+}
+
+.loader .bar11 {
+  transform: rotate(300deg) translate(0, -130%);
+  animation-delay: -0.2s;
+}
+
+.loader .bar12 {
+  transform: rotate(330deg) translate(0, -130%);
+  animation-delay: -0.1s;
+}
+
+/* USER FEEDBACK STYLING -- -- -- */
+.file-feedback-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    color: #fff;
+    height: 100%;
+}
+
+.file-feedback-container p {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+.file-feedback-container .btn {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #48a2f2;
+    color: white;
+    font-weight: bold;
 }

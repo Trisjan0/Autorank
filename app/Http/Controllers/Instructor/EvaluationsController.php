@@ -21,7 +21,6 @@ class EvaluationsController extends Controller
      */
     public function index(Request $request, DataSearchService $searchService)
     {
-        // ... (this method remains unchanged)
         $perPage = 5;
         $query = Evaluation::where('user_id', Auth::id())->orderBy('created_at', 'desc');
         $searchableColumns = ['title', 'category', 'score'];
@@ -146,10 +145,87 @@ class EvaluationsController extends Controller
 
         $folderId = $folder->id;
         if (!$folderId) {
-            // This makes the code safer by handling cases where the folder creation might fail
             throw new \Exception("Failed to create or find Google Drive folder: {$folderName}");
         }
 
         return $folderId;
+    }
+
+    /**
+     * Helper function to check if a MIME type is viewable in a browser.
+     */
+    private function isMimeTypeViewable(string $mimeType): bool
+    {
+        $viewableMimeTypes = [
+            'application/pdf',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'text/plain',
+        ];
+
+        return in_array($mimeType, $viewableMimeTypes);
+    }
+
+    /**
+     * Get file metadata to determine if it's viewable.
+     */
+    public function getFileInfo($id): JsonResponse
+    {
+        $user = Auth::user();
+        $evaluation = Evaluation::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+
+        $client = new \Google_Client();
+        $client->setClientId(env('GOOGLE_CLIENT_ID'));
+        $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
+        $client->refreshToken($user->google_refresh_token);
+        $service = new \Google_Service_Drive($client);
+
+        try {
+            $file = $service->files->get($evaluation->google_drive_file_id, ['fields' => 'mimeType,name']);
+
+            return response()->json([
+                'isViewable' => $this->isMimeTypeViewable($file->getMimeType()),
+                'fileName'   => $file->getName(),
+                'viewUrl'    => route('instructor.evaluations.view-file', $evaluation->id),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching file metadata from Google Drive: ' . $e->getMessage());
+            return response()->json(['error' => 'Unable to fetch file info.'], 404);
+        }
+    }
+
+    /**
+     * Stream a file from Google Drive for inline viewing or force download.
+     */
+    public function viewFile($id, Request $request) // 👈 ADD 'Request $request'
+    {
+        $user = Auth::user();
+        $evaluation = Evaluation::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        $client = new \Google_Client();
+        $client->setClientId(env('GOOGLE_CLIENT_ID'));
+        $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
+        $client->refreshToken($user->google_refresh_token);
+        $service = new \Google_Service_Drive($client);
+
+        try {
+            $file = $service->files->get($evaluation->google_drive_file_id, ['fields' => 'mimeType,name']);
+            $content = $service->files->get($evaluation->google_drive_file_id, ['alt' => 'media']);
+
+            // This new line checks if the URL has '?download=true'
+            $disposition = $request->query('download') ? 'attachment' : 'inline';
+
+            return response($content->getBody(), 200)
+                ->header('Content-Type', $file->getMimeType())
+                // The '$disposition' variable is used here now
+                ->header('Content-Disposition', $disposition . '; filename="' . $file->getName() . '"');
+        } catch (\Exception $e) {
+            Log::error('Error fetching file from Google Drive: ' . $e->getMessage());
+            return abort(404, 'Unable to fetch file.');
+        }
     }
 }

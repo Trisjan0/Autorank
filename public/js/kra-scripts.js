@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     /*
     |--------------------------------------------------------------------------
-    | FOR THE REUSABLE KRA MODAL & AJAX LOGIC -- START
+    | FOR THE REUSABLE KRA MODAL & AJAX -- START
     |--------------------------------------------------------------------------
     */
     const uploadModal = document.getElementById('kra-upload-modal');
@@ -118,14 +118,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     /*
     |--------------------------------------------------------------------------
-    | FOR THE REUSABLE KRA MODAL & AJAX LOGIC -- END
+    | FOR THE REUSABLE KRA MODAL & AJAX -- END
     |--------------------------------------------------------------------------
     */
 
 
     /*
     |--------------------------------------------------------------------------
-    | FOR THE REUSABLE KRA "LOAD MORE" & SEARCH LOGIC -- START
+    | FOR THE REUSABLE KRA "LOAD MORE" & SEARCH -- START
     |--------------------------------------------------------------------------
     */
     const loadMoreBtn = document.getElementById('load-more-kra-btn');
@@ -216,63 +216,100 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     /*
     |--------------------------------------------------------------------------
-    | FOR THE REUSABLE KRA "LOAD MORE" & SEARCH LOGIC -- END
+    | FOR THE REUSABLE KRA "LOAD MORE" & SEARCH -- END
     |--------------------------------------------------------------------------
     */
 
     /*
     |--------------------------------------------------------------------------
-    | FOR UPLOADING THE FILES -- START
+    | FOR THE FILE VIEWER MODAL LOGIC -- START
     |--------------------------------------------------------------------------
     */
-    const modal = document.getElementById('fileViewerModal');
-    const iframe = document.getElementById('fileViewerIframe');
-    const modalLabel = document.getElementById('fileViewerModalLabel');
-    const closeModalBtn = document.getElementById('closeModalBtn');
+    const fileViewerModal = document.getElementById('fileViewerModal');
+    if (fileViewerModal) {
+        const iframe = document.getElementById('fileViewerIframe');
+        const modalLabel = document.getElementById('fileViewerModalLabel');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const loader = fileViewerModal.querySelector('.loader-container');
+        const feedbackContainer = document.getElementById('fileViewerFeedback');
+        const downloadBtn = document.getElementById('fileViewerDownloadBtn');
 
-    // Use event delegation to handle clicks on buttons that may be loaded via AJAX
-    document.body.addEventListener('click', function(event) {
-        if (event.target.closest('.view-file-btn')) {
-            const button = event.target.closest('.view-file-btn');
-            const fileId = button.dataset.fileid;
-            const fileName = button.dataset.filename;
-
-            if (fileId) {
-                // Construct the Google Drive embed URL
-                const embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
-
-                // Set the iframe source and modal title
-                iframe.src = embedUrl;
-                modalLabel.textContent = `Viewing: ${fileName}`;
-
-                // Show the modal
-                modal.style.display = 'flex';
+        const closeFileViewerModal = () => {
+            fileViewerModal.style.display = 'none';
+            if (iframe) {
+                iframe.style.display = 'none';
+                iframe.src = 'about:blank';
             }
+            if (feedbackContainer) {
+                feedbackContainer.style.display = 'none';
+            }
+        };
+
+        if (iframe) {
+            iframe.addEventListener('load', function() {
+                if (loader) {
+                    loader.style.display = 'none';
+                }
+                iframe.style.display = 'block';
+            });
         }
-    });
 
-    // Function to close the modal
-    const closeModal = () => {
-        modal.style.display = 'none';
-        iframe.src = ''; // Clear the iframe src to stop any background loading
-    };
+        document.body.addEventListener('click', async function(event) {
+            const viewButton = event.target.closest('.view-file-btn');
+            if (viewButton) {
+                const infoUrl = viewButton.dataset.infoUrl;
+                if (!infoUrl) return;
 
-    // Event listeners for closing the modal
-    if(closeModalBtn) {
-        closeModalBtn.addEventListener('click', closeModal);
-    }
+                fileViewerModal.style.display = 'flex';
+                loader.style.display = 'flex';
+                iframe.style.display = 'none';
+                feedbackContainer.style.display = 'none';
+                modalLabel.textContent = `Loading...`;
 
-    // Also close if the user clicks on the modal background
-    if(modal) {
-        modal.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                closeModal();
+                try {
+                    const response = await fetch(infoUrl);
+                    if (!response.ok) throw new Error('Failed to fetch file info.');
+                    const data = await response.json();
+
+                    modalLabel.textContent = `Viewing: ${viewButton.dataset.filename}`;
+
+                    if (data.isViewable) {
+                        iframe.src = `${data.viewUrl}#toolbar=0`;
+                    } else {
+                        downloadBtn.href = `${data.viewUrl}?download=true`;
+                        feedbackContainer.style.display = 'block';
+                        loader.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Error viewing file:', error);
+                    modalLabel.textContent = 'Error';
+                    feedbackContainer.querySelector('p').textContent = 'Could not load the file. Please try again later.';
+                    downloadBtn.style.display = 'none';
+                    feedbackContainer.style.display = 'block';
+                    loader.style.display = 'none';
+                }
+            }
+        });
+
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', closeFileViewerModal);
+        }
+
+        fileViewerModal.addEventListener('click', function(event) {
+            if (event.target === fileViewerModal) {
+                closeFileViewerModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && fileViewerModal.style.display === 'flex') {
+                closeFileViewerModal();
             }
         });
     }
     /*
     |--------------------------------------------------------------------------
-    | FOR UPLOADING THE FILES -- END
+    | FOR THE FILE VIEWER MODAL LOGIC -- END
     |--------------------------------------------------------------------------
     */
 });
