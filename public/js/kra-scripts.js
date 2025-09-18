@@ -234,8 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const feedbackContainer = document.getElementById('fileViewerFeedback');
         const downloadBtn = document.getElementById('fileViewerDownloadBtn');
 
+        const openFileViewerModal = () => {
+            document.body.classList.add('modal-open');
+            fileViewerModal.classList.remove('modal-container--hidden');
+        };
+
         const closeFileViewerModal = () => {
-            fileViewerModal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+            fileViewerModal.classList.add('modal-container--hidden');
+
             if (iframe) {
                 iframe.style.display = 'none';
                 iframe.src = 'about:blank';
@@ -260,7 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const infoUrl = viewButton.dataset.infoUrl;
                 if (!infoUrl) return;
 
-                fileViewerModal.style.display = 'flex';
+                openFileViewerModal();
+
                 loader.style.display = 'flex';
                 iframe.style.display = 'none';
                 feedbackContainer.style.display = 'none';
@@ -302,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && fileViewerModal.style.display === 'flex') {
+            if (event.key === 'Escape' && !fileViewerModal.classList.contains('modal-container--hidden')) {
                 closeFileViewerModal();
             }
         });
@@ -310,6 +318,57 @@ document.addEventListener('DOMContentLoaded', () => {
     /*
     |--------------------------------------------------------------------------
     | FOR THE FILE VIEWER MODAL LOGIC -- END
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | FOR THE DELETE EVALUATION LOGIC -- START
+    |--------------------------------------------------------------------------
+    */
+    document.body.addEventListener('click', async function(event) {
+        const deleteButton = event.target.closest('.delete-evaluation-btn');
+        if (!deleteButton) return;
+
+        const evaluationTitle = deleteButton.dataset.evaluationTitle;
+        const deleteUrl = deleteButton.dataset.deleteUrl;
+
+        // Show a confirmation dialog before proceeding
+        if (confirm(`Are you sure you want to delete "${evaluationTitle}"? This action cannot be undone.`)) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            try {
+                const response = await fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // On success, remove the table row with a fade-out effect
+                    const row = deleteButton.closest('tr');
+                    row.style.transition = 'opacity 0.5s ease';
+                    row.style.opacity = '0';
+                    setTimeout(() => {
+                        row.remove();
+                        alert(data.message); // Optional: show success message
+                    }, 500);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error deleting evaluation:', error);
+                alert('An unexpected error occurred. Please check the console.');
+            }
+        }
+    });
+    /*
+    |--------------------------------------------------------------------------
+    | FOR THE DELETE EVALUATION LOGIC -- END
     |--------------------------------------------------------------------------
     */
 });

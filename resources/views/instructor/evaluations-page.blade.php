@@ -139,7 +139,7 @@
 </div>
 
 {{-- VIEW FILE MODAL --}}
-<div class="modal-container" id="fileViewerModal" style="display: none;">
+<div class="modal-container modal-container--hidden" id="fileViewerModal">
     <div class="modal-content modal-fullscreen">
         <div class="modal-header">
             <h5 class="modal-title" id="fileViewerModalLabel">Viewing File</h5>
@@ -168,7 +168,7 @@
                 <p>This file type cannot be previewed directly on the website.</p>
                 <a href="#" id="fileViewerDownloadBtn" class="btn btn-primary" download>Download File</a>
             </div>
-            <iframe id="fileViewerIframe" src="" width="100%" height="600px" frameborder="0"></iframe>
+            <iframe id="fileViewerIframe" src="" frameborder="0"></iframe>
         </div>
     </div>
 </div>

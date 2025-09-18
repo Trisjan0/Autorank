@@ -228,4 +228,39 @@ class EvaluationsController extends Controller
             return abort(404, 'Unable to fetch file.');
         }
     }
+
+    /**
+     * Remove the specified evaluation from storage and Google Drive.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id): JsonResponse
+    {
+        $user = Auth::user();
+        $evaluation = Evaluation::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail(); // Ensures users can only delete their own evaluations
+
+        try {
+            // Step 1: Delete the file from Google Drive if it exists
+            if ($evaluation->google_drive_file_id) {
+                $client = new \Google_Client();
+                $client->setClientId(env('GOOGLE_CLIENT_ID'));
+                $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
+                $client->refreshToken($user->google_refresh_token);
+                $service = new \Google_Service_Drive($client);
+
+                $service->files->delete($evaluation->google_drive_file_id);
+            }
+
+            // Step 2: Delete the record from the database
+            $evaluation->delete();
+
+            return response()->json(['message' => 'Evaluation deleted successfully.']);
+        } catch (\Exception $e) {
+            Log::error('Error deleting evaluation: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to delete the evaluation. Please try again.'], 500);
+        }
+    }
 }
