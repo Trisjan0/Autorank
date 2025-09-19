@@ -8,15 +8,35 @@ use Illuminate\Database\Eloquent\Model;
 class ResearchDocument extends Model
 {
     use HasFactory;
-    protected $table = 'Research_Documents';
+
+    /**
+     * The table associated with the model.
+     */
+    protected $table = 'research_documents';
+
+    /**
+     * The attributes that are mass assignable.
+     */
     protected $fillable = [
         'user_id',
-        'title',
         'type',
+        'title',
         'category',
-        'link',
+        'publish_date',
+        'file_path',
+        'google_drive_file_id',
     ];
 
+    /**
+     * The attributes that should be cast.
+     */
+    protected $casts = [
+        'publish_date' => 'datetime',
+    ];
+
+    /**
+     * Get the user that owns the document.
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

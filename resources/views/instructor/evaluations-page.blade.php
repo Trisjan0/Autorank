@@ -29,7 +29,6 @@
                 <th>Date Uploaded</th>
                 <th>Publish Date</th>
                 <th>Score</th>
-                {{-- REVISED: The search bar is now the 7th and final header --}}
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.evaluations-page') }}" method="GET" id="kra-search-form">
@@ -47,7 +46,6 @@
             @include('partials._evaluations_table_row', ['evaluation' => $evaluation])
             @empty
             <tr id="no-results-row">
-                {{-- REVISED: Colspan is now 7 to match the new number of columns --}}
                 <td colspan="7" style="text-align: center;">No evaluations found.</td>
             </tr>
             @endforelse

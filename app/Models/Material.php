@@ -8,18 +8,35 @@ use Illuminate\Database\Eloquent\Model;
 class Material extends Model
 {
     use HasFactory;
-    protected $table = 'Materials';
+
+    /**
+     * The table associated with the model.
+     */
+    protected $table = 'materials';
+
+    /**
+     * The attributes that are mass assignable.
+     */
     protected $fillable = [
         'user_id',
         'title',
         'type',
         'category',
-        'link',
         'file_path',
-        'created_at',
+        'date',
+        'google_drive_file_id',
     ];
 
+    /**
+     * The attributes that should be cast.
+     */
+    protected $casts = [
+        'date' => 'datetime',
+    ];
 
+    /**
+     * Get the user that owns the material.
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

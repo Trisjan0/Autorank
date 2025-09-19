@@ -9,16 +9,20 @@ class ProfessionalDevelopment extends Model
 {
     use HasFactory;
 
+    protected $table = 'professional_developments';
+
     protected $fillable = [
         'user_id',
         'title',
         'category',
-        'date',
-        'link',
         'file_path',
-        'created_at',
+        'publish_date',
+        'google_drive_file_id',
     ];
 
+    protected $casts = [
+        'publish_date' => 'datetime',
+    ];
 
     public function user()
     {

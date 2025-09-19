@@ -83,38 +83,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (confirmBtn) {
-            confirmBtn.addEventListener('click', async () => {
-                const url = kraForm.getAttribute('action');
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                const formData = new FormData(kraForm);
+        confirmBtn.addEventListener('click', async () => {
+            const url = kraForm.getAttribute('action');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const publishDateInput = kraForm.querySelector('input[name="publish_date"]');
 
-                [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = true);
-                messages.finalStatus.innerHTML = '<div class="alert-info">Uploading... Please wait.</div>';
+            if (publishDateInput && publishDateInput.value === '') {
+                publishDateInput.disabled = true;
+            }
 
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-                        body: formData,
-                    });
-                    const data = await response.json();
-                    if (response.ok) {
-                        messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
-                        setTimeout(() => window.location.reload(), pageRefreshDelay);
-                    } else {
-                        let errorMsg = data.message || 'An unknown error occurred.';
-                        if (response.status === 422 && data.errors) {
-                            errorMsg = '<ul>' + Object.values(data.errors).map(err => `<li>${err[0]}</li>`).join('') + '</ul>';
-                        }
-                        messages.finalStatus.innerHTML = `<div class="alert-danger">${errorMsg}</div>`;
-                        [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = false);
+            const formData = new FormData(kraForm);
+
+            if (publishDateInput) {
+                publishDateInput.disabled = false;
+            }
+            
+            [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = true);
+            messages.finalStatus.innerHTML = '<div class="alert-info">Uploading... Please wait.</div>';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    body: formData,
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
+                    setTimeout(() => window.location.reload(), pageRefreshDelay);
+                } else {
+                    let errorMsg = data.message || 'An unknown error occurred.';
+                    if (response.status === 422 && data.errors) {
+                        errorMsg = Object.values(data.errors).map(err => `<p>${err[0]}</p>`).join('');
                     }
-                } catch (error) {
-                    messages.finalStatus.innerHTML = `<div class="alert-danger">Network error: ${error.message}</div>`;
+                    messages.finalStatus.innerHTML = `<div class="alert-danger">${errorMsg}</div>`;
                     [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = false);
                 }
-            });
-        }
+            } catch (error) {
+                messages.finalStatus.innerHTML = `<div class="alert-danger">Network error: ${error.message}</div>`;
+                [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = false);
+            }
+        });
+    }
     }
     /*
     |--------------------------------------------------------------------------
@@ -222,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /*
     |--------------------------------------------------------------------------
-    | FOR THE FILE VIEWER MODAL LOGIC -- START
+    | FOR THE REUSABLE FILE VIEWER MODAL LOGIC -- START
     |--------------------------------------------------------------------------
     */
     const fileViewerModal = document.getElementById('fileViewerModal');
@@ -282,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     modalLabel.textContent = `Viewing: ${viewButton.dataset.filename}`;
 
                     if (data.isViewable) {
-                        iframe.src = `${data.viewUrl}#toolbar=0`;
+                        iframe.src = `${data.viewUrl}#toolbar=1`;
                     } else {
                         downloadBtn.href = `${data.viewUrl}?download=true`;
                         feedbackContainer.style.display = 'block';
@@ -317,24 +327,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     /*
     |--------------------------------------------------------------------------
-    | FOR THE FILE VIEWER MODAL LOGIC -- END
+    | FOR THE REUSABLE FILE VIEWER MODAL LOGIC -- END
     |--------------------------------------------------------------------------
     */
 
     /*
     |--------------------------------------------------------------------------
-    | FOR THE DELETE EVALUATION LOGIC -- START
+    | FOR THE REUSABLE DELETE LOGIC -- START
     |--------------------------------------------------------------------------
     */
     document.body.addEventListener('click', async function(event) {
-        const deleteButton = event.target.closest('.delete-evaluation-btn');
+        const deleteButton = event.target.closest('.delete-btn');
         if (!deleteButton) return;
 
-        const evaluationTitle = deleteButton.dataset.evaluationTitle;
+        const itemTitle = deleteButton.dataset.itemTitle;
         const deleteUrl = deleteButton.dataset.deleteUrl;
 
         // Show a confirmation dialog before proceeding
-        if (confirm(`Are you sure you want to delete "${evaluationTitle}"? This action cannot be undone.`)) {
+        if (confirm(`Are you sure you want to delete "${itemTitle}"? This action cannot be undone.`)) {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             try {
@@ -349,26 +359,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    // On success, remove the table row with a fade-out effect
                     const row = deleteButton.closest('tr');
-                    row.style.transition = 'opacity 0.5s ease';
+                    row.style.transition = 'opacity 0.3s ease';
                     row.style.opacity = '0';
                     setTimeout(() => {
                         row.remove();
-                        alert(data.message); // Optional: show success message
+                        alert(data.message);
                     }, 500);
                 } else {
                     alert('Error: ' + data.message);
                 }
             } catch (error) {
-                console.error('Error deleting evaluation:', error);
+                console.error('Error deleting item:', error);
                 alert('An unexpected error occurred. Please check the console.');
             }
         }
     });
     /*
     |--------------------------------------------------------------------------
-    | FOR THE DELETE EVALUATION LOGIC -- END
+    | FOR THE REUSABLE DELETE LOGIC -- END
     |--------------------------------------------------------------------------
     */
 });

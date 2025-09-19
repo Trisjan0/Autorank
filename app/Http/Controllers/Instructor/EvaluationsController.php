@@ -117,7 +117,6 @@ class EvaluationsController extends Controller
 
     /**
      * Find or create a folder in Google Drive.
-     *
      * @return string|null The ID of the found or created folder, or null on failure.
      */
     private function findOrCreateFolder(Google_Service_Drive $service, string $folderName, ?string $parentId = null): ?string
@@ -199,7 +198,7 @@ class EvaluationsController extends Controller
     /**
      * Stream a file from Google Drive for inline viewing or force download.
      */
-    public function viewFile($id, Request $request) // 👈 ADD 'Request $request'
+    public function viewFile($id, Request $request)
     {
         $user = Auth::user();
         $evaluation = Evaluation::where('id', $id)
@@ -216,12 +215,10 @@ class EvaluationsController extends Controller
             $file = $service->files->get($evaluation->google_drive_file_id, ['fields' => 'mimeType,name']);
             $content = $service->files->get($evaluation->google_drive_file_id, ['alt' => 'media']);
 
-            // This new line checks if the URL has '?download=true'
             $disposition = $request->query('download') ? 'attachment' : 'inline';
 
             return response($content->getBody(), 200)
                 ->header('Content-Type', $file->getMimeType())
-                // The '$disposition' variable is used here now
                 ->header('Content-Disposition', $disposition . '; filename="' . $file->getName() . '"');
         } catch (\Exception $e) {
             Log::error('Error fetching file from Google Drive: ' . $e->getMessage());
@@ -231,7 +228,6 @@ class EvaluationsController extends Controller
 
     /**
      * Remove the specified evaluation from storage and Google Drive.
-     *
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
@@ -240,10 +236,9 @@ class EvaluationsController extends Controller
         $user = Auth::user();
         $evaluation = Evaluation::where('id', $id)
             ->where('user_id', $user->id)
-            ->firstOrFail(); // Ensures users can only delete their own evaluations
+            ->firstOrFail();
 
         try {
-            // Step 1: Delete the file from Google Drive if it exists
             if ($evaluation->google_drive_file_id) {
                 $client = new \Google_Client();
                 $client->setClientId(env('GOOGLE_CLIENT_ID'));
@@ -254,7 +249,6 @@ class EvaluationsController extends Controller
                 $service->files->delete($evaluation->google_drive_file_id);
             }
 
-            // Step 2: Delete the record from the database
             $evaluation->delete();
 
             return response()->json(['message' => 'Evaluation deleted successfully.']);

@@ -95,6 +95,10 @@ body.modal-open {
   align-items: center;
 }
 
+.modal-title {
+  color: white;
+}
+
 .close-modal-btn {
   border: none;
   background-color: transparent;
@@ -251,10 +255,10 @@ body.modal-open {
 }
 
 /* TABLE ROW DATA STYLING -- -- -- */
-.btn.btn-danger.delete-evaluation-btn {
+.btn.btn-danger.delete-btn {
   background-color: rgb(157, 36, 36);
 }
 
-.btn.btn-danger.delete-evaluation-btn:hover {
+.btn.btn-danger.delete-btn:hover {
   background-color: rgb(157, 75, 75);
 }

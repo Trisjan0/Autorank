@@ -26,11 +26,11 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Service Type</th>
-                <th>Date</th>
+                <th>Date Uploaded</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.extension-services-page') }}" method="GET" id="kra-search-form">
-                            <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
+                            <input type="text" name="search" placeholder="Search services..." value="{{ request('search') }}">
                             <button type="submit">
                                 <i class="fa-solid fa-magnifying-glass" id="kra-search-btn-icon"></i>
                             </button>
@@ -121,6 +121,41 @@
                 <button type="button" class="btn btn-info" id="kra-back-to-selection-btn">Back</button>
                 <button type="button" class="btn btn-success" id="kra-confirm-upload-btn">Confirm & Upload</button>
             </div>
+        </div>
+    </div>
+</div>
+
+{{-- VIEW FILE MODAL (NEWLY ADDED) --}}
+<div class="modal-container modal-container--hidden" id="fileViewerModal">
+    <div class="modal-content modal-fullscreen">
+        <div class="modal-header">
+            <h5 class="modal-title" id="fileViewerModalLabel">Viewing File</h5>
+            <button class="close-modal-btn" id="closeModalBtn">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="loader-container">
+                <div class="loader">
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>
+                    <div class="bar4"></div>
+                    <div class="bar5"></div>
+                    <div class="bar6"></div>
+                    <div class="bar7"></div>
+                    <div class="bar8"></div>
+                    <div class="bar9"></div>
+                    <div class="bar10"></div>
+                    <div class="bar11"></div>
+                    <div class="bar12"></div>
+                </div>
+            </div>
+            <div class="file-feedback-container" id="fileViewerFeedback" style="display: none;">
+                <p>This file type cannot be previewed directly on the website.</p>
+                <a href="#" id="fileViewerDownloadBtn" class="btn btn-primary" download>Download File</a>
+            </div>
+            <iframe id="fileViewerIframe" src="" frameborder="0"></iframe>
         </div>
     </div>
 </div>

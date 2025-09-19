@@ -44,10 +44,6 @@ Route::middleware(['auth'])->group(function () {
     // Route for the Profile Page
     Route::get('/profile', [PageController::class, 'showProfilePage'])->name('profile-page');
 
-    // Routes for Instructor Metrics
-    Route::get('/my-metrics', [InstructorMetricsController::class, 'showForm'])->name('instructor.metrics.form');
-    Route::post('/my-metrics', [InstructorMetricsController::class, 'store'])->name('instructor.metrics.store');
-
     // Route for the System Settings
     Route::get('/settings', [SystemSettingsController::class, 'showSystemSettings'])->name('system-settings');
 
@@ -72,8 +68,6 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::middleware(['role_or_permission:admin|access applications page'])->group(function () {
         // Route for the Review Applications Page
-        Route::get('/applications', [PageController::class, 'showApplicationsPage'])->name('application-page'); // this can be deleted
-
         Route::get('/applications', [ApplicationController::class, 'index'])->name('application-page');
 
         // Route for the Review Documents Page
@@ -118,17 +112,29 @@ Route::middleware(['auth'])->group(function () {
         // Route for KRA I-B: Instructional Materials Page
         Route::get('/instructional-materials', [InstructionalMaterialsController::class, 'index'])->name('instructor.instructional-materials-page');
         Route::post('/instructional-materials', [InstructionalMaterialsController::class, 'store'])->name('instructor.instructional-materials.store');
+        Route::get('/instructional-materials/file/{id}', [InstructionalMaterialsController::class, 'viewFile'])->name('instructor.instructional-materials.view-file');
+        Route::get('/instructional-materials/file-info/{id}', [InstructionalMaterialsController::class, 'getFileInfo'])->name('instructor.instructional-materials.file-info');
+        Route::delete('/instructional-materials/{id}', [InstructionalMaterialsController::class, 'destroy'])->name('instructor.instructional-materials.destroy');
 
         // Route for KRA II: Research Documents Page
-        Route::get('/research-outputs', [ResearchDocumentsController::class, 'index'])->name('instructor.research-documents-page');
-        Route::post('/research-outputs', [ResearchDocumentsController::class, 'store'])->name('instructor.research-documents.store');
+        Route::get('/research-documents', [ResearchDocumentsController::class, 'index'])->name('instructor.research-documents-page');
+        Route::post('/research-documents', [ResearchDocumentsController::class, 'store'])->name('instructor.research-documents.store');
+        Route::get('/research-documents/file/{id}', [ResearchDocumentsController::class, 'viewFile'])->name('instructor.research-documents.view-file');
+        Route::get('/research-documents/file-info/{id}', [ResearchDocumentsController::class, 'getFileInfo'])->name('instructor.research-documents.file-info');
+        Route::delete('/research-documents/{id}', [ResearchDocumentsController::class, 'destroy'])->name('instructor.research-documents.destroy');
 
         // Route for KRA III: Extension Services Page
         Route::get('/extension-services', [ExtensionServicesController::class, 'index'])->name('instructor.extension-services-page');
         Route::post('/extension-services', [ExtensionServicesController::class, 'store'])->name('instructor.extension-services.store');
+        Route::get('/extension-services/file/{id}', [ExtensionServicesController::class, 'viewFile'])->name('instructor.extension-services.view-file');
+        Route::get('/extension-services/file-info/{id}', [ExtensionServicesController::class, 'getFileInfo'])->name('instructor.extension-services.file-info');
+        Route::delete('/extension-services/{id}', [ExtensionServicesController::class, 'destroy'])->name('instructor.extension-services.destroy');
 
         // Route for KRA IV: Professional Developments Page
         Route::get('/professional-developments', [ProfessionalDevelopmentsController::class, 'index'])->name('instructor.professional-developments-page');
         Route::post('/professional-developments', [ProfessionalDevelopmentsController::class, 'store'])->name('instructor.professional-developments.store');
+        Route::get('/professional-developments/file/{id}', [ProfessionalDevelopmentsController::class, 'viewFile'])->name('instructor.professional-developments.view-file');
+        Route::get('/professional-developments/file-info/{id}', [ProfessionalDevelopmentsController::class, 'getFileInfo'])->name('instructor.professional-developments.file-info');
+        Route::delete('/professional-developments/{id}', [ProfessionalDevelopmentsController::class, 'destroy'])->name('instructor.professional-developments.destroy');
     });
 });

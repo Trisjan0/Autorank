@@ -16,9 +16,9 @@
         <span class="table-data-secondary-text">No File</span>
         @endif
         &nbsp;
-        <button class="btn btn-danger delete-evaluation-btn"
+        <button class="btn btn-danger delete-btn"
             data-delete-url="{{ route('instructor.evaluations.destroy', $evaluation->id) }}"
-            data-evaluation-title="{{ $evaluation->title }}">
+            data-item-title="{{ $evaluation->title }}">
             <i class="fa-solid fa-trash" style="color: #ffffff;"></i>
         </button>
     </td>

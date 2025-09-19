@@ -26,11 +26,12 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Category</th>
-                <th>Date</th>
+                <th>Publish Date</th>
+                <th>Date Uploaded</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.professional-developments-page') }}" method="GET" id="kra-search-form">
-                            <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
+                            <input type="text" name="search" placeholder="Search records..." value="{{ request('search') }}">
                             <button type="submit">
                                 <i class="fa-solid fa-magnifying-glass" id="kra-search-btn-icon"></i>
                             </button>
@@ -91,8 +92,8 @@
                             <input type="text" id="title" name="title" required data-label="Title">
                         </div>
                         <div class="form-group">
-                            <label class="form-group-title" for="date">Date:</label>
-                            <input type="date" id="date" name="date" style="color-scheme: dark;" required data-label="Date">
+                            <label class="form-group-title" for="kra-date">Publish Date:</label>
+                            <input type="date" id="kra-date" name="publish_date" style="color-scheme: dark;" data-label="Publish Date">
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="evidence_file">Upload File:</label>
@@ -122,6 +123,41 @@
                 <button type="button" class="btn btn-info" id="kra-back-to-selection-btn">Back</button>
                 <button type="button" class="btn btn-success" id="kra-confirm-upload-btn">Confirm & Upload</button>
             </div>
+        </div>
+    </div>
+</div>
+
+{{-- VIEW FILE MODAL --}}
+<div class="modal-container modal-container--hidden" id="fileViewerModal">
+    <div class="modal-content modal-fullscreen">
+        <div class="modal-header">
+            <h5 class="modal-title" id="fileViewerModalLabel">Viewing File</h5>
+            <button class="close-modal-btn" id="closeModalBtn">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="loader-container">
+                <div class="loader">
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>
+                    <div class="bar4"></div>
+                    <div class="bar5"></div>
+                    <div class="bar6"></div>
+                    <div class="bar7"></div>
+                    <div class="bar8"></div>
+                    <div class="bar9"></div>
+                    <div class="bar10"></div>
+                    <div class="bar11"></div>
+                    <div class="bar12"></div>
+                </div>
+            </div>
+            <div class="file-feedback-container" id="fileViewerFeedback" style="display: none;">
+                <p>This file type cannot be previewed directly on the website.</p>
+                <a href="#" id="fileViewerDownloadBtn" class="btn btn-primary" download>Download File</a>
+            </div>
+            <iframe id="fileViewerIframe" src="" frameborder="0"></iframe>
         </div>
     </div>
 </div>
