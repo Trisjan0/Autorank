@@ -343,7 +343,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemTitle = deleteButton.dataset.itemTitle;
         const deleteUrl = deleteButton.dataset.deleteUrl;
 
-        // Show a confirmation dialog before proceeding
         if (confirm(`Are you sure you want to delete "${itemTitle}"? This action cannot be undone.`)) {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -360,11 +359,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok) {
                     const row = deleteButton.closest('tr');
-                    row.style.transition = 'opacity 0.3s ease';
+                    row.style.transition = 'opacity 0.15s ease';
                     row.style.opacity = '0';
                     setTimeout(() => {
                         row.remove();
                         alert(data.message);
+                        window.location.reload();
                     }, 500);
                 } else {
                     alert('Error: ' + data.message);
