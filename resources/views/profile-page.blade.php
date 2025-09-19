@@ -61,7 +61,7 @@ Profile | Autorank
                     </div>
                     @endif
                 </div>
-                <div class="basic-info-fields">
+                <!-- <div class="basic-info-fields">
                     <div class="basic-info">
                         <h3>Phone Number</h3>
                         <h5>{{ $user->phone_number ?? 'TBC' }}</h5>
@@ -79,7 +79,7 @@ Profile | Autorank
                         </a>
                     </div>
                     @endif
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="content-right-side">

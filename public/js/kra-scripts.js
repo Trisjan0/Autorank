@@ -359,10 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok) {
                     const row = deleteButton.closest('tr');
-                    row.style.transition = 'opacity 0.15s ease';
-                    row.style.opacity = '0';
                     setTimeout(() => {
-                        row.remove();
                         alert(data.message);
                         window.location.reload();
                     }, 500);

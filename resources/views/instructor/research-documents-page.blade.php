@@ -94,7 +94,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="publish_date">Publish Date:</label>
-                            <input type="date" id="publish_date" name="publish_date" style="color-scheme: dark;" data-label="Publish Date">
+                            <input type="date" id="publish_date" name="publish_date" style="color-scheme: dark;" required data-label="Publish Date">
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="category">Category:</label>
