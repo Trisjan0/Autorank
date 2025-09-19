@@ -126,20 +126,9 @@ class User extends Authenticatable
 
     public function assignDefaultRoleByEmail(): void
     {
-        // Define email lists here.
-        // b4 deployment store on either a config or db
-        $superAdminEmails = [
-            'autorank.team@gmail.com',
-        ];
-
-        $evaluatorEmails = [
-            'autorank.evaluator1@gmail.com',
-        ];
-
-        $adminEmails = [
-            '2020103851@pampangastateu.edu.ph',
-            '2022310186@pampangastateu.edu.ph'
-        ];
+        $superAdminEmails = config('roles.super_admins', []);
+        $adminEmails = config('roles.admins', []);
+        $evaluatorEmails = config('roles.evaluators', []);
 
         if (in_array($this->email, $superAdminEmails)) {
             $assignedRole = 'super_admin';
