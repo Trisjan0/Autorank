@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         iframe.src = `${data.viewUrl}#toolbar=1`;
                     } else {
                         downloadBtn.href = `${data.viewUrl}?download=true`;
-                        feedbackContainer.style.display = 'block';
+                        feedbackContainer.style.display = 'flex';
                         loader.style.display = 'none';
                     }
                 } catch (error) {
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     modalLabel.textContent = 'Error';
                     feedbackContainer.querySelector('p').textContent = 'Could not load the file. Please try again later.';
                     downloadBtn.style.display = 'none';
-                    feedbackContainer.style.display = 'block';
+                    feedbackContainer.style.display = 'flex';
                     loader.style.display = 'none';
                 }
             }

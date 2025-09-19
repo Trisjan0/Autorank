@@ -113,6 +113,8 @@ body.modal-open {
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #fileViewerIframe {
@@ -122,11 +124,27 @@ body.modal-open {
 }
 
 .loader-container, .file-feedback-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+#fileViewerDownloadBtn {
+  background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 15%)
+    );
+}
+
+#fileViewerDownloadBtn:hover {
+  cursor: pointer;
+    background-color: hsl(
+    var(--base-hue-primary),
+    var(--base-saturation-primary),
+    calc(var(--base-lightness-primary) + 25%)
+    );
 }
 
 /* LOADER STYLING -- -- -- */
