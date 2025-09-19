@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Auth;
 |--------------------------------------------------------------------------
 */
 // Route for the initial page load, index page load
-Route::get('/', [PageController::class, 'signin'])->name('login');
+Route::get('/', [PageController::class, 'signin'])->name('signin-page');
 
 // Route for Google OAuth Redirect
 Route::get('/auth/google/redirect', [SocialiteLoginController::class, 'redirectGoogleAuth'])->name('auth.google.redirect');

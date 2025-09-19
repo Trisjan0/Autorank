@@ -63,6 +63,6 @@ class PageController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/signin-page');
+        return redirect()->route('signin-page');
     }
 }

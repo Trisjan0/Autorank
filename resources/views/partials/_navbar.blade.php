@@ -146,16 +146,17 @@
             </div>
         </a>
 
-        <form action="{{ route('logout') }}" method="POST">
+        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <div class="hidden-menu-icon">
+                <i class="fa-solid fa-key"></i>
+            </div>
+            <div class="hidden-menu-title">
+                <p>Log Out</p>
+            </div>
+        </a>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
-            <button type="submit">
-                <div class="button-menu-icon">
-                    <i class="fa-solid fa-key"></i>
-                </div>
-                <div class="button-menu-title">
-                    <p>Log Out</p>
-                </div>
-            </button>
         </form>
     </div>
 </nav>

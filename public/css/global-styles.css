@@ -218,54 +218,6 @@ nav {
     justify-content: start;
 }
 
-#hidden-menu form {
-    width: 100%;
-    height: 39.2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    text-decoration: none;
-}
-
-#hidden-menu form:hover {
-    background-color: var(--primaryColor);
-}
-
-#hidden-menu button {
-    border: none;
-    background-color: transparent;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1rem;
-}
-
-#hidden-menu button:hover {
-    cursor: pointer;
-}
-
-#hidden-menu button .button-menu-icon {
-    width: 20%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 7px;
-}
-
-#hidden-menu button .button-menu-title {
-    flex: 1;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    color: var(--pageTextColorOnBlack);
-    margin-left: 3px;
-}
-
 #hidden-menu a i {
     font-size: 1.2rem;
 }
