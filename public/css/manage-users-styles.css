@@ -156,8 +156,8 @@ body.modal-open {
 
 /* MODAL ALERTS STYLING */
 .alert-success, .alert-danger, .alert-info {
-    width: 100%; 
-    margin-bottom: 20px;
+    width: 100%;
+    height: auto;
     padding: 15px 20px;
     border-radius: 8px;
     font-size: 1rem;

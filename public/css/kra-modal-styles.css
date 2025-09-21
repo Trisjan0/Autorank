@@ -22,6 +22,7 @@ body.modal-open {
 
 .mt-2 {
   width: 100%;
+  height: auto;
 }
 
 /* EVERY INPUT THAT ISNT A RADIO BUTTON STYLING -- -- -- */

@@ -42,7 +42,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [PageController::class, 'showDashboard'])->name('dashboard');
 
     // Route for the Profile Page
-    Route::get('/profile', [PageController::class, 'showProfilePage'])->name('profile-page');
+    Route::get('/profile', [CredentialController::class, 'index'])->name('profile-page');
 
     // Route for the System Settings
     Route::get('/settings', [SystemSettingsController::class, 'showSystemSettings'])->name('system-settings');

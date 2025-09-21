@@ -108,20 +108,22 @@ Profile | Autorank
             <div class="title">
                 <h1>Credentials & Experience</h1>
             </div>
-            {{-- Credentials/Documents Section --}}
+
             <div class="credentials-table-container">
                 <table class="credentials-table">
                     <thead>
                         <tr>
                             <th>Title</th>
+                            <th>Type</th>
                             <th>File Name</th>
                             <th>Date Uploaded</th>
                             <th>
                                 <div class="search-bar-container">
-                                    <form action="{{ route('profile-page') }}" method="GET" id="kra-search-form">
-                                        <input type="text" name="search" placeholder="Search uploads..." value="{{ request('search') }}">
+                                    <form action="{{ route('profile-page') }}" method="GET" id="credentials-search-form">
+                                        <input type="text" name="search" placeholder="Search credentials..."
+                                            value="{{ request('search') }}">
                                         <button type="submit">
-                                            <i class="fa-solid fa-magnifying-glass" id="kra-search-btn-icon"></i>
+                                            <i class="fa-solid fa-magnifying-glass" id="credentials-search-btn-icon"></i>
                                         </button>
                                     </form>
                                 </div>
@@ -129,10 +131,10 @@ Profile | Autorank
                         </tr>
                     </thead>
                     <tbody id="credentials-table-body">
-                        @forelse(Auth::user()->credentials()->latest()->get() as $credential)
+                        @forelse($credentials as $credential)
                         @include('partials._credential_table_row', ['credential' => $credential])
                         @empty
-                        <tr id="no-credentials-row">
+                        <tr id="no-results-row">
                             <td colspan="4" style="text-align: center;">No items found.</td>
                         </tr>
                         @endforelse
@@ -141,7 +143,11 @@ Profile | Autorank
             </div>
 
             <div class="mini-load-more-container">
-                <button id="upload-credential-button" class="upload-new-button">Upload New Document</button>
+                <button id="upload-credential-button" class="upload-new-button">Upload New</button>
+                <button id="load-more-credentials-btn" data-current-offset="{{ $perPage }}"
+                    @if (!$initialHasMore) style="display: none;" @endif>
+                    Load More +
+                </button>
             </div>
 
             {{-- CREDENTIAL UPLOAD MODAL --}}
@@ -164,6 +170,10 @@ Profile | Autorank
                                     <div class="form-group">
                                         <label class="form-group-title" for="cred-title">Title:</label>
                                         <input type="text" id="cred-title" name="title" required data-label="Title">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-group-title" for="cred-type">Type:</label>
+                                        <input type="text" id="cred-type" name="type" required data-label="Type">
                                     </div>
                                     <div class="form-group">
                                         <label class="form-group-title" for="credential_file">Upload File:</label>
@@ -204,6 +214,5 @@ Profile | Autorank
 @endsection
 
 @push('page-scripts')
-<script src="{{ asset('js/kra-scripts.js') }}"></script>
 <script src="{{ asset('js/profile-page-scripts.js') }}"></script>
 @endpush

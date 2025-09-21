@@ -271,7 +271,7 @@
     height: 50px;
     font-size: 1.1rem;
     font-family: var(--mainFont);
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .apply-for-reranking-container button:hover {
@@ -340,14 +340,14 @@
     background-color: var(--primaryColor);
     color: white;
     padding: var(--tableHeaderPadding);
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .credentials-table-container table td {
     border: 2px solid var(--tableDataBorderColor);
     padding: var(--tableDataPadding);
     text-align: center;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .credentials-table-container table td div {
@@ -375,7 +375,7 @@
     width: auto;
     min-height: 35px;
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 500;
     justify-self: center;
     padding-left: 15px;
     padding-right: 15px;
@@ -397,8 +397,11 @@
     margin-top: -30px;
     display: flex;
     align-items: center;
-    justify-content: end;
-    justify-self: center;
+    justify-content: flex-end;
+}
+
+.mini-load-more-container.space-between {
+    justify-content: space-between;
 }
 
 .mini-load-more-container button {

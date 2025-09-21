@@ -83,58 +83,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (confirmBtn) {
-        confirmBtn.addEventListener('click', async () => {
-            const url = kraForm.getAttribute('action');
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            const publishDateInput = kraForm.querySelector('input[name="publish_date"]');
+            confirmBtn.addEventListener('click', async () => {
+                const url = kraForm.getAttribute('action');
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const publishDateInput = kraForm.querySelector('input[name="publish_date"]');
 
-            if (publishDateInput && publishDateInput.value === '') {
-                publishDateInput.disabled = true;
-            }
+                if (publishDateInput && publishDateInput.value === '') {
+                    publishDateInput.disabled = true;
+                }
 
-            const formData = new FormData(kraForm);
+                const formData = new FormData(kraForm);
 
-            if (publishDateInput) {
-                publishDateInput.disabled = false;
-            }
-            
-            [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = true);
-            messages.finalStatus.innerHTML = '<div class="alert-info">Uploading... Please wait.</div>';
+                if (publishDateInput) {
+                    publishDateInput.disabled = false;
+                }
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-                    body: formData,
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
-                    const tableBody = document.getElementById('kra-table-body');
+                [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = true);
+                messages.finalStatus.innerHTML = '<div class="alert-info">Uploading... Please wait.</div>';
 
-                    if (tableBody && data.newRowHtml) {
-                        const noResultsRow = document.getElementById('no-results-row');
-                        if (noResultsRow) {
-                            noResultsRow.remove();
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                        body: formData,
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
+                        if (typeof loadData === "function") {
+                           loadData(true);
                         }
-                        tableBody.insertAdjacentHTML('afterbegin', data.newRowHtml);
+                        setTimeout(hideModal, pageRefreshDelay);
+                    } else {
+                        let errorMsg = data.message || 'An unknown error occurred.';
+                        if (response.status === 422 && data.errors) {
+                            errorMsg = Object.values(data.errors).map(err => `<p>${err[0]}</p>`).join('');
+                        }
+                        messages.finalStatus.innerHTML = `<div class="alert-danger">${errorMsg}</div>`;
+                        [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = false);
                     }
-
-                    setTimeout(hideModal, pageRefreshDelay);
-                } else {
-                    let errorMsg = data.message || 'An unknown error occurred.';
-                    if (response.status === 422 && data.errors) {
-                        errorMsg = Object.values(data.errors).map(err => `<p>${err[0]}</p>`).join('');
-                    }
-                    messages.finalStatus.innerHTML = `<div class="alert-danger">${errorMsg}</div>`;
+                } catch (error) {
+                    messages.finalStatus.innerHTML = `<div class="alert-danger">Network error: ${error.message}</div>`;
                     [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = false);
                 }
-            } catch (error) {
-                messages.finalStatus.innerHTML = `<div class="alert-danger">Network error: ${error.message}</div>`;
-                [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = false);
-            }
-        });
-    }
+            });
+        }
     }
     /*
     |--------------------------------------------------------------------------
@@ -151,11 +144,60 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadMoreBtn = document.getElementById('load-more-kra-btn');
     const tableBody = document.getElementById('kra-table-body');
     const searchForm = document.getElementById('kra-search-form');
+    
+    async function loadData(isSearch = false) {
+        const isLoading = false;
+        if (isLoading) return;
+        
+        if (isSearch) {
+            const colspan = tableBody.closest('table').querySelectorAll('thead th').length;
+            tableBody.innerHTML = `<tr><td colspan="${colspan}" style="text-align: center;">Loading...</td></tr>`;
+            
+            loadMoreBtn.dataset.currentOffset = '0';
+        }
+        
+        const offset = parseInt(loadMoreBtn.dataset.currentOffset, 10);
+        const searchInput = searchForm.querySelector('input[name="search"]');
+        const searchTerm = searchInput.value;
+        
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = 'Loading...';
+        
+        try {
+            const url = `${window.location.pathname}?ajax=true&offset=${offset}&search=${encodeURIComponent(searchTerm)}`;
+            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const data = await response.json();
 
+            if (isSearch) {
+                tableBody.innerHTML = '';
+            }
+            
+            const noResultsRow = document.getElementById('no-results-row');
+            if (noResultsRow) noResultsRow.remove();
+            
+            tableBody.insertAdjacentHTML('beforeend', data.html);
+            loadMoreBtn.dataset.currentOffset = data.nextOffset;
+            loadMoreBtn.style.display = data.hasMore ? 'block' : 'none';
+            
+            if (tableBody.children.length === 0) {
+                const colspan = tableBody.closest('table').querySelectorAll('thead th').length;
+                tableBody.innerHTML = `<tr id="no-results-row"><td colspan="${colspan}" style="text-align: center;">No items found.</td></tr>`;
+                loadMoreBtn.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error loading data:', error);
+            alert('Failed to load data. Please try again.');
+        } finally {
+            loadMoreBtn.disabled = false;
+            loadMoreBtn.textContent = 'Load More +';
+        }
+    }
+    
     if (loadMoreBtn && tableBody && searchForm) {
         const searchInput = searchForm.querySelector('input[name="search"]');
         const searchBtnIcon = document.getElementById('kra-search-btn-icon');
-        let isLoading = false;
 
         // Function to update the search icon based on the input's content
         const updateSearchIcon = () => {
@@ -170,68 +212,23 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Set the initial state of the icon when the page loads
         updateSearchIcon();
-
-        async function loadData(isSearch = false) {
-            if (isLoading) return;
-            isLoading = true;
-
-            if (isSearch) {
-                tableBody.innerHTML = '';
-                loadMoreBtn.dataset.currentOffset = '0';
-            }
-
-            const offset = parseInt(loadMoreBtn.dataset.currentOffset, 10);
-            const searchTerm = searchInput.value;
-
-            loadMoreBtn.disabled = true;
-            loadMoreBtn.textContent = 'Loading...';
-
-            try {
-                const url = `${window.location.pathname}?ajax=true&offset=${offset}&search=${encodeURIComponent(searchTerm)}`;
-                const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                
-                const data = await response.json();
-                
-                const noResultsRow = document.getElementById('no-results-row');
-                if (noResultsRow) noResultsRow.remove();
-
-                tableBody.insertAdjacentHTML('beforeend', data.html);
-                loadMoreBtn.dataset.currentOffset = data.nextOffset;
-                loadMoreBtn.style.display = data.hasMore ? 'block' : 'none';
-                
-                if (tableBody.children.length === 0) {
-                    const colspan = tableBody.closest('table').querySelectorAll('thead th').length;
-                    tableBody.innerHTML = `<tr id="no-results-row"><td colspan="${colspan}" style="text-align: center;">No items found.</td></tr>`;
-                    loadMoreBtn.style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Error loading data:', error);
-                alert('Failed to load data. Please try again.');
-            } finally {
-                isLoading = false;
-                loadMoreBtn.disabled = false;
-                loadMoreBtn.textContent = 'Load More +';
-            }
-        }
-
+        
         searchForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            await loadData(true); // Always trigger a new search on submit.
-            updateSearchIcon(); // Update the icon based on the result of the search.
+            await loadData(true);
+            updateSearchIcon();
         });
-
+        
         // Add a click listener to the icon itself for clearing
         searchBtnIcon.addEventListener('click', (e) => {
-             if (searchBtnIcon.classList.contains('fa-xmark')) {
-                e.preventDefault(); // Prevent form submission
-                searchInput.value = ''; // Clear the input
-                updateSearchIcon(); // Update the icon to a magnifying glass
-                loadData(true); // Reload the data with no filter
+            if (searchBtnIcon.classList.contains('fa-xmark')) {
+                e.preventDefault();
+                searchInput.value = '';
+                updateSearchIcon();
+                loadData(true);
             }
         });
-
+        
         loadMoreBtn.addEventListener('click', () => loadData(false));
     }
     /*
@@ -385,19 +382,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
                 if (response.ok) {
                     deleteStatusMessage.innerHTML = `<div class="alert-success">${data.message}</div>`;
-                    if (itemToDelete) {
-                        itemToDelete.style.transition = 'opacity 0.35s ease';
-                        itemToDelete.style.opacity = '0';
+                    
+                    if (typeof loadData === "function") {
                         setTimeout(() => {
-                            const tableBody = itemToDelete.parentElement;
+                           loadData(true);
+                           hideDeleteModal();
+                        }, 850);
+                    } else {
+                        if (itemToDelete) {
                             itemToDelete.remove();
-                            if (tableBody.children.length === 0) {
-                                const colspan = tableBody.closest('table').querySelectorAll('thead th').length;
-                                tableBody.innerHTML = `<tr id="no-results-row"><td colspan="${colspan}" style="text-align: center;">No items found.</td></tr>`;
-                                loadMoreBtn.style.display = 'none';
-                            }
-                            hideDeleteModal();
-                        }, 350);
+                        }
+                        setTimeout(hideDeleteModal, 1000);
                     }
                 } else {
                     deleteStatusMessage.innerHTML = `<div class="alert-danger">${data.message || 'Failed to delete.'}</div>`;

@@ -33,9 +33,6 @@ class PageController extends Controller
         $user = Auth::user();
 
         if ($user) {
-            /** @var \App\Models\User $user */ // For IDE
-            $user->load('credentials');
-
             // For the user's own profile page, isOwnProfile will always be true
             $isOwnProfile = true;
 

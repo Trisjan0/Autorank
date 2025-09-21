@@ -18,8 +18,9 @@ class Credential extends Model
     protected $fillable = [
         'user_id',
         'title',
-        'filename',
+        'type',
         'google_drive_file_id',
+        'filename',
     ];
 
     /**

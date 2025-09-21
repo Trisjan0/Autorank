@@ -42,7 +42,9 @@
         </thead>
         <tbody id="kra-table-body">
             @forelse($evaluations as $evaluation)
-            @include('partials._evaluations_table_row', ['evaluation' => $evaluation])
+            <tr data-id="{{ $evaluation->id }}">
+                @include('partials._evaluations_table_row', ['evaluation' => $evaluation])
+            </tr>
             @empty
             <tr id="no-results-row">
                 <td colspan="7" style="text-align: center;">No items found.</td>

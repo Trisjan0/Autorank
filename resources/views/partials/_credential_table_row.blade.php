@@ -1,5 +1,6 @@
-<tr id="credential-{{ $credential->id }}">
+<tr data-id="{{ $credential->id }}">
     <td>{{ $credential->title }}</td>
+    <td>{{ $credential->type }}</td>
     <td>{{ $credential->filename }}</td>
     <td>{{ $credential->created_at->format('F d, Y') }}</td>
     <td>

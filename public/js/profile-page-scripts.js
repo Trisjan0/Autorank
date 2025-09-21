@@ -1,8 +1,142 @@
 document.addEventListener('DOMContentLoaded', () => {
+    /*
+    |--------------------------------------------------------------------------
+    | UI LOGIC HELPER
+    |--------------------------------------------------------------------------
+    */
+    const MQL = 1130;
+    function updateContainerAlignment() {
+        if (window.innerWidth <= MQL) { return; }
+
+        const loadMoreBtn = document.getElementById('load-more-credentials-btn');
+        const container = document.querySelector('.mini-load-more-container');
+
+        if (loadMoreBtn && container) {
+            const isVisible = loadMoreBtn.style.display !== 'none';
+            
+            if (isVisible) {
+                container.classList.add('space-between');
+            } else {
+                container.classList.remove('space-between');
+            }
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DYNAMIC DATA LOADING (SEARCH & LOAD MORE)
+    |--------------------------------------------------------------------------
+    */
+    const loadMoreBtn = document.getElementById('load-more-credentials-btn');
+    const tableBody = document.getElementById('credentials-table-body');
+    const searchForm = document.getElementById('credentials-search-form');
+    let isLoading = false;
+
+    async function loadData(isSearch = false) {
+        if (isLoading) return;
+        isLoading = true;
+
+        if (isSearch) {
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Loading...</td></tr>';
+            if (loadMoreBtn) {
+                loadMoreBtn.dataset.currentOffset = '0';
+            }
+        }
+
+        const offset = loadMoreBtn ? parseInt(loadMoreBtn.dataset.currentOffset, 10) : 0;
+        const searchInput = searchForm.querySelector('input[name="search"]');
+        const searchTerm = searchInput.value;
+
+        if (loadMoreBtn) {
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.textContent = 'Loading...';
+        }
+
+        try {
+            const url = `/profile?ajax=true&offset=${offset}&search=${encodeURIComponent(searchTerm)}`;
+            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const data = await response.json();
+            
+            if (isSearch) {
+                tableBody.innerHTML = ''; // Clear loading message
+            }
+
+            const noResultsRow = document.getElementById('no-results-row');
+            if (noResultsRow) noResultsRow.remove();
+
+            tableBody.insertAdjacentHTML('beforeend', data.html);
+
+            if (loadMoreBtn) {
+                loadMoreBtn.dataset.currentOffset = data.nextOffset;
+                loadMoreBtn.style.display = data.hasMore ? 'block' : 'none';
+            }
+
+            updateContainerAlignment(); 
+            
+            if (tableBody.children.length === 0) {
+                const colspan = tableBody.closest('table').querySelectorAll('thead th').length;
+                tableBody.innerHTML = `<tr id="no-results-row"><td colspan="${colspan}" style="text-align: center;">No items found.</td></tr>`;
+                if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error loading data:', error);
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red;">Failed to load data. Please try again.</td></tr>';
+        } finally {
+            isLoading = false;
+            if (loadMoreBtn) {
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.textContent = 'Load More +';
+            }
+
+            updateContainerAlignment(); 
+        }
+    }
+
+    if (tableBody && searchForm) {
+        const searchInput = searchForm.querySelector('input[name="search"]');
+        const searchBtnIcon = document.getElementById('credentials-search-btn-icon');
+
+        const updateSearchIcon = () => {
+            if (searchInput.value.trim() !== '') {
+                searchBtnIcon.classList.remove('fa-magnifying-glass');
+                searchBtnIcon.classList.add('fa-xmark');
+            } else {
+                searchBtnIcon.classList.remove('fa-xmark');
+                searchBtnIcon.classList.add('fa-magnifying-glass');
+            }
+        };
+        updateSearchIcon();
+
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await loadData(true);
+            updateSearchIcon();
+        });
+
+        searchBtnIcon.addEventListener('click', (e) => {
+            if (searchBtnIcon.classList.contains('fa-xmark')) {
+                e.preventDefault();
+                searchInput.value = '';
+                updateSearchIcon();
+                loadData(true);
+            }
+        });
+
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', () => loadData(false));
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREDENTIAL UPLOAD MODAL
+    |--------------------------------------------------------------------------
+    */
     const uploadModal = document.getElementById('credential-upload-modal');
 
     if (uploadModal) {
-        // --- Modal Element Selectors ---
         const openBtn = document.getElementById('upload-credential-button');
         const closeBtn = document.getElementById('credential-modal-close-btn');
         const form = document.getElementById('credential-upload-form');
@@ -18,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const pageRefreshDelay = 1250;
 
-        // --- Modal Control Functions ---
         const showStep = (step) => {
             initialStep.style.display = (step === 'initial') ? 'block' : 'none';
             confirmationStep.style.display = (step === 'confirmation') ? 'block' : 'none';
@@ -38,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
             [confirmBtn, backBtn, closeBtn].forEach(btn => { if (btn) btn.disabled = false; });
         };
 
-        // --- Event Listeners ---
         if (openBtn) openBtn.addEventListener('click', showModal);
         if (closeBtn) closeBtn.addEventListener('click', hideModal);
         uploadModal.addEventListener('click', (e) => { if (e.target === uploadModal) hideModal(); });
@@ -85,12 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = await response.json();
                     if (response.ok) {
                         messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
-                        const tableBody = document.getElementById('credentials-table-body');
-                        if (tableBody && data.newRowHtml) {
-                            const noResultsRow = document.getElementById('no-credentials-row');
-                            if (noResultsRow) noResultsRow.remove();
-                            tableBody.insertAdjacentHTML('afterbegin', data.newRowHtml);
+                        
+                        if (typeof loadData === 'function') {
+                            loadData(true);
                         }
+
                         setTimeout(hideModal, pageRefreshDelay);
                     } else {
                         let errorMsg = data.message || 'An unknown error occurred.';
@@ -107,4 +238,90 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | REUSABLE DELETE MODAL & AJAX
+    |--------------------------------------------------------------------------
+    */
+    const deleteModal = document.getElementById('deleteConfirmationModal');
+    if (deleteModal) {
+        const closeDeleteModalBtn = document.getElementById('closeDeleteModalBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const deleteModalText = document.getElementById('deleteModalText');
+        const deleteStatusMessage = document.getElementById('delete-final-status-message-area');
+        let deleteUrl = '';
+
+        const showDeleteModal = (button) => {
+            deleteUrl = button.dataset.deleteUrl;
+            const itemTitle = button.dataset.itemTitle;
+            deleteModalText.innerHTML = `This action will delete the file from the system and cannot be undone.<br><br>Are you sure you want to delete "<strong>${itemTitle}</strong>"?`;
+            deleteStatusMessage.innerHTML = '';
+            confirmDeleteBtn.disabled = false;
+            cancelDeleteBtn.disabled = false;
+            document.body.classList.add('modal-open');
+            deleteModal.style.display = 'flex';
+        };
+
+        const hideDeleteModal = () => {
+            document.body.classList.remove('modal-open');
+            deleteModal.style.display = 'none';
+        };
+
+        document.body.addEventListener('click', (event) => {
+            const deleteButton = event.target.closest('.delete-btn');
+            if (deleteButton) {
+                if(deleteButton.closest('.content-right-side')) {
+                    showDeleteModal(deleteButton);
+                }
+            }
+        });
+
+        closeDeleteModalBtn.addEventListener('click', hideDeleteModal);
+        cancelDeleteBtn.addEventListener('click', hideDeleteModal);
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) hideDeleteModal();
+        });
+
+        confirmDeleteBtn.addEventListener('click', async () => {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            confirmDeleteBtn.disabled = true;
+            cancelDeleteBtn.disabled = true;
+            deleteStatusMessage.innerHTML = '<div class="alert-info">Deleting...</div>';
+
+            try {
+                const response = await fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    deleteStatusMessage.innerHTML = `<div class="alert-success">${data.message}</div>`;
+                    
+                    setTimeout(() => {
+                        if (typeof loadData === "function") {
+                           loadData(true);
+                        }
+                        hideDeleteModal();
+                    }, 850);
+
+                } else {
+                    deleteStatusMessage.innerHTML = `<div class="alert-danger">${data.message || 'Failed to delete.'}</div>`;
+                    confirmDeleteBtn.disabled = false;
+                    cancelDeleteBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error deleting item:', error);
+                deleteStatusMessage.innerHTML = `<div class="alert-danger">A network error occurred.</div>`;
+                confirmDeleteBtn.disabled = false;
+                cancelDeleteBtn.disabled = false;
+            }
+        });
+    }
+
+    updateContainerAlignment(); 
 });
