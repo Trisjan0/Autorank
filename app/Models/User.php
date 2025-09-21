@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Permission\Traits\HasRoles;
 use Carbon\Carbon;
-use App\Models\ProfessionalDevelopment;
+use App\Models\Credential;
 
 class User extends Authenticatable
 {

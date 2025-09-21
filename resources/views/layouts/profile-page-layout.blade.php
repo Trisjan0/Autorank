@@ -16,6 +16,9 @@
     <!-- CSS Links -->
     <link rel="stylesheet" href="{{ asset('css/global-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/system-settings-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/view-all-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/kra-modal-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/manage-users-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/profile-page-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive-styles.css') }}">
 
@@ -25,6 +28,7 @@
 
 <body>
     @include('partials._navbar')
+    @include('partials._modals')
 
     <main>
         @yield('content')
@@ -32,6 +36,8 @@
 
     <script src="{{ asset('js/global-scripts.js') }}"></script>
     <script src="{{ asset('js/system-settings-scripts.js') }}"></script>
+
+    @stack('page-scripts')
 </body>
 
 </html>

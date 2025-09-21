@@ -71,7 +71,7 @@
     width: auto;
     min-height: 35px;
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 500;
     justify-self: center;
     padding-left: 15px;
     padding-right: 15px;
@@ -152,6 +152,7 @@
     width: 225px;
     height: 50px;
     font-size: 1.1rem;
+    font-weight: 500;
 }
 
 .load-more-container button:hover {

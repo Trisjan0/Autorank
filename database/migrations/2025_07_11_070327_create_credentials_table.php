@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('credentials', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('name');
+            $table->string('title');
+            $table->string('filename');
+            $table->string('google_drive_file_id');
             $table->timestamps();
         });
     }

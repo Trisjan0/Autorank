@@ -66,7 +66,7 @@ Profile | Autorank
         <div class="content-right-side">
             <div class="credentials-and-experience-container">
                 <div class="title">
-                    <h1>Credentials & Experience</h1>
+                    <h1>Profile</h1>
                 </div>
                 <div class="progress-bars-container">
                     <div class="years-of-teaching-container">
@@ -100,227 +100,110 @@ Profile | Autorank
                 </div>
                 @if ($isOwnProfile)
                 <div class="apply-for-reranking-container">
-                    <button>Apply for Reranking</button>
+                    <button>Apply for Merit Promotion</button>
                 </div>
                 @endif
             </div>
-            <div class="performance-metrics-container">
-                <div class="title">
-                    <h1>Key Result Areas</h1>
-                </div>
-                <div class="performance-metrics">
-                    <!-- KRA I-A: EVALUATIONS -->
-                    <div class="subtitle">
-                        <h2>KRA I-A: Evalutions</h2>
-                    </div>
-                    <div class="metric-table-container">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Publication Date</th>
-                                    <th>Status</th>
-                                    @if ($isOwnProfile)
-                                    <th>Action</th>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td>N/A</td>
-                                    <td>Ongoing</td>
-                                    @if ($isOwnProfile)
-                                    <td><button>View</button></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Sed do eiusmod tempor incididunt ut labore</td>
-                                    <td>July 12, 2024</td>
-                                    <td>Done</td>
-                                    @if ($isOwnProfile)
-                                    <td><button>Upload</button></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    @if ($isOwnProfile)
-                                    <th class="table-navigation" colspan="4"><a href='{{ route("instructor.evaluations-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
-                                    @else
-                                    <th class="table-navigation" colspan="3">Latest Evaluations</th>
-                                    @endif
-                                </tr>
-                            </tbody>
-                        </table>
+            @if ($isOwnProfile)
+            <div class="title">
+                <h1>Credentials & Experience</h1>
+            </div>
+            {{-- Credentials/Documents Section --}}
+            <div class="credentials-table-container">
+                <table class="credentials-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>File Name</th>
+                            <th>Date Uploaded</th>
+                            <th>
+                                <div class="search-bar-container">
+                                    <form action="{{ route('profile-page') }}" method="GET" id="kra-search-form">
+                                        <input type="text" name="search" placeholder="Search uploads..." value="{{ request('search') }}">
+                                        <button type="submit">
+                                            <i class="fa-solid fa-magnifying-glass" id="kra-search-btn-icon"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="credentials-table-body">
+                        @forelse(Auth::user()->credentials()->latest()->get() as $credential)
+                        @include('partials._credential_table_row', ['credential' => $credential])
+                        @empty
+                        <tr id="no-credentials-row">
+                            <td colspan="4" style="text-align: center;">No items found.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mini-load-more-container">
+                <button id="upload-credential-button" class="upload-new-button">Upload New Document</button>
+            </div>
+
+            {{-- CREDENTIAL UPLOAD MODAL --}}
+            <div class="role-modal-container" id="credential-upload-modal" style="display: none;">
+                <div class="role-modal">
+                    <div class="role-modal-navigation">
+                        <i class="fa-solid fa-xmark" style="color: #ffffff;" id="credential-modal-close-btn"></i>
                     </div>
 
-                    <!-- KRA I-B: Instructional Materials -->
-                    <div class="subtitle">
-                        <h2>KRA I-B: Instructional Materials</h2>
-                    </div>
-                    <div class="metric-table-container">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Publication Date</th>
-                                    <th>Status</th>
-                                    @if ($isOwnProfile)
-                                    <th>Action</th>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td>N/A</td>
-                                    <td>Ongoing</td>
-                                    @if ($isOwnProfile)
-                                    <td><button>View</button></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Sed do eiusmod tempor incididunt ut labore</td>
-                                    <td>July 12, 2024</td>
-                                    <td>Done</td>
-                                    @if ($isOwnProfile)
-                                    <td><button>Upload</button></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    @if ($isOwnProfile)
-                                    <th class="table-navigation" colspan="4"><a href='{{ route("instructor.instructional-materials-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
-                                    @else
-                                    <th class="table-navigation" colspan="3">Latest Instructional Materials</th>
-                                    @endif
-                                </tr>
-                            </tbody>
-                        </table>
+                    {{-- STEP 1: Form Input --}}
+                    <div id="credential-modal-initial-step">
+                        <form id="credential-upload-form" action="{{ route('credentials.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="role-modal-content">
+                                <div class="role-modal-content-header">
+                                    <h1>Upload Document</h1>
+                                    <p>Fill out the details below. You will be asked to confirm before the file is uploaded.</p>
+                                </div>
+                                <div class="role-modal-content-body">
+                                    <div class="form-group">
+                                        <label class="form-group-title" for="cred-title">Title:</label>
+                                        <input type="text" id="cred-title" name="title" required data-label="Title">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-group-title" for="credential_file">Upload File:</label>
+                                        <input type="file" id="credential_file" name="credential_file" required data-label="File">
+                                    </div>
+                                    <div id="credential-modal-messages" class="mt-2"></div>
+                                </div>
+                            </div>
+                            <div class="role-modal-actions">
+                                <button type="button" id="credential-proceed-btn">Proceed</button>
+                            </div>
+                        </form>
                     </div>
 
-                    <!-- KRA II: Research Outputs -->
-                    <div class="subtitle">
-                        <h2>KRA II: Research Outputs</h2>
-                    </div>
-                    <div class="metric-table-container">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Publication Date</th>
-                                    <th>Status</th>
-                                    @if ($isOwnProfile)
-                                    <th>Action</th>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td>N/A</td>
-                                    <td>Ongoing</td>
-                                    @if ($isOwnProfile)
-                                    <td><button>View</button></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Sed do eiusmod tempor incididunt ut labore</td>
-                                    <td>July 12, 2024</td>
-                                    <td>Done</td>
-                                    @if ($isOwnProfile)
-                                    <td><button>Upload</button></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    @if ($isOwnProfile)
-                                    <th class="table-navigation" colspan="4"><a href='{{ route("instructor.research-documents-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
-                                    @else
-                                    <th class="table-navigation" colspan="3">Latest Research Outputs</th>
-                                    @endif
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- KRA III: Extension Services -->
-                    <div class="subtitle">
-                        <h2>KRA III: Extension Services</h2>
-                    </div>
-                    <div class="metric-table-container">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Publication Date</th>
-                                    <th>Status</th>
-                                    @if ($isOwnProfile)
-                                    <th>Action</th>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td>N/A</td>
-                                    <td>Ongoing</td>
-                                    @if ($isOwnProfile)
-                                    <td><button>View</button></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Sed do eiusmod tempor incididunt ut labore</td>
-                                    <td>July 12, 2024</td>
-                                    <td>Done</td>
-                                    @if ($isOwnProfile)
-                                    <td><button>Upload</button></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    @if ($isOwnProfile)
-                                    <th class="table-navigation" colspan="4"><a href='{{ route("instructor.extension-services-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
-                                    @else
-                                    <th class="table-navigation" colspan="3">Latest Extension Services</th>
-                                    @endif
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- KRA IV: Professional Developments -->
-                    <div class="subtitle">
-                        <h2>KRA IV: Professional Developments</h2>
-                    </div>
-                    <div class="metric-table-container">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Publication Date</th>
-                                    <th>Status</th>
-                                    @if ($isOwnProfile)
-                                    <th>Action</th>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
-                                    <td>N/A</td>
-                                    <td>Ongoing</td>
-                                    @if ($isOwnProfile)
-                                    <td><button>View</button></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>Sed do eiusmod tempor incididunt ut labore</td>
-                                    <td>July 12, 2024</td>
-                                    <td>Done</td>
-                                    @if ($isOwnProfile)
-                                    <td><button>Upload</button></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    @if ($isOwnProfile)
-                                    <th class="table-navigation" colspan="4"><a href='{{ route("instructor.professional-developments-page") }}'>View All&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" style="color: #ffffff;"></i></a></th>
-                                    @else
-                                    <th class="table-navigation" colspan="3">Latest Professional Developments</th>
-                                    @endif
-                                </tr>
-                            </tbody>
-                        </table>
+                    {{-- STEP 2: Confirmation --}}
+                    <div id="credential-modal-confirmation-step" style="display: none;">
+                        <div class="role-modal-content">
+                            <div class="role-modal-content-header">
+                                <h1>Confirm Upload</h1>
+                                <p id="credential-confirmation-area"></p>
+                            </div>
+                            <div class="role-modal-content-body">
+                                <div id="credential-final-status-area" class="mt-2"></div>
+                            </div>
+                        </div>
+                        <div class="role-modal-actions">
+                            <button type="button" class="btn btn-info" id="credential-back-btn">Back</button>
+                            <button type="button" class="btn btn-success" id="credential-confirm-btn">Confirm & Upload</button>
+                        </div>
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>
+</div>
 @endsection
+
+@push('page-scripts')
+<script src="{{ asset('js/kra-scripts.js') }}"></script>
+<script src="{{ asset('js/profile-page-scripts.js') }}"></script>
+@endpush

@@ -13,8 +13,8 @@
     --pageBackgroundColor: #ffffff;
     --pageTextColor: #000000;
     --pageTextColorOnBlack: #ffffff;
-    --systemRed: hsl(0, 63%, 38%);
-    --systemRedHover: hsl(0, 63%, 45%);
+    --systemRed: hsl(0, 100%, 41%);
+    --systemRedHover: hsl(0, 100%, 45%);
     /* --- Card Colors --- */
     --cardBackgroundColorL: #ffffff;
     --cardBorderColorL: #262626;
@@ -227,5 +227,3 @@ nav {
 #hidden-menu .fa-solid {
     color: white;
 }
-
-

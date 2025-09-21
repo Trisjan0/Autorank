@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /*
     |--------------------------------------------------------------------------
-    | FOR THE REUSABLE FILE VIEWER MODAL LOGIC -- START
+    | REUSABLE FILE VIEWER MODAL
     |--------------------------------------------------------------------------
     */
     const fileViewerModal = document.getElementById('fileViewerModal');
@@ -262,26 +262,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const closeFileViewerModal = () => {
             document.body.classList.remove('modal-open');
             fileViewerModal.classList.add('modal-container--hidden');
-
             if (iframe) {
                 iframe.style.display = 'none';
                 iframe.src = 'about:blank';
             }
-            if (feedbackContainer) {
-                feedbackContainer.style.display = 'none';
-            }
+            if (feedbackContainer) feedbackContainer.style.display = 'none';
         };
 
         if (iframe) {
-            iframe.addEventListener('load', function() {
-                if (loader) {
-                    loader.style.display = 'none';
-                }
+            iframe.addEventListener('load', () => {
+                if (loader) loader.style.display = 'none';
                 iframe.style.display = 'block';
             });
         }
 
-        document.body.addEventListener('click', async function(event) {
+        document.body.addEventListener('click', async (event) => {
             const viewButton = event.target.closest('.view-file-btn');
             if (viewButton) {
                 const infoUrl = viewButton.dataset.infoUrl;
@@ -311,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch (error) {
                     console.error('Error viewing file:', error);
                     modalLabel.textContent = 'Error';
-                    feedbackContainer.querySelector('p').textContent = 'Could not load the file. Please try again later.';
+                    feedbackContainer.querySelector('p').textContent = 'Could not load the file.';
                     downloadBtn.style.display = 'none';
                     feedbackContainer.style.display = 'flex';
                     loader.style.display = 'none';
@@ -319,31 +314,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        if (closeModalBtn) {
-            closeModalBtn.addEventListener('click', closeFileViewerModal);
-        }
-
-        fileViewerModal.addEventListener('click', function(event) {
-            if (event.target === fileViewerModal) {
-                closeFileViewerModal();
-            }
-        });
-
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && !fileViewerModal.classList.contains('modal-container--hidden')) {
-                closeFileViewerModal();
-            }
+        if (closeModalBtn) closeModalBtn.addEventListener('click', closeFileViewerModal);
+        fileViewerModal.addEventListener('click', (e) => {
+            if (e.target === fileViewerModal) closeFileViewerModal();
         });
     }
-    /*
-    |--------------------------------------------------------------------------
-    | FOR THE REUSABLE FILE VIEWER MODAL LOGIC -- END
-    |--------------------------------------------------------------------------
-    */
 
     /*
     |--------------------------------------------------------------------------
-    | FOR THE REUSABLE DELETE MODAL & AJAX -- START
+    | REUSABLE DELETE MODAL & AJAX
     |--------------------------------------------------------------------------
     */
     const deleteModal = document.getElementById('deleteConfirmationModal');
@@ -354,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deleteModalText = document.getElementById('deleteModalText');
         const deleteStatusMessage = document.getElementById('delete-final-status-message-area');
 
-        let itemToDelete = null; // To store the element (e.g., table row) to be deleted
+        let itemToDelete = null;
         let deleteUrl = '';
 
         const showDeleteModal = (button) => {
@@ -366,17 +345,16 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteStatusMessage.innerHTML = '';
             confirmDeleteBtn.disabled = false;
             cancelDeleteBtn.disabled = false;
-            
+
             document.body.classList.add('modal-open');
-            deleteModal.classList.remove('modal-container--hidden');
+            deleteModal.style.display = 'flex';
         };
 
         const hideDeleteModal = () => {
             document.body.classList.remove('modal-open');
-            deleteModal.classList.add('modal-container--hidden');
+            deleteModal.style.display = 'none';
         };
 
-        // Event listener to open the modal
         document.body.addEventListener('click', (event) => {
             const deleteButton = event.target.closest('.delete-btn');
             if (deleteButton) {
@@ -384,19 +362,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Event listeners to close the modal
         closeDeleteModalBtn.addEventListener('click', hideDeleteModal);
         cancelDeleteBtn.addEventListener('click', hideDeleteModal);
         deleteModal.addEventListener('click', (e) => {
-            if (e.target === deleteModal) {
-                hideDeleteModal();
-            }
+            if (e.target === deleteModal) hideDeleteModal();
         });
 
-        // Event listener for the final delete confirmation
         confirmDeleteBtn.addEventListener('click', async () => {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            
             confirmDeleteBtn.disabled = true;
             cancelDeleteBtn.disabled = true;
             deleteStatusMessage.innerHTML = '<div class="alert-info">Deleting...</div>';
@@ -409,44 +382,34 @@ document.addEventListener('DOMContentLoaded', () => {
                         'X-CSRF-TOKEN': csrfToken
                     },
                 });
-
                 const data = await response.json();
-
                 if (response.ok) {
                     deleteStatusMessage.innerHTML = `<div class="alert-success">${data.message}</div>`;
-
                     if (itemToDelete) {
                         itemToDelete.style.transition = 'opacity 0.35s ease';
                         itemToDelete.style.opacity = '0';
                         setTimeout(() => {
+                            const tableBody = itemToDelete.parentElement;
                             itemToDelete.remove();
-                            
-                            const tableBody = document.getElementById('kra-table-body');
-                            if (tableBody && tableBody.children.length === 0) {
+                            if (tableBody.children.length === 0) {
                                 const colspan = tableBody.closest('table').querySelectorAll('thead th').length;
-                                const noResultsRowHTML = `<tr id="no-results-row"><td colspan="${colspan}" style="text-align: center;">No items found.</td></tr>`;
-                                tableBody.innerHTML = noResultsRowHTML;
+                                tableBody.innerHTML = `<tr id="no-results-row"><td colspan="${colspan}" style="text-align: center;">No items found.</td></tr>`;
+                                loadMoreBtn.style.display = 'none';
                             }
-
                             hideDeleteModal();
                         }, 350);
                     }
                 } else {
-                    deleteStatusMessage.innerHTML = `<div class="alert-danger">${data.message || 'Failed to delete item.'}</div>`;
+                    deleteStatusMessage.innerHTML = `<div class="alert-danger">${data.message || 'Failed to delete.'}</div>`;
                     confirmDeleteBtn.disabled = false;
                     cancelDeleteBtn.disabled = false;
                 }
             } catch (error) {
                 console.error('Error deleting item:', error);
-                deleteStatusMessage.innerHTML = `<div class="alert-danger">A network error occurred. Please try again.</div>`;
+                deleteStatusMessage.innerHTML = `<div class="alert-danger">A network error occurred.</div>`;
                 confirmDeleteBtn.disabled = false;
                 cancelDeleteBtn.disabled = false;
             }
         });
     }
-    /*
-    |--------------------------------------------------------------------------
-    | FOR THE REUSABLE DELETE LOGIC -- END
-    |--------------------------------------------------------------------------
-    */
 });

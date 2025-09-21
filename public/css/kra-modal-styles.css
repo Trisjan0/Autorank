@@ -78,7 +78,6 @@ body.modal-open {
 }
 
 .modal-content.modal-fullscreen {
-  background-color: var(--primaryColor);
   border-radius: 5px;
   width: 90vw;
   height: 90vh;
@@ -88,6 +87,7 @@ body.modal-open {
 }
 
 .modal-header {
+  background-color: var(--primaryColor);
   padding: 1rem;
   border-bottom: 1px solid var(--tableDataBorderColor);
   display: flex;
@@ -109,6 +109,11 @@ body.modal-open {
 }
 
 .modal-body {
+  background-color:
+    hsl(var(--base-hue-primary),
+    var(--base-saturation-primary),
+    var(--base-lightness-primary)
+  );
   flex-grow: 1;
   position: relative;
   display: flex;
@@ -136,6 +141,11 @@ body.modal-open {
     var(--base-saturation-primary),
     calc(var(--base-lightness-primary) + 15%)
     );
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
 }
 
 #fileViewerDownloadBtn:hover {
@@ -263,26 +273,17 @@ body.modal-open {
   font-size: 1.1em;
 }
 
-.file-feedback-container .btn {
-  text-decoration: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  background-color: #48a2f2;
-  color: white;
-  font-weight: bold;
-}
-
 /* TABLE ROW DATA STYLING -- -- -- */
 .btn.btn-danger.delete-btn {
-  background-color: rgb(157, 36, 36);
+  background-color: var(--systemRed);
 }
 
 .btn.btn-danger.delete-btn:hover {
-  background-color: rgb(157, 75, 75);
+  background-color: var(--systemRedHover);
 }
 
 /* DELETE CONFIRMATION MODAL STYLING -- -- -- */
-.kra-modal {
+.delete-modal-box {
   background-color: hsl(
   var(--base-hue-primary),
   var(--base-saturation-primary),
@@ -298,24 +299,24 @@ body.modal-open {
   padding: 25px;
 }
 
-.kra-modal-navigation, .kra-modal-content, .kra-modal-actions {
+.delete-modal-header, .delete-modal-body, .delete-modal-actions {
   width: 100%;
   height: auto;
   display: flex;
 }
 
-.kra-modal-navigation {
+.delete-modal-header {
   justify-content: end;
   align-items: center;
   font-size: 1.3rem;
 }
 
-.kra-modal-navigation i:hover {
+.delete-modal-header i:hover {
   cursor: pointer;
   scale: 1.2;
 }
 
-.kra-modal-content {
+.delete-modal-body {
   flex-direction: column;
   justify-content: start;
   align-items: center;
@@ -323,12 +324,12 @@ body.modal-open {
   gap: 7px;
 }
 
-.kra-modal-title, #deleteModalText, #delete-final-status-message-area {
+.delete-modal-title, #deleteModalText, #delete-final-status-message-area {
   width: 100%;
   height: auto;
 }
 
-.kra-modal-title {
+.delete-modal-title {
   font-size: 1.45rem;
   font-weight: 600;
 }
@@ -338,12 +339,12 @@ body.modal-open {
   margin: 0 0 53px 0;
 }
 
-.kra-modal-actions {
+.delete-modal-actions {
   height: 50px;
   gap: 10px;
 }
 
-.kra-modal-actions button {
+.delete-modal-actions button {
   background-color: hsl(
   var(--base-hue-primary),
   var(--base-saturation-primary),
@@ -357,7 +358,7 @@ body.modal-open {
   flex-grow: 1;
 }
 
-.kra-modal-actions button:hover {
+.delete-modal-actions button:hover {
   background-color: hsl(
   var(--base-hue-primary),
   var(--base-saturation-primary),
@@ -366,7 +367,7 @@ body.modal-open {
   cursor: pointer;
 }
 
-.kra-modal-actions #confirmDeleteBtn {
+.delete-modal-actions #confirmDeleteBtn {
   background-color: var(--systemRed);
   border: none;
   border-radius: 5px;
@@ -376,7 +377,7 @@ body.modal-open {
   flex-grow: 1;
 }
 
-.kra-modal-actions #confirmDeleteBtn:hover {
+.delete-modal-actions #confirmDeleteBtn:hover {
   background-color: var(--systemRedHover);
   cursor: pointer;
 }

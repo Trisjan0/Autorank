@@ -10,11 +10,21 @@ class Credential extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'user_id',
-        'name',
+        'title',
+        'filename',
+        'google_drive_file_id',
     ];
 
+    /**
+     * Get the user that owns the credential.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

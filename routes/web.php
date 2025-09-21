@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ApplicationController;
 use App\Http\Controllers\Evaluator\EvaluatorController;
+use App\Http\Controllers\Instructor\CredentialController;
 use App\Http\Controllers\Instructor\EvaluationsController;
 use App\Http\Controllers\Instructor\InstructionalMaterialsController;
 use App\Http\Controllers\Instructor\ResearchDocumentsController;
@@ -98,6 +99,12 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::middleware(['role:super_admin|user'])->group(function () {
+        // Routes for Credentials
+        Route::post('/credentials', [CredentialController::class, 'store'])->name('credentials.store');
+        Route::delete('/credentials/{credential}', [CredentialController::class, 'destroy'])->name('credentials.destroy');
+        Route::get('/credentials/file-info/{credential}', [CredentialController::class, 'getFileInfoForCredential'])->name('credentials.file-info');
+        Route::get('/credentials/file/{credential}', [CredentialController::class, 'viewFileForCredential'])->name('credentials.view-file');
+
         // Route for KRA I-A: Evaluations Page
         Route::get('/evaluations', [EvaluationsController::class, 'index'])->name('instructor.evaluations-page');
         Route::post('/evaluations', [EvaluationsController::class, 'storeEvaluation'])->name('instructor.evaluations.store');
