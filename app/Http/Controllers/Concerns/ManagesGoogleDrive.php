@@ -55,8 +55,19 @@ trait ManagesGoogleDrive
      */
     protected function deleteFileFromGoogleDrive(string $fileId): void
     {
-        $service = $this->getGoogleDriveService();
-        $service->files->delete($fileId);
+        try {
+            $service = $this->getGoogleDriveService();
+            $service->files->delete($fileId);
+        } catch (\Google\Service\Exception $e) {
+            // If the API returns a 404 error, it means the file was not found.
+            if ($e->getCode() == 404) {
+                Log::info('Attempted to delete a Google Drive file that was already gone.', ['file_id' => $fileId]);
+                // Do nothing, the file is already deleted.
+            } else {
+                // If it's any other error (e.g., permission issue), re-throw it.
+                throw $e;
+            }
+        }
     }
 
     /**

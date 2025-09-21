@@ -44,7 +44,7 @@
             @include('partials._extension_services_table_row', ['service' => $service])
             @empty
             <tr id="no-results-row">
-                <td colspan="6" style="text-align: center;">No extension services found.</td>
+                <td colspan="6" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>

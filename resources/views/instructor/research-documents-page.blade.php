@@ -46,7 +46,7 @@
             @include('partials._research_documents_table_row', ['document' => $document])
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No research documents found.</td>
+                <td colspan="7" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>

@@ -110,7 +110,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
                 if (response.ok) {
                     messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
-                    setTimeout(() => window.location.reload(), pageRefreshDelay);
+                    const tableBody = document.getElementById('kra-table-body');
+
+                    if (tableBody && data.newRowHtml) {
+                        const noResultsRow = document.getElementById('no-results-row');
+                        if (noResultsRow) {
+                            noResultsRow.remove();
+                        }
+                        tableBody.insertAdjacentHTML('afterbegin', data.newRowHtml);
+                    }
+
+                    setTimeout(hideModal, pageRefreshDelay);
                 } else {
                     let errorMsg = data.message || 'An unknown error occurred.';
                     if (response.status === 422 && data.errors) {
@@ -333,18 +343,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /*
     |--------------------------------------------------------------------------
-    | FOR THE REUSABLE DELETE LOGIC -- START
+    | FOR THE REUSABLE DELETE MODAL & AJAX -- START
     |--------------------------------------------------------------------------
     */
-    document.body.addEventListener('click', async function(event) {
-        const deleteButton = event.target.closest('.delete-btn');
-        if (!deleteButton) return;
+    const deleteModal = document.getElementById('deleteConfirmationModal');
+    if (deleteModal) {
+        const closeDeleteModalBtn = document.getElementById('closeDeleteModalBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const deleteModalText = document.getElementById('deleteModalText');
+        const deleteStatusMessage = document.getElementById('delete-final-status-message-area');
 
-        const itemTitle = deleteButton.dataset.itemTitle;
-        const deleteUrl = deleteButton.dataset.deleteUrl;
+        let itemToDelete = null; // To store the element (e.g., table row) to be deleted
+        let deleteUrl = '';
 
-        if (confirm(`Are you sure you want to delete "${itemTitle}"? This action cannot be undone.`)) {
+        const showDeleteModal = (button) => {
+            itemToDelete = button.closest('tr');
+            deleteUrl = button.dataset.deleteUrl;
+            const itemTitle = button.dataset.itemTitle;
+
+            deleteModalText.innerHTML = `This action will delete both the files uploaded to the system and Google Drive and cannot be undone.<br><br>Are you sure you want to delete "<strong>${itemTitle}</strong>"?`;
+            deleteStatusMessage.innerHTML = '';
+            confirmDeleteBtn.disabled = false;
+            cancelDeleteBtn.disabled = false;
+            
+            document.body.classList.add('modal-open');
+            deleteModal.classList.remove('modal-container--hidden');
+        };
+
+        const hideDeleteModal = () => {
+            document.body.classList.remove('modal-open');
+            deleteModal.classList.add('modal-container--hidden');
+        };
+
+        // Event listener to open the modal
+        document.body.addEventListener('click', (event) => {
+            const deleteButton = event.target.closest('.delete-btn');
+            if (deleteButton) {
+                showDeleteModal(deleteButton);
+            }
+        });
+
+        // Event listeners to close the modal
+        closeDeleteModalBtn.addEventListener('click', hideDeleteModal);
+        cancelDeleteBtn.addEventListener('click', hideDeleteModal);
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) {
+                hideDeleteModal();
+            }
+        });
+
+        // Event listener for the final delete confirmation
+        confirmDeleteBtn.addEventListener('click', async () => {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            confirmDeleteBtn.disabled = true;
+            cancelDeleteBtn.disabled = true;
+            deleteStatusMessage.innerHTML = '<div class="alert-info">Deleting...</div>';
 
             try {
                 const response = await fetch(deleteUrl, {
@@ -358,20 +413,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    const row = deleteButton.closest('tr');
-                    setTimeout(() => {
-                        alert(data.message);
-                        window.location.reload();
-                    }, 500);
+                    deleteStatusMessage.innerHTML = `<div class="alert-success">${data.message}</div>`;
+
+                    if (itemToDelete) {
+                        itemToDelete.style.transition = 'opacity 0.35s ease';
+                        itemToDelete.style.opacity = '0';
+                        setTimeout(() => {
+                            itemToDelete.remove();
+                            
+                            const tableBody = document.getElementById('kra-table-body');
+                            if (tableBody && tableBody.children.length === 0) {
+                                const colspan = tableBody.closest('table').querySelectorAll('thead th').length;
+                                const noResultsRowHTML = `<tr id="no-results-row"><td colspan="${colspan}" style="text-align: center;">No items found.</td></tr>`;
+                                tableBody.innerHTML = noResultsRowHTML;
+                            }
+
+                            hideDeleteModal();
+                        }, 350);
+                    }
                 } else {
-                    alert('Error: ' + data.message);
+                    deleteStatusMessage.innerHTML = `<div class="alert-danger">${data.message || 'Failed to delete item.'}</div>`;
+                    confirmDeleteBtn.disabled = false;
+                    cancelDeleteBtn.disabled = false;
                 }
             } catch (error) {
                 console.error('Error deleting item:', error);
-                alert('An unexpected error occurred. Please check the console.');
+                deleteStatusMessage.innerHTML = `<div class="alert-danger">A network error occurred. Please try again.</div>`;
+                confirmDeleteBtn.disabled = false;
+                cancelDeleteBtn.disabled = false;
             }
-        }
-    });
+        });
+    }
     /*
     |--------------------------------------------------------------------------
     | FOR THE REUSABLE DELETE LOGIC -- END

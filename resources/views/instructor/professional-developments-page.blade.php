@@ -45,7 +45,7 @@
             @include('partials._professional_developments_table_row', ['development' => $development])
             @empty
             <tr id="no-results-row">
-                <td colspan="6" style="text-align: center;">No professional development records found.</td>
+                <td colspan="6" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>

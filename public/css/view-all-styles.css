@@ -163,4 +163,42 @@
     );
 }
 
+/* MODAL ALERTS STYLING */
+.alert-success, .alert-danger, .alert-info {
+    width: 100%; 
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: center;
+    box-sizing: border-box; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
 
+.alert-success {
+    background-color: var(--alertGreenL);
+    border: solid 3px var(--alertGreenH);
+    color: var(--alertGreenH);
+}
+
+.alert-danger {
+    background-color: var(--alertRedL);
+    border: solid 3px var(--alertRedH);
+    color: var(--alertRedH);
+}
+
+.alert-info {
+    background-color: var(--alertDefaultL);
+    border: solid 3px var(--alertDefaultH);
+    color: var(--alertDefaultH);
+}
+
+#role-modal-message, #finalStatusMessageArea {
+    width: 100%; 
+    padding: 0; 
+    box-sizing: border-box;
+}

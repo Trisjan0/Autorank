@@ -29,7 +29,7 @@
     justify-content: space-between;
     padding-bottom: 15px;
     margin-bottom: 15px;
-    border-bottom: 2px solid var(--tableDataBorderColor); /* Added a subtle separator */
+    border-bottom: 2px solid var(--tableDataBorderColor);
 }
 
 .available-positions-header i {
@@ -71,10 +71,14 @@
     );
     border: none;
     border-radius: 5px;
-    width: 95px;
+    width: auto;
+    min-width: 95px;
     height: 35px;
+    padding-left: 15px;
+    padding-right: 15px;
     font-size: 1.1rem;
     font-weight: 600;
+    color: var(--pageTextColorOnBlack);
 }
 
 .available-positions-body .apply-button:hover {
@@ -86,6 +90,99 @@
     );
 }
 
+.actions-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.admin-controls .status-badge {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border-radius: 15px;
+    color: white;
+    font-weight: bold;
+}
+
+.admin-controls .status-badge.available {
+    background-color: #28a745;
+}
+
+.admin-controls .status-badge.unavailable {
+    background-color: #6c757d;
+}
+
+.admin-controls .toggle-button {
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    width: auto;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    height: 35px;
+}
+
+.admin-controls .toggle-button.set-unavailable {
+    background-color: #ffc107;
+    color: black;
+}
+
+.admin-controls .toggle-button.set-available {
+    background-color: #007bff;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown .details-button {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    color: #495057;
+    padding: 0 12px;
+    height: 35px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 240px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 10;
+    border-radius: 5px;
+    right: 0;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.dropdown-content h4 {
+    margin-top: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.dropdown-content p {
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
 /* COMPLETION OVERVIEW STYLING -- -- -- */
 .overall-completion-overview-container {
     width: 90%;
@@ -95,7 +192,6 @@
     align-items: center;
     text-align: left;
 }
-
 .overall-completion-overview-container h1, i {
     color: var(--pageTextColor);
 }
@@ -198,12 +294,12 @@
 
 .research-publication-progress {
     background-color: var(--progressBarFillColor);
-    width: 90%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+    width: 90%;
 }
 
 .event-participation-progress {
     background-color: var(--progressBarFillColor);
-    width: 30%; /* subject to change: how the percentage is applied when data is actually collected from a database */
+    width: 30%;
 }
 
 .bar {
@@ -221,7 +317,7 @@
         rgba(0, 0, 0, 0.7)
     ), 
     url('https://tiebreakertimes.com.ph/wp-content/uploads/2021/08/FILE-PHOTO-Don-Honorio-Ventura-State-University-1024x576.jpg');
-    background-color: var(--primaryColor); /* fallback color */
+    background-color: var(--primaryColor);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;

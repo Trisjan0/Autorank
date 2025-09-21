@@ -3,7 +3,6 @@
 @section('title', 'KRA I-A: Evaluations | Autorank')
 
 @section('content')
-
 @if(session('success'))
 <div class="server-alert-success">
     {{ session('success') }}
@@ -46,7 +45,7 @@
             @include('partials._evaluations_table_row', ['evaluation' => $evaluation])
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No evaluations found.</td>
+                <td colspan="7" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Position;
 
 class PageController extends Controller
 {
@@ -15,7 +16,11 @@ class PageController extends Controller
 
     public function showDashboard()
     {
-        return view('dashboard');
+        $user = Auth::user();
+
+        $positions = Position::orderBy('id')->get();
+
+        return view('dashboard', compact('user', 'positions'));
     }
 
     public function showApplicationsPage()

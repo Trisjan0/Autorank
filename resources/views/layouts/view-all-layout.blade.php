@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="user-id" content="{{ auth()->id() }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> <!-- for ngrok -->
     <title>@yield('title', 'AutoRank')</title>
 
     <!-- Google Font Links -->
@@ -32,6 +31,24 @@
     <main>
         @yield('content')
     </main>
+
+    {{-- DELETE CONFIRMATION MODAL --}}
+    <div class="modal-container modal-container--hidden" id="deleteConfirmationModal">
+        <div class="kra-modal">
+            <div class="kra-modal-navigation">
+                <i class="fa-solid fa-xmark" style="color: #ffffff;" id="closeDeleteModalBtn" aria-hidden="true"></i>
+            </div>
+            <div class="kra-modal-content">
+                <h1 class="kra-modal-title">Confirm Deletion</h1>
+                <p id="deleteModalText">Are you sure you want to delete this item? This action will delete both the files uploaded to the system and Google Drive, it cannot be undone.</p>
+                <div id="delete-final-status-message-area"></div>
+            </div>
+            <div class="kra-modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
 
     <script src="{{ asset('js/global-scripts.js') }}"></script>
     <script src="{{ asset('js/system-settings-scripts.js') }}"></script>

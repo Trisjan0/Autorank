@@ -61,25 +61,6 @@ Profile | Autorank
                     </div>
                     @endif
                 </div>
-                <!-- <div class="basic-info-fields">
-                    <div class="basic-info">
-                        <h3>Phone Number</h3>
-                        <h5>{{ $user->phone_number ?? 'TBC' }}</h5>
-                    </div>
-                    @if ($isOwnProfile)
-                    <div class="basic-info-action">
-                        <a id="openPhoneNumberModalBtn" href="#" title="Edit">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                        </a>
-                    </div>
-                    @else
-                    <div class="basic-info-action">
-                        <a href="tel:{{ $user->phone_number }}" title="Call Instructor">
-                            <i class="fa-solid fa-phone-flip"></i>
-                        </a>
-                    </div>
-                    @endif
-                </div> -->
             </div>
         </div>
         <div class="content-right-side">
@@ -342,52 +323,4 @@ Profile | Autorank
         </div>
     </div>
 </div>
-
-<!-- Modal for Editing Phone Number -->
-@if ($isOwnProfile)
-<div class="phone-num-modal-container" id="phoneNumberModal">
-    <div class="phone-num-modal">
-        <div class="phone-num-modal-navigation">
-            <i class="fa-solid fa-xmark" style="color: #ffffff;" id="closePhoneNumberModalBtn"></i>
-        </div>
-
-        <form id="phoneNumberUpdateForm" action="/profile/update-phone" method="POST">
-            @csrf
-            <div id="phoneInputStep">
-                <div class="phone-num-modal-content">
-                    <div class="phone-num-modal-content-header">
-                        <h1>Add a mobile number</h1>
-                        <p>This number enables us to provide an additional and efficient means of contact regarding your reranking process. <a href="#" style="color: #48a2f2;"><b>Learn More</b></a></p>
-                    </div>
-                    <div class="phone-num-modal-content-body">
-                        <div class="phone-num-modal-content-body-tip">
-                            <h5>Philippines (+63)</h5>
-                        </div>
-                        <input type="tel" name="phone_number" id="phoneInput" placeholder="Enter your number" pattern="09[0-9]{9}" maxlength="11" value="{{ $user->phone_number ?? '' }}">
-                    </div>
-                </div>
-                <div class="phone-num-modal-confirmation">
-                    <button type="button" id="sendOtpBtn">Send OTP</button>
-                </div>
-            </div>
-
-            <div id="otpInputStep">
-                <div class="phone-num-modal-content">
-                    <div class="phone-num-modal-content-header">
-                        <h1>Verify Phone Number</h1>
-                        <p>An OTP has been sent to your mobile number. Please enter it below.</p>
-                    </div>
-                    <div class="phone-num-modal-content-body">
-                        <input type="text" name="otp_code" id="otpInput" placeholder="Enter OTP" pattern="[0-9]{6}" maxlength="6">
-                    </div>
-                </div>
-                <div class="phone-num-modal-confirmation">
-                    <button type="submit" id="verifyOtpBtn">Verify & Save</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-@endif
-
 @endsection

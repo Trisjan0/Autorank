@@ -45,7 +45,7 @@
             @include('partials._instructional_materials_table_row', ['material' => $material])
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No instructional materials found.</td>
+                <td colspan="7" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>

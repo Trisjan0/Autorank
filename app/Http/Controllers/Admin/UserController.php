@@ -160,8 +160,10 @@ class UserController extends Controller
             'success' => true,
             'message' => 'User\'s role updated successfully!',
             'newRolesHtml' => view('partials._roles_badge', ['user' => $user->fresh()])->render(),
-            'newRoleAssignedAt' => $user->role_assigned_at->timezone('Asia/Manila')->format('F d, Y | h:iA'),
+            'newRoleAssignedAt' => $user->role_assigned_at->timezone('Asia/Manila')->format('m/d/y H:i'),
             'newRoleAssignedBy' => $user->role_assigned_by,
+            'newRoleId' => $targetRole->id,
+            'newRoleName' => \Illuminate\Support\Str::title(str_replace('_', ' ', $targetRole->name)),
         ]);
     }
 

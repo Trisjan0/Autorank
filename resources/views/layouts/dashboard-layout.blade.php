@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="user-id" content="{{ auth()->id() }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> <!-- for ngrok -->
     <title>@yield('title', 'Autorank')</title>
 
     <!-- Google Font Links -->
@@ -33,6 +32,8 @@
 
     <script src="{{ asset('js/global-scripts.js') }}"></script>
     <script src="{{ asset('js/system-settings-scripts.js') }}"></script>
+
+    @stack('page-scripts')
 </body>
 
 </html>

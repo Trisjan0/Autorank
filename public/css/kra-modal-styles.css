@@ -280,3 +280,103 @@ body.modal-open {
 .btn.btn-danger.delete-btn:hover {
   background-color: rgb(157, 75, 75);
 }
+
+/* DELETE CONFIRMATION MODAL STYLING -- -- -- */
+.kra-modal {
+  background-color: hsl(
+  var(--base-hue-primary),
+  var(--base-saturation-primary),
+  var(--base-lightness-primary)
+  );
+  width: 425px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 2.5%;
+  padding: 25px;
+}
+
+.kra-modal-navigation, .kra-modal-content, .kra-modal-actions {
+  width: 100%;
+  height: auto;
+  display: flex;
+}
+
+.kra-modal-navigation {
+  justify-content: end;
+  align-items: center;
+  font-size: 1.3rem;
+}
+
+.kra-modal-navigation i:hover {
+  cursor: pointer;
+  scale: 1.2;
+}
+
+.kra-modal-content {
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  padding: 20px 0 0 0;
+  gap: 7px;
+}
+
+.kra-modal-title, #deleteModalText, #delete-final-status-message-area {
+  width: 100%;
+  height: auto;
+}
+
+.kra-modal-title {
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+#deleteModalText {
+  font-size: .95rem;
+  margin: 0 0 53px 0;
+}
+
+.kra-modal-actions {
+  height: 50px;
+  gap: 10px;
+}
+
+.kra-modal-actions button {
+  background-color: hsl(
+  var(--base-hue-primary),
+  var(--base-saturation-primary),
+  calc(var(--base-lightness-primary) + 15%)
+  );
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 650;
+  height: 100%;
+  flex-grow: 1;
+}
+
+.kra-modal-actions button:hover {
+  background-color: hsl(
+  var(--base-hue-primary),
+  var(--base-saturation-primary),
+  calc(var(--base-lightness-primary) + 25%)
+  );
+  cursor: pointer;
+}
+
+.kra-modal-actions #confirmDeleteBtn {
+  background-color: var(--systemRed);
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 650;
+  height: 100%;
+  flex-grow: 1;
+}
+
+.kra-modal-actions #confirmDeleteBtn:hover {
+  background-color: var(--systemRedHover);
+  cursor: pointer;
+}

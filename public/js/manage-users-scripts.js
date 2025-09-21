@@ -195,10 +195,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             assignedByTd.textContent = responseData.newRoleAssignedBy;
                         }
 
-                        console.log('Another user\'s role updated. Modal will close and page reload shortly...');
+                        // Update the button's data attributes
+                        const updateButton = document.querySelector(`.update-role-btn[data-user-id="${currentSelectedUserId}"]`);
+                        if (updateButton) {
+                            updateButton.dataset.userRoles = JSON.stringify([responseData.newRoleId]);
+                            updateButton.dataset.currentRoleName = responseData.newRoleName;
+                        }
+
                         setTimeout(() => {
                             hideModal();
-                            window.location.reload(); // Reload the entire page to ensure all data is fresh
                         }, pageRefreshDelay); // Keep modal open to show success
 
                     } else { // Server responded with a non-2xx status
