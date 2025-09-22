@@ -140,4 +140,5 @@
 
 @push('page-scripts')
 <script src="{{ asset('js/kra-scripts.js') }}"></script>
+<script src="{{ asset('js/modal-scripts.js') }}"></script>
 @endpush

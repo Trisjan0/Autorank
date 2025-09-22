@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     /*
     |--------------------------------------------------------------------------
-    | FOR THE REUSABLE KRA MODAL & AJAX -- START
+    | FOR THE REUSABLE KRA MODAL & AJAX
     |--------------------------------------------------------------------------
     */
     const uploadModal = document.getElementById('kra-upload-modal');
@@ -110,8 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = await response.json();
                     if (response.ok) {
                         messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
-                        if (typeof loadData === "function") {
-                           loadData(true);
+                        if (typeof window.loadData === "function") {
+                           window.loadData(true);
                         }
                         setTimeout(hideModal, pageRefreshDelay);
                     } else {
@@ -129,23 +129,17 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-    /*
-    |--------------------------------------------------------------------------
-    | FOR THE REUSABLE KRA MODAL & AJAX -- END
-    |--------------------------------------------------------------------------
-    */
-
 
     /*
     |--------------------------------------------------------------------------
-    | FOR THE REUSABLE KRA "LOAD MORE" & SEARCH -- START
+    | FOR THE REUSABLE KRA "LOAD MORE" & SEARCH
     |--------------------------------------------------------------------------
     */
     const loadMoreBtn = document.getElementById('load-more-kra-btn');
     const tableBody = document.getElementById('kra-table-body');
     const searchForm = document.getElementById('kra-search-form');
     
-    async function loadData(isSearch = false) {
+    window.loadData = async function(isSearch = false) {
         const isLoading = false;
         if (isLoading) return;
         
@@ -215,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         searchForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await loadData(true);
+            await window.loadData(true);
             updateSearchIcon();
         });
         
@@ -225,17 +219,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 searchInput.value = '';
                 updateSearchIcon();
-                loadData(true);
+                window.loadData(true);
             }
         });
         
-        loadMoreBtn.addEventListener('click', () => loadData(false));
+        loadMoreBtn.addEventListener('click', () => window.loadData(false));
     }
-    /*
-    |--------------------------------------------------------------------------
-    | FOR THE REUSABLE KRA "LOAD MORE" & SEARCH -- END
-    |--------------------------------------------------------------------------
-    */
 
     /*
     |--------------------------------------------------------------------------
@@ -314,97 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (closeModalBtn) closeModalBtn.addEventListener('click', closeFileViewerModal);
         fileViewerModal.addEventListener('click', (e) => {
             if (e.target === fileViewerModal) closeFileViewerModal();
-        });
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | REUSABLE DELETE MODAL & AJAX
-    |--------------------------------------------------------------------------
-    */
-    const deleteModal = document.getElementById('deleteConfirmationModal');
-    if (deleteModal) {
-        const closeDeleteModalBtn = document.getElementById('closeDeleteModalBtn');
-        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        const deleteModalText = document.getElementById('deleteModalText');
-        const deleteStatusMessage = document.getElementById('delete-final-status-message-area');
-
-        let itemToDelete = null;
-        let deleteUrl = '';
-
-        const showDeleteModal = (button) => {
-            itemToDelete = button.closest('tr');
-            deleteUrl = button.dataset.deleteUrl;
-            const itemTitle = button.dataset.itemTitle;
-
-            deleteModalText.innerHTML = `This action will delete both the files uploaded to the system and Google Drive and cannot be undone.<br><br>Are you sure you want to delete "<strong>${itemTitle}</strong>"?`;
-            deleteStatusMessage.innerHTML = '';
-            confirmDeleteBtn.disabled = false;
-            cancelDeleteBtn.disabled = false;
-
-            document.body.classList.add('modal-open');
-            deleteModal.style.display = 'flex';
-        };
-
-        const hideDeleteModal = () => {
-            document.body.classList.remove('modal-open');
-            deleteModal.style.display = 'none';
-        };
-
-        document.body.addEventListener('click', (event) => {
-            const deleteButton = event.target.closest('.delete-btn');
-            if (deleteButton) {
-                showDeleteModal(deleteButton);
-            }
-        });
-
-        closeDeleteModalBtn.addEventListener('click', hideDeleteModal);
-        cancelDeleteBtn.addEventListener('click', hideDeleteModal);
-        deleteModal.addEventListener('click', (e) => {
-            if (e.target === deleteModal) hideDeleteModal();
-        });
-
-        confirmDeleteBtn.addEventListener('click', async () => {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            confirmDeleteBtn.disabled = true;
-            cancelDeleteBtn.disabled = true;
-            deleteStatusMessage.innerHTML = '<div class="alert-info">Deleting...</div>';
-
-            try {
-                const response = await fetch(deleteUrl, {
-                    method: 'DELETE',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    deleteStatusMessage.innerHTML = `<div class="alert-success">${data.message}</div>`;
-                    
-                    if (typeof loadData === "function") {
-                        setTimeout(() => {
-                           loadData(true);
-                           hideDeleteModal();
-                        }, 850);
-                    } else {
-                        if (itemToDelete) {
-                            itemToDelete.remove();
-                        }
-                        setTimeout(hideDeleteModal, 1000);
-                    }
-                } else {
-                    deleteStatusMessage.innerHTML = `<div class="alert-danger">${data.message || 'Failed to delete.'}</div>`;
-                    confirmDeleteBtn.disabled = false;
-                    cancelDeleteBtn.disabled = false;
-                }
-            } catch (error) {
-                console.error('Error deleting item:', error);
-                deleteStatusMessage.innerHTML = `<div class="alert-danger">A network error occurred.</div>`;
-                confirmDeleteBtn.disabled = false;
-                cancelDeleteBtn.disabled = false;
-            }
         });
     }
 });

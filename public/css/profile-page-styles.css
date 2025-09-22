@@ -344,7 +344,9 @@
 }
 
 .credentials-table-container table td {
-    border: 2px solid var(--tableDataBorderColor);
+    border-left: 2px solid var(--tableDataBorderColor);
+    border-right: 2px solid var(--tableDataBorderColor);
+    border-bottom: 2px solid var(--tableDataBorderColor);
     padding: var(--tableDataPadding);
     text-align: center;
     font-weight: 500;

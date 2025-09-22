@@ -12,6 +12,7 @@ use App\Http\Controllers\Instructor\InstructionalMaterialsController;
 use App\Http\Controllers\Instructor\ResearchDocumentsController;
 use App\Http\Controllers\Instructor\ExtensionServicesController;
 use App\Http\Controllers\Instructor\ProfessionalDevelopmentsController;
+use App\Http\Controllers\Instructor\ApplyController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SystemSettingsController;
 use App\Http\Controllers\Auth\SocialiteLoginController;
@@ -99,6 +100,10 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::middleware(['role:super_admin|user'])->group(function () {
+        // Route for Checking Eligibility Before Application
+        Route::get('/application/check-completeness', [ApplyController::class, 'checkCompleteness'])->name('application.check-completeness');
+        Route::post('/application/submit/{position}', [ApplyController::class, 'submit'])->name('application.submit');
+
         // Routes for Credentials
         Route::post('/credentials', [CredentialController::class, 'store'])->name('credentials.store');
         Route::delete('/credentials/{credential}', [CredentialController::class, 'destroy'])->name('credentials.destroy');

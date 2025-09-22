@@ -34,19 +34,19 @@
 </div>
 
 {{-- DELETE CONFIRMATION MODAL --}}
-<div class="modal-container" id="deleteConfirmationModal" style="display: none;">
-    <div class="delete-modal-box">
-        <div class="delete-modal-header">
-            <i class="fa-solid fa-xmark" id="closeDeleteModalBtn"></i>
+<div class="modal-container" id="confirmationModal" style="display: none;">
+    <div class="confirmation-modal-box">
+        <div class="confirmation-modal-header">
+            <i class="fa-solid fa-xmark" id="closeConfirmationModalBtn"></i>
         </div>
-        <div class="delete-modal-body">
-            <h1 class="delete-modal-title">Confirm Deletion</h1>
-            <p id="deleteModalText">Are you sure you want to delete this item? This action cannot be undone.</p>
-            <div id="delete-final-status-message-area" class="mt-2"></div>
+        <div class="confirmation-modal-body">
+            <h1 class="confirmation-modal-title" id="confirmationModalTitle"></h1>
+            <p id="confirmationModalText"></p>
+            <div id="confirmation-final-status-message-area" class="mt-2"></div>
         </div>
-        <div class="delete-modal-actions">
-            <button type="button" class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
-            <button type="button" class="btn-delete" id="confirmDeleteBtn">Delete</button>
+        <div class="confirmation-modal-actions">
+            <button type="button" class="btn-cancel" id="cancelConfirmationBtn">Cancel</button>
+            <button type="button" class="btn-confirm" id="confirmActionBtn"></button>
         </div>
     </div>
 </div>

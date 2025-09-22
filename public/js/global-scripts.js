@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     /*
     |--------------------------------------------------------------------------
-    | FOR COPYING TEXTS TO CLIPBOARD -- START
+    | FOR COPYING TEXTS TO CLIPBOARD
     |--------------------------------------------------------------------------
     */
     const copyToast = document.getElementById('copyToast');
@@ -57,16 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.copyInstructorsName = copyInstructorsName;
     window.copyInstructorNumber = copyInstructorNumber;
-    /*
-    |--------------------------------------------------------------------------
-    | FOR COPYING TEXTS TO CLIPBOARD -- END
-    |--------------------------------------------------------------------------
-    */
-
 
     /*
     |--------------------------------------------------------------------------
-    | FOR TOGGLING HIDDEN MENU -- START
+    | FOR TOGGLING HIDDEN MENU
     |--------------------------------------------------------------------------
     */
     const nav = document.getElementById('hidden-menu');
@@ -107,16 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    /*
-    |--------------------------------------------------------------------------
-    | FOR TOGGLING HIDDEN MENU -- END
-    |--------------------------------------------------------------------------
-    */
-
 
     /*
     |--------------------------------------------------------------------------
-    | FOR GOING BACK TO THE PREVIOUS PAGE -- START
+    | FOR GOING BACK TO THE PREVIOUS PAGE
     |--------------------------------------------------------------------------
     */
     function goBack() {
@@ -124,9 +112,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.goBack = goBack;
-    /*
-    |--------------------------------------------------------------------------
-    | FOR GOING BACK TO THE PREVIOUS PAGE -- START
-    |--------------------------------------------------------------------------
-    */
 });

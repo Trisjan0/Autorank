@@ -135,7 +135,7 @@ Profile | Autorank
                         @include('partials._credential_table_row', ['credential' => $credential])
                         @empty
                         <tr id="no-results-row">
-                            <td colspan="4" style="text-align: center;">No items found.</td>
+                            <td colspan="5" style="text-align: center;">No items found.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -215,4 +215,5 @@ Profile | Autorank
 
 @push('page-scripts')
 <script src="{{ asset('js/profile-page-scripts.js') }}"></script>
+<script src="{{ asset('js/modal-scripts.js') }}"></script>
 @endpush

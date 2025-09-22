@@ -33,7 +33,7 @@
 }
 
 @media (max-width: 425px) {
-  /* HOME PAGE -- -- -- */
+  /* DASHBOARD PAGE -- -- -- */
   .overall-completion-overview-container {
       width: 100%;
       height: auto;
@@ -67,6 +67,11 @@
       padding: 20px;
   }
 
+  .available-positions-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
   /* PROFILE PAGE -- -- -- */
   .phone-num-modal {
       width: 90vw;
@@ -75,6 +80,11 @@
   /* MANAGE USERS PAGE -- -- -- */
   .role-modal {
       width: 90vw;
+  }
+
+  /* MODALS -- -- -- */
+  .role-modal {
+    min-width: 90vw;
   }
 }
 

@@ -1,4 +1,4 @@
-/* UPDATE ROLE MODAL STYLING */
+/* UPDATE ROLE / UPLOAD MODAL STYLING */
 body.modal-open {
     overflow: hidden;
 }
@@ -90,7 +90,7 @@ body.modal-open {
 }
 
 .role-modal-content-body {
-    padding: 30px 0 30px 0;
+    padding: 30px 0 0 0;
     flex: 1;
     width: 100%;
     display: flex;
@@ -99,7 +99,6 @@ body.modal-open {
     flex-direction: column;
 }
 
-/* BUTTONS STYLING */
 .role-modal-form-check {
     margin-bottom: 10px;
     display: flex;
@@ -125,6 +124,7 @@ body.modal-open {
 .role-modal-actions {
     height: 50px;
     width: 100%;
+    margin-top: 30px;
     display: flex;
     justify-content: end;
     align-items: center;
@@ -152,6 +152,177 @@ body.modal-open {
     var(--base-saturation-primary),
     calc(var(--base-lightness-primary) + 25%)
     );
+}
+
+/* GENERAL UPLOAD MODAL STYLING  -- -- -- */
+body.modal-open {
+  overflow: hidden;
+}
+
+#uploadEvaluationConfirmationStep {
+  width: 100%;
+  height: auto;
+}
+
+.role-modal-content-body .form-group {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.role-modal-content-body .form-group .form-group-title {
+  display: flex;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.mt-2 {
+  width: 100%;
+  height: auto;
+}
+
+/* EVERY INPUT THAT ISNT A RADIO BUTTON STYLING -- -- -- */
+.role-modal-content-body input:not([type="radio"]):not([type="checkbox"]) {
+  width: 100%;
+  height: auto;
+  padding: 8px 8px 8px 8px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #333;
+  color: #fff;
+}
+
+/* RADIO BUTTON STYLING -- -- -- */
+.checkbox-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.radio-option {
+  width: 100%;
+  min-height: 33.6px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  padding: 0px 8px 0px 8px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #333;
+}
+
+.radio-option label:hover {
+  cursor: pointer;
+}
+
+/* CONFIRMATION MODAL STYLING -- -- -- */
+.confirmation-modal-box {
+    background-color: hsl(
+        var(--base-hue-primary),
+        var(--base-saturation-primary),
+        var(--base-lightness-primary)
+    );
+    width: 425px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 2.5%;
+    padding: 25px;
+}
+
+.confirmation-modal-header, .confirmation-modal-body, .confirmation-modal-actions {
+    width: 100%;
+    height: auto;
+    display: flex;
+}
+
+.confirmation-modal-header {
+    justify-content: end;
+    align-items: center;
+    font-size: 1.3rem;
+}
+
+.confirmation-modal-header i:hover {
+    cursor: pointer;
+    scale: 1.2;
+}
+
+.confirmation-modal-body {
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding: 20px 0 0 0;
+    gap: 7px;
+}
+
+.confirmation-modal-title, #confirmationModalText, #confirmation-final-status-message-area {
+    width: 100%;
+    height: auto;
+}
+
+.confirmation-modal-title {
+    font-size: 1.45rem;
+    font-weight: 600;
+}
+
+#confirmationModalText {
+    font-size: .95rem;
+    margin: 0 0 53px 0;
+}
+
+.confirmation-modal-actions {
+    margin-top: 30px;
+    height: 50px;
+    gap: 10px;
+}
+
+.confirmation-modal-actions button {
+    background-color: hsl(
+        var(--base-hue-primary),
+        var(--base-saturation-primary),
+        calc(var(--base-lightness-primary) + 15%)
+    );
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 650;
+    height: 100%;
+    flex-grow: 1;
+}
+
+.confirmation-modal-actions button:hover {
+    background-color: hsl(
+        var(--base-hue-primary),
+        var(--base-saturation-primary),
+        calc(var(--base-lightness-primary) + 25%)
+    );
+    cursor: pointer;
+}
+
+.confirmation-modal-actions .btn-confirm {
+    background-color: var(--systemRed);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 650;
+    height: 100%;
+    flex-grow: 1;
+}
+
+.confirmation-modal-actions .btn-confirm:hover {
+    background-color: var(--systemRedHover);
+    cursor: pointer;
+}
+
+.confirmation-modal-actions .btn-confirm.btn-primary-confirm {
+    background-color: var(--systemGreen);
+    color: #ffffff;
+}
+
+.confirmation-modal-actions .btn-confirm.btn-primary-confirm:hover {
+    background-color: var(--systemGreenHover);
 }
 
 /* MODAL ALERTS STYLING */

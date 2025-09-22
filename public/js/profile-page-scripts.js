@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchForm = document.getElementById('credentials-search-form');
     let isLoading = false;
 
-    async function loadData(isSearch = false) {
+    window.loadData = async function(isSearch = false) {
         if (isLoading) return;
         isLoading = true;
 
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Error loading data:', error);
-            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red;">Failed to load data. Please try again.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Failed to load data. Please try again.</td></tr>';
         } finally {
             isLoading = false;
             if (loadMoreBtn) {
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         searchForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await loadData(true);
+            await window.loadData(true);
             updateSearchIcon();
         });
 
@@ -120,12 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 searchInput.value = '';
                 updateSearchIcon();
-                loadData(true);
+                window.loadData(true);
             }
         });
 
         if (loadMoreBtn) {
-            loadMoreBtn.addEventListener('click', () => loadData(false));
+            loadMoreBtn.addEventListener('click', () => window.loadData(false));
         }
     }
 
@@ -218,8 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (response.ok) {
                         messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
                         
-                        if (typeof loadData === 'function') {
-                            loadData(true);
+                        if (typeof window.loadData === 'function') {
+                            window.loadData(true);
                         }
 
                         setTimeout(hideModal, pageRefreshDelay);
@@ -237,90 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | REUSABLE DELETE MODAL & AJAX
-    |--------------------------------------------------------------------------
-    */
-    const deleteModal = document.getElementById('deleteConfirmationModal');
-    if (deleteModal) {
-        const closeDeleteModalBtn = document.getElementById('closeDeleteModalBtn');
-        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        const deleteModalText = document.getElementById('deleteModalText');
-        const deleteStatusMessage = document.getElementById('delete-final-status-message-area');
-        let deleteUrl = '';
-
-        const showDeleteModal = (button) => {
-            deleteUrl = button.dataset.deleteUrl;
-            const itemTitle = button.dataset.itemTitle;
-            deleteModalText.innerHTML = `This action will delete the file from the system and cannot be undone.<br><br>Are you sure you want to delete "<strong>${itemTitle}</strong>"?`;
-            deleteStatusMessage.innerHTML = '';
-            confirmDeleteBtn.disabled = false;
-            cancelDeleteBtn.disabled = false;
-            document.body.classList.add('modal-open');
-            deleteModal.style.display = 'flex';
-        };
-
-        const hideDeleteModal = () => {
-            document.body.classList.remove('modal-open');
-            deleteModal.style.display = 'none';
-        };
-
-        document.body.addEventListener('click', (event) => {
-            const deleteButton = event.target.closest('.delete-btn');
-            if (deleteButton) {
-                if(deleteButton.closest('.content-right-side')) {
-                    showDeleteModal(deleteButton);
-                }
-            }
-        });
-
-        closeDeleteModalBtn.addEventListener('click', hideDeleteModal);
-        cancelDeleteBtn.addEventListener('click', hideDeleteModal);
-        deleteModal.addEventListener('click', (e) => {
-            if (e.target === deleteModal) hideDeleteModal();
-        });
-
-        confirmDeleteBtn.addEventListener('click', async () => {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            confirmDeleteBtn.disabled = true;
-            cancelDeleteBtn.disabled = true;
-            deleteStatusMessage.innerHTML = '<div class="alert-info">Deleting...</div>';
-
-            try {
-                const response = await fetch(deleteUrl, {
-                    method: 'DELETE',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    deleteStatusMessage.innerHTML = `<div class="alert-success">${data.message}</div>`;
-                    
-                    setTimeout(() => {
-                        if (typeof loadData === "function") {
-                           loadData(true);
-                        }
-                        hideDeleteModal();
-                    }, 850);
-
-                } else {
-                    deleteStatusMessage.innerHTML = `<div class="alert-danger">${data.message || 'Failed to delete.'}</div>`;
-                    confirmDeleteBtn.disabled = false;
-                    cancelDeleteBtn.disabled = false;
-                }
-            } catch (error) {
-                console.error('Error deleting item:', error);
-                deleteStatusMessage.innerHTML = `<div class="alert-danger">A network error occurred.</div>`;
-                confirmDeleteBtn.disabled = false;
-                cancelDeleteBtn.disabled = false;
-            }
-        });
     }
 
     updateContainerAlignment(); 

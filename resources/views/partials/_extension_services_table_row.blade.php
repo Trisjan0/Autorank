@@ -14,9 +14,12 @@
         <span class="table-data-secondary-text">No File</span>
         @endif
         &nbsp;
-        <button class="btn btn-danger delete-btn"
-            data-delete-url="{{ route('instructor.extension-services.destroy', $service->id) }}"
-            data-item-title="{{ $service->title }}">
+        <button class="btn btn-danger confirm-action-btn"
+            data-action-url="{{ route('instructor.extension-services.destroy', $service->id) }}"
+            data-modal-title="Confirm Deletion"
+            data-modal-text="This action will delete the file from the system and Google Drive. It cannot be undone."
+            data-item-title="{{ $service->title }}"
+            data-confirm-button-text="Delete">
             <i class="fa-solid fa-trash" style="color: #ffffff;"></i>
         </button>
     </td>

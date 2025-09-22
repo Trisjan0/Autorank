@@ -16,6 +16,8 @@
     <!-- CSS Links -->
     <link rel="stylesheet" href="{{ asset('css/global-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/system-settings-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/kra-modal-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/modal-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive-styles.css') }}">
 
@@ -25,6 +27,7 @@
 
 <body>
     @include('partials._navbar')
+    @include('partials._modals')
 
     <main>
         @yield('content')

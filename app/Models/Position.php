@@ -18,6 +18,7 @@ class Position extends Model
         'title',
         'requirements',
         'is_available',
+        'available_slots',
     ];
 
     /**

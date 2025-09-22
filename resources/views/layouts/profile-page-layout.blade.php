@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ asset('css/system-settings-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/view-all-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/kra-modal-styles.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/manage-users-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/modal-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/profile-page-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive-styles.css') }}">
 

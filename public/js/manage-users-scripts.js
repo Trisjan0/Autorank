@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     /*
     |--------------------------------------------------------------------------
-    | FOR MANAGING USER ROLES (MODAL) -- START
+    | FOR MANAGING USER ROLES (MODAL)
     |--------------------------------------------------------------------------
     */
     const updateRoleModal = document.getElementById('updateRoleModal');
@@ -251,16 +251,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-    /*
-    |--------------------------------------------------------------------------
-    | FOR MANAGING USER ROLES (MODAL) -- END
-    |--------------------------------------------------------------------------
-    */
-
 
     /*
     |--------------------------------------------------------------------------
-    | FOR MANAGING USERS (LOAD MORE & SEARCH) -- START
+    | FOR MANAGING USERS (LOAD MORE & SEARCH)
     |--------------------------------------------------------------------------
     */
     const loadMoreUsersBtn = document.getElementById('loadMoreUsersBtn');
@@ -348,9 +342,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadMoreUsersBtn.addEventListener('click', () => {
         loadUsers(false);
     });
-    /*
-    |--------------------------------------------------------------------------
-    | FOR MANAGING USERS (LOAD MORE & SEARCH) -- START
-    |--------------------------------------------------------------------------
-    */
 });
