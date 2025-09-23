@@ -39,6 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalTitle.textContent = source.dataset.modalTitle;
                 modalText.innerHTML = source.dataset.modalText;
                 confirmBtn.textContent = source.dataset.confirmButtonText;
+
+                if (actionMethod !== 'DELETE') {
+                    confirmBtn.classList.add('btn-primary-confirm');
+                }
             } else { // It's a configuration object
                 modalTitle.textContent = source.title;
                 modalText.innerHTML = source.text;
@@ -46,7 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionUrl = source.actionUrl || '';
                 actionMethod = source.method || 'POST';
 
-                if (actionMethod !== 'DELETE') {
+                if (source.type === 'success') {
+                    confirmBtn.classList.add('btn-success-confirm');
+                } else {
                     confirmBtn.classList.add('btn-primary-confirm');
                 }
 

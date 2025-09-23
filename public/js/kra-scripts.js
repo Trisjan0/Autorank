@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     /*
     |--------------------------------------------------------------------------
-    | FOR THE REUSABLE KRA MODAL & AJAX
+    | FOR THE REUSABLE KRA MODAL & AJAX -- START
     |--------------------------------------------------------------------------
     */
     const uploadModal = document.getElementById('kra-upload-modal');
@@ -23,17 +23,39 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const pageRefreshDelay = 1250;
 
-        // --- Modal Control Functions ---
-        const showStep = (step) => {
-            if (!initialStep || !confirmationStep) return;
-            initialStep.style.display = (step === 'initial') ? 'block' : 'none';
-            confirmationStep.style.display = (step === 'confirmation') ? 'block' : 'none';
-        };
+        // --- Logic for KRA I-A Score Field ---
+        const categorySelect = document.querySelector('.eval-category');
+        const scoreInput = document.getElementById('eval-score');
+        const scoreLabel = document.querySelector('label[for="eval-score"]');
 
+        const toggleScoreInput = () => {
+            console.log(categorySelect);
+            if (categorySelect && scoreInput && scoreLabel) {
+                const category = categorySelect.value;
+                
+                if (category === 'Teaching Effectiveness') {
+                    scoreInput.disabled = false;
+                    scoreInput.required = true;
+                    scoreLabel.classList.remove('is-disabled');
+                } else {
+                    scoreInput.disabled = true;
+                    scoreInput.required = false;
+                    scoreInput.value = ''; 
+                    scoreLabel.classList.add('is-disabled');
+                }
+            }
+        };
+        
+        if (categorySelect) {
+            categorySelect.addEventListener('change', toggleScoreInput);
+        }
+
+        // --- Modal Control Functions ---
         const showModal = () => {
             uploadModal.style.display = 'flex';
             document.body.classList.add('modal-open');
             showStep('initial');
+            toggleScoreInput();
         };
 
         const hideModal = () => {
@@ -42,6 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
             Object.values(messages).forEach(el => { if (el) el.innerHTML = ''; });
             if (kraForm) kraForm.reset();
             [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => { if (btn) btn.disabled = false; });
+        };
+        
+        const showStep = (step) => {
+            if (!initialStep || !confirmationStep) return;
+            initialStep.style.display = (step === 'initial') ? 'block' : 'none';
+            confirmationStep.style.display = (step === 'confirmation') ? 'block' : 'none';
         };
 
         // --- Event Listeners ---
@@ -70,8 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!input || (input.type === 'radio' && !input.checked)) return;
                     if (processedFields.has(key)) return;
 
+                    // Skip disabled fields (like the score input when not applicable)
+                    if (input.disabled) return;
+
                     const label = input.getAttribute('data-label') || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                     let displayValue = (value instanceof File) ? value.name : value;
+                    
+                    if (input.tagName.toLowerCase() === 'select') {
+                        displayValue = input.options[input.selectedIndex].text;
+                    }
 
                     confirmationHtml += `<strong>${label}:</strong> ${displayValue}<br>`;
                     processedFields.add(key);
@@ -86,16 +121,18 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmBtn.addEventListener('click', async () => {
                 const url = kraForm.getAttribute('action');
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                const publishDateInput = kraForm.querySelector('input[name="publish_date"]');
-
-                if (publishDateInput && publishDateInput.value === '') {
-                    publishDateInput.disabled = true;
+                
+                // Temporarily enable the score input if it was disabled, so its value can be submitted if needed.
+                const scoreInputIsDisabled = scoreInput && scoreInput.disabled;
+                if (scoreInputIsDisabled) {
+                    scoreInput.disabled = false;
                 }
-
+                
                 const formData = new FormData(kraForm);
 
-                if (publishDateInput) {
-                    publishDateInput.disabled = false;
+                // Re-disable it after creating FormData
+                if (scoreInputIsDisabled) {
+                    scoreInput.disabled = true;
                 }
 
                 [confirmBtn, backBtn, closeUploadModalBtn].forEach(btn => btn.disabled = true);
@@ -113,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (typeof window.loadData === "function") {
                            window.loadData(true);
                         }
-                        setTimeout(hideModal, pageRefreshDelay);
+                        setTimeout(hideModal, pageRefreshDelay + 750);
                     } else {
                         let errorMsg = data.message || 'An unknown error occurred.';
                         if (response.status === 422 && data.errors) {
@@ -193,7 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchInput = searchForm.querySelector('input[name="search"]');
         const searchBtnIcon = document.getElementById('kra-search-btn-icon');
 
-        // Function to update the search icon based on the input's content
         const updateSearchIcon = () => {
             if (searchInput.value.trim() !== '') {
                 searchBtnIcon.classList.remove('fa-magnifying-glass');
@@ -204,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
         
-        // Set the initial state of the icon when the page loads
         updateSearchIcon();
         
         searchForm.addEventListener('submit', async (e) => {
@@ -213,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateSearchIcon();
         });
         
-        // Add a click listener to the icon itself for clearing
         searchBtnIcon.addEventListener('click', (e) => {
             if (searchBtnIcon.classList.contains('fa-xmark')) {
                 e.preventDefault();

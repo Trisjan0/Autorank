@@ -15,9 +15,13 @@ class ProfessionalDevelopment extends Model
         'user_id',
         'title',
         'category',
-        'file_path',
+        'type',
+        'filename',
         'publish_date',
         'google_drive_file_id',
+        'sub_cat1_score',
+        'sub_cat2_score',
+        'sub_cat3_score',
     ];
 
     protected $casts = [

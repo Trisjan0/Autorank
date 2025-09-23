@@ -18,9 +18,18 @@ class PageController extends Controller
     {
         $user = Auth::user();
 
-        $positions = Position::orderBy('id')->get();
+        // Start by querying all positions
+        $query = Position::query();
 
-        return view('dashboard', compact('user', 'positions'));
+        // If the authenticated user is NOT an admin, only fetch available positions.
+        if (!$user->hasRole('admin')) {
+            $query->where('is_available', true);
+        }
+
+        // Execute the query
+        $positions = $query->get();
+
+        return view('dashboard', compact('positions'));
     }
 
     public function showApplicationsPage()

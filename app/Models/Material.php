@@ -19,12 +19,13 @@ class Material extends Model
      */
     protected $fillable = [
         'user_id',
+        'category',
         'title',
         'type',
-        'category',
-        'file_path',
         'date',
+        'score',
         'google_drive_file_id',
+        'filename',
     ];
 
     /**

@@ -1,10 +1,21 @@
 <tr id="document-row-{{ $document->id }}">
     <td>{{ $document->id }}</td>
     <td>{{ $document->title }}</td>
-    <td>{{ $document->type }}</td>
     <td>{{ $document->category }}</td>
-    <td>{{ $document->created_at->format('F j, Y') }}</td>
-    <td>{{ $document->publish_date ? \Carbon\Carbon::parse($document->publish_date)->format('F j, Y') : 'N/A' }}</td>
+    <td>{{ $document->type }}</td>
+    <td>{{ $document->created_at->format('m/d/y') }}</td>
+    <td>{{ $document->publish_date ? \Carbon\Carbon::parse($document->publish_date)->format('m/d/y') : 'N/A' }}</td>
+    <td>
+        @php
+        $scoreToDisplay = $document->sub_cat1_score
+        ?? $document->sub_cat2_score
+        ?? $document->sub_cat3_score
+        ?? $document->sub_cat4_score;
+        @endphp
+        {{ $scoreToDisplay === null || $scoreToDisplay == 0 
+            ? 'TBE' 
+            : rtrim(rtrim(number_format($scoreToDisplay, 2), '0'), '.') }}
+    </td>
     <td>
         @if($document->google_drive_file_id)
         <button class="btn btn-primary view-file-btn"

@@ -2,8 +2,19 @@
     <td>{{ $development->id }}</td>
     <td>{{ $development->title }}</td>
     <td>{{ $development->category }}</td>
-    <td>{{ $development->publish_date ? \Carbon\Carbon::parse($development->publish_date)->format('F j, Y') : 'N/A' }}</td>
-    <td>{{ $development->created_at->format('F j, Y') }}</td>
+    <td>{{ $development->type }}</td>
+    <td>{{ $development->publish_date ? \Carbon\Carbon::parse($development->publish_date)->format('m/d/y') : 'N/A' }}</td>
+    <td>{{ $development->created_at->format('m/d/y') }}</td>
+    <td>
+        @php
+        $scoreToDisplay = $development->sub_cat1_score
+        ?? $development->sub_cat2_score
+        ?? $development->sub_cat3_score;
+        @endphp
+        {{ $scoreToDisplay === null || $scoreToDisplay == 0 
+            ? 'TBE' 
+            : rtrim(rtrim(number_format($scoreToDisplay, 2), '0'), '.') }}
+    </td>
     <td>
         @if($development->google_drive_file_id)
         <button class="btn btn-primary view-file-btn"

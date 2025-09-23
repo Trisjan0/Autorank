@@ -185,34 +185,36 @@ body.modal-open {
 .role-modal-content-body input:not([type="radio"]):not([type="checkbox"]) {
   width: 100%;
   height: auto;
-  padding: 8px 8px 8px 8px;
+  padding: 8px;
   border: 1px solid #555;
   border-radius: 4px;
   background-color: #333;
   color: #fff;
 }
 
-/* RADIO BUTTON STYLING -- -- -- */
-.checkbox-group {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+select {
+    cursor: pointer;
 }
 
-.radio-option {
-  width: 100%;
-  min-height: 33.6px;
-  display: flex;
-  text-align: center;
-  align-items: center;
-  padding: 0px 8px 0px 8px;
-  border: 1px solid #555;
-  border-radius: 4px;
-  background-color: #333;
+#eval-score:disabled {
+    background-color: #4a4a4a;
+    cursor: not-allowed;
+    opacity: 0.3;
 }
 
-.radio-option label:hover {
-  cursor: pointer;
+.form-group-title.is-disabled {
+    opacity: 0.3;
+}
+
+/* DROPDOWN SELECTION STYLING -- -- -- */
+.eval-category {
+    width: 100%;
+    height: 33.6px;
+    padding: 3px 25px 3px 3px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
 }
 
 /* CONFIRMATION MODAL STYLING -- -- -- */
@@ -316,12 +318,12 @@ body.modal-open {
     cursor: pointer;
 }
 
-.confirmation-modal-actions .btn-confirm.btn-primary-confirm {
+.confirmation-modal-actions .btn-confirm.btn-success-confirm {
     background-color: var(--systemGreen);
     color: #ffffff;
 }
 
-.confirmation-modal-actions .btn-confirm.btn-primary-confirm:hover {
+.confirmation-modal-actions .btn-confirm.btn-success-confirm:hover {
     background-color: var(--systemGreenHover);
 }
 

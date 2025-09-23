@@ -26,8 +26,9 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Category</th>
-                <th>Date Uploaded</th>
                 <th>Type</th>
+                <th>Date Uploaded</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.instructional-materials-page') }}" method="GET" id="kra-search-form">
@@ -47,7 +48,7 @@
             </tr>
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No items found.</td>
+                <td colspan="8" style="text-align: center;">No items found.</td> {{-- Updated colspan --}}
             </tr>
             @endforelse
         </tbody>
@@ -81,25 +82,12 @@
                     </div>
                     <div class="role-modal-content-body">
                         <div class="form-group">
-                            <label class="form-group-title">Category:</label>
-                            <div class="checkbox-group">
-                                <div class="radio-option">
-                                    <input type="radio" id="category-sole-author" name="category" value="sole_author" required data-label="Category">
-                                    <label for="category-sole-author">Sole Author</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" id="category-co-author" name="category" value="co_author" required data-label="Category">
-                                    <label for="category-co-author">Co-Author</label>
-                                </div>
-                            </div>
+                            <label class="form-group-title" for="kra-category">Category:</label>
+                            <input type="text" id="kra-category" name="category" value="Curriculum and Instructional Materials Development" readonly data-label="Category">
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="kra-title">Title:</label>
                             <input type="text" id="kra-title" name="title" required data-label="Title">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-group-title" for="kra-date">Date:</label>
-                            <input type="date" id="kra-date" name="date" style="color-scheme: dark;" required data-label="Date">
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="kra-type">Type:</label>

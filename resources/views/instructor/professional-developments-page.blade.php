@@ -26,12 +26,14 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Category</th>
-                <th>Publish Date</th>
+                <th>Type</th>
                 <th>Date Uploaded</th>
+                <th>Publish Date</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.professional-developments-page') }}" method="GET" id="kra-search-form">
-                            <input type="text" name="search" placeholder="Search records..." value="{{ request('search') }}">
+                            <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
                             <button type="submit">
                                 <i class="fa-solid fa-magnifying-glass" id="kra-search-btn-icon"></i>
                             </button>
@@ -47,7 +49,7 @@
             </tr>
             @empty
             <tr id="no-results-row">
-                <td colspan="6" style="text-align: center;">No items found.</td>
+                <td colspan="8" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -82,24 +84,28 @@
                     <div class="role-modal-content-body">
                         <div class="form-group">
                             <label class="form-group-title">Category:</label>
-                            <div class="checkbox-group" style="flex-wrap: wrap; gap: 10px; align-items: flex-start; flex-direction: column;">
-                                <div class="radio-option"><input type="radio" id="cat-prof-org" name="category" value="Professional Organization Involvement" required data-label="Category"><label for="cat-prof-org">Professional Organization Involvement</label></div>
-                                <div class="radio-option"><input type="radio" id="cat-cont-dev" name="category" value="Continuing Development" required data-label="Category"><label for="cat-cont-dev">Continuing Development</label></div>
-                                <div class="radio-option"><input type="radio" id="cat-awards" name="category" value="Awards" required data-label="Category"><label for="cat-awards">Awards</label></div>
-                                <div class="radio-option"><input type="radio" id="cat-exp" name="category" value="Experience" required data-label="Category"><label for="cat-exp">Experience</label></div>
-                            </div>
+                            <select class="eval-category" name="category" required data-label="Category">
+                                <option value="" disabled selected>Select a category</option>
+                                <option value="Involvement in Professional Organizations">Involvement in Professional Organizations</option>
+                                <option value="Continuing Development">Continuing Development</option>
+                                <option value="Awards and Recognitions">Awards and Recognitions</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="title">Title:</label>
                             <input type="text" id="title" name="title" required data-label="Title">
                         </div>
                         <div class="form-group">
-                            <label class="form-group-title" for="kra-date">Publish Date:</label>
-                            <input type="date" id="kra-date" name="publish_date" style="color-scheme: dark;" data-label="Publish Date">
+                            <label class="form-group-title" for="type">Type:</label>
+                            <input type="text" id="type" name="type" required data-label="Type">
                         </div>
                         <div class="form-group">
-                            <label class="form-group-title" for="evidence_file">Upload File:</label>
-                            <input type="file" id="evidence_file" name="evidence_file" required data-label="File">
+                            <label class="form-group-title" for="publish_date">Publish Date:</label>
+                            <input type="date" id="publish_date" name="publish_date" style="color-scheme: dark;" data-label="Publish Date">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-group-title" for="development_file">Upload File:</label>
+                            <input type="file" id="development_file" name="development_file" required data-label="File">
                         </div>
                         <div id="kra-modal-messages" class="mt-2"></div>
                     </div>

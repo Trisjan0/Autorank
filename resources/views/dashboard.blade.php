@@ -64,7 +64,6 @@
             </div>
             @else
             {{-- REGULAR USER VIEW --}}
-            @if ($position->is_available)
             <div class="position-card">
                 <div class="card-header">
                     <h3>{{ $position->title }}</h3>
@@ -97,137 +96,79 @@
                     </button>
                 </div>
             </div>
-            @endif
             @endrole
             @empty
-            <p class="no-positions">No positions to display at this time.</p>
+            <p class="no-positions">No open faculty ranks at this time.</p>
             @endforelse
         </div>
     </div>
-    <div class="overall-completion-overview-container">
-        <div class="research-publication-container">
-            <div class="research-publication-top-part">
-                <h1>Research Publication</h1><i class="fa-solid fa-ellipsis-vertical"></i>
-            </div>
-            <div class="research-publication-bottom-part">
-                <div class="percentage-container">
-                    <h1>90%</h1>
-                </div>
-                <div class="progress-bar-container">
-                    <div class="research-publication-progress"></div>
-                    <div class="bar"></div>
-                </div>
-            </div>
-        </div>
-        <div class="event-participation-container">
-            <div class="event-participation-top-part">
-                <h1>Event Participation</h1><i class="fa-solid fa-ellipsis-vertical"></i>
-            </div>
-            <div class="event-participation-bottom-part">
-                <div class="percentage-container">
-                    <h1>30%</h1>
-                </div>
-                <div class="progress-bar-container">
-                    <div class="event-participation-progress"></div>
-                    <div class="bar"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="online-faculty-evaluation-container">
-        <div class="online-faculty-evaluation-top-part">
-            <h1>Online Evaluation of Faculty</h1>
-            <h1>2nd Semester A.Y. 2023-2024</h1>
-        </div>
-        <div class="online-faculty-evaluation-bottom-part">
-            <button>View</button>
-        </div>
-    </div>
-    <div class="latest-research-title-container">
-        <div class="latest-research-title-header">
-            <h1>Your Latest Research Title</h1>
-        </div>
-        <div class="latest-research-title-table-container">
-            <table>
-                <tbody>
-                    <tr>
-                        <td><b>Title: </b>Lorem ipsum dolor sit amet, consectetur adipscing elit</td>
-                        <td><b>Status: </b>Ongoing</td>
-                        <td><b>Date Published: </b>N/A</td>
-                        <td><button>Upload</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
 
-{{-- SLOTS MODAL --}}
-<div class="role-modal-container" id="slots-modal" style="display: none;">
-    <div class="role-modal">
-        <div class="role-modal-navigation">
-            <i class="fa-solid fa-xmark" style="color: #ffffff;" id="slots-modal-close-btn"></i>
-        </div>
+    {{-- SLOTS MODAL --}}
+    <div class="role-modal-container" id="slots-modal" style="display: none;">
+        <div class="role-modal">
+            <div class="role-modal-navigation">
+                <i class="fa-solid fa-xmark" style="color: #ffffff;" id="slots-modal-close-btn"></i>
+            </div>
 
-        {{-- STEP 1: Form Input --}}
-        <div id="slots-modal-initial-step">
-            <div class="role-modal-content">
-                <div class="role-modal-content-header">
-                    <h1>Set Available Slots</h1>
-                    <p>Please specify the number of available slots for this position.</p>
-                </div>
-                <div class="role-modal-content-body">
-                    <div class="form-group">
-                        <label class="form-group-title" for="available-slots-input">Available Slots:</label>
-                        <input type="number" id="available-slots-input" style="color-scheme: dark;" min="1" value="1" class="form-control mt-2">
+            {{-- STEP 1: Form Input --}}
+            <div id="slots-modal-initial-step">
+                <div class="role-modal-content">
+                    <div class="role-modal-content-header">
+                        <h1>Set Available Slots</h1>
+                        <p>Please specify the number of available slots for this position.</p>
                     </div>
-                    <div id="slots-modal-messages" class="mt-2"></div>
+                    <div class="role-modal-content-body">
+                        <div class="form-group">
+                            <label class="form-group-title" for="available-slots-input">Available Slots:</label>
+                            <input type="number" id="available-slots-input" style="color-scheme: dark;" min="1" value="1" class="form-control mt-2">
+                        </div>
+                        <div id="slots-modal-messages" class="mt-2"></div>
+                    </div>
+                </div>
+                <div class="role-modal-actions">
+                    <button type="button" id="slots-proceed-to-confirmation-btn">Proceed</button>
                 </div>
             </div>
-            <div class="role-modal-actions">
-                <button type="button" id="slots-proceed-to-confirmation-btn">Proceed</button>
-            </div>
-        </div>
 
-        {{-- STEP 2: Confirmation --}}
-        <div id="slots-modal-confirmation-step" style="display: none;">
-            <div class="role-modal-content">
-                <div class="role-modal-content-header">
-                    <h1>Confirm Slots</h1>
-                    <p id="slots-confirmation-message-area"></p>
+            {{-- STEP 2: Confirmation --}}
+            <div id="slots-modal-confirmation-step" style="display: none;">
+                <div class="role-modal-content">
+                    <div class="role-modal-content-header">
+                        <h1>Confirm Slots</h1>
+                        <p id="slots-confirmation-message-area"></p>
+                    </div>
+                    <div class="role-modal-content-body">
+                        <div id="slots-final-status-message-area" class="mt-2"></div>
+                    </div>
                 </div>
-                <div class="role-modal-content-body">
-                    <div id="slots-final-status-message-area" class="mt-2"></div>
+                <div class="role-modal-actions">
+                    <button type="button" class="btn btn-info" id="slots-back-to-selection-btn">Back</button>
+                    <button type="button" class="btn btn-success" id="slots-confirm-btn">Confirm</button>
                 </div>
-            </div>
-            <div class="role-modal-actions">
-                <button type="button" class="btn btn-info" id="slots-back-to-selection-btn">Back</button>
-                <button type="button" class="btn btn-success" id="slots-confirm-btn">Confirm</button>
             </div>
         </div>
     </div>
-</div>
 
-{{-- CONFIRMATION MODAL --}}
-<div class="modal-container" id="setUnavailableConfirmationModal" style="display: none;">
-    <div class="delete-modal-box">
-        <div class="delete-modal-header">
-            <i class="fa-solid fa-xmark" id="closeSetUnavailableModalBtn"></i>
-        </div>
-        <div class="delete-modal-body">
-            <h1 class="delete-modal-title">Confirm Action</h1>
-            <p id="deleteModalText">Are you sure you want to set this position to unavailable?</p>
-            <div id="set-unavailable-final-status-message-area" class="mt-2"></div>
-        </div>
-        <div class="delete-modal-actions">
-            <button type="button" class="btn-cancel" id="cancelSetUnavailableBtn">Cancel</button>
-            <button type="button" class="btn-delete" id="confirmSetUnavailableBtn">Confirm</button>
+    {{-- CONFIRMATION MODAL --}}
+    <div class="modal-container" id="setUnavailableConfirmationModal" style="display: none;">
+        <div class="delete-modal-box">
+            <div class="delete-modal-header">
+                <i class="fa-solid fa-xmark" id="closeSetUnavailableModalBtn"></i>
+            </div>
+            <div class="delete-modal-body">
+                <h1 class="delete-modal-title">Confirm Action</h1>
+                <p id="deleteModalText">Are you sure you want to set this position to unavailable?</p>
+                <div id="set-unavailable-final-status-message-area" class="mt-2"></div>
+            </div>
+            <div class="delete-modal-actions">
+                <button type="button" class="btn-cancel" id="cancelSetUnavailableBtn">Cancel</button>
+                <button type="button" class="btn-delete" id="confirmSetUnavailableBtn">Confirm</button>
+            </div>
         </div>
     </div>
-</div>
-@endsection
+    @endsection
 
-@push('page-scripts')
-<script src="{{ asset('js/modal-scripts.js') }}"></script>
-<script src="{{ asset('js/dashboard-scripts.js') }}"></script>
-@endpush
+    @push('page-scripts')
+    <script src="{{ asset('js/modal-scripts.js') }}"></script>
+    <script src="{{ asset('js/dashboard-scripts.js') }}"></script>
+    @endpush

@@ -21,12 +21,12 @@ class Evaluation extends Model
         'user_id',
         'title',
         'category',
-        'score',
-        'file_path',
+        'type',
+        'sub_cat1_score',
+        'sub_cat2_score',
         'publish_date',
-        'link',
         'google_drive_file_id',
-        'filename',
+        'filename'
     ];
 
     /**

@@ -20,10 +20,14 @@ class ExtensionService extends Model
     protected $fillable = [
         'user_id',
         'title',
-        'service_type',
+        'category',
+        'type',
         'file_path',
-        'date',
         'google_drive_file_id',
+        'filename',
+        'sub_cat1_score', // Service to the Institution
+        'sub_cat2_score', // Service to the Community
+        'sub_cat3_score', // Extension Involvement
     ];
 
     /**
@@ -31,6 +35,9 @@ class ExtensionService extends Model
      */
     protected $casts = [
         'date' => 'datetime',
+        'sub_cat1_score' => 'decimal:2',
+        'sub_cat2_score' => 'decimal:2',
+        'sub_cat3_score' => 'decimal:2',
     ];
 
     /**

@@ -1,9 +1,10 @@
 <tr id="material-row-{{ $material->id }}">
     <td>{{ $material->id }}</td>
     <td>{{ $material->title }}</td>
-    <td>{{ Str::title(str_replace('_', ' ', $material->category)) }}</td>
-    <td>{{ $material->created_at->format('F j, Y') }}</td>
+    <td>{{ $material->category }}</td>
     <td>{{ $material->type }}</td>
+    <td>{{ $material->created_at->format('m/d/y') }}</td>
+    <td>{{ $material->score ? rtrim(rtrim(number_format($material->score, 2), '0'), '.') : 'TBE' }}</td>
     <td>
         @if($material->google_drive_file_id)
         <button class="btn btn-primary view-file-btn"

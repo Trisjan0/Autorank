@@ -25,8 +25,10 @@
             <tr>
                 <th>ID</th>
                 <th>Title</th>
-                <th>Service Type</th>
+                <th>Category</th>
+                <th>Type</th>
                 <th>Date Uploaded</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.extension-services-page') }}" method="GET" id="kra-search-form">
@@ -46,7 +48,7 @@
             </tr>
             @empty
             <tr id="no-results-row">
-                <td colspan="6" style="text-align: center;">No items found.</td>
+                <td colspan="7" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -80,20 +82,21 @@
                     </div>
                     <div class="role-modal-content-body">
                         <div class="form-group">
-                            <label class="form-group-title">Service Type:</label>
-                            <div class="checkbox-group">
-                                <div class="radio-option"><input type="radio" id="type-institution" name="service_type" value="Institution" required data-label="Service Type"><label for="type-institution">Institution</label></div>
-                                <div class="radio-option"><input type="radio" id="type-community" name="service_type" value="Community" required data-label="Service Type"><label for="type-community">Community</label></div>
-                                <div class="radio-option"><input type="radio" id="type-involvement" name="service_type" value="Extension Involvement" required data-label="Service Type"><label for="type-involvement">Extension Involvement</label></div>
-                            </div>
+                            <label class="form-group-title" for="category">Category:</label>
+                            <select class="eval-category" name="category" required data-label="Category">
+                                <option value="" disabled selected>Select a category</option>
+                                <option value="Service to the Institution">Service to the Institution</option>
+                                <option value="Service to the Community">Service to the Community</option>
+                                <option value="Extension Involvement">Extension Involvement</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="title">Title:</label>
                             <input type="text" id="title" name="title" required data-label="Title">
                         </div>
                         <div class="form-group">
-                            <label class="form-group-title" for="date">Date:</label>
-                            <input type="date" id="date" name="date" style="color-scheme: dark;" required data-label="Date">
+                            <label class="form-group-title" for="type">Type:</label>
+                            <input type="text" id="type" name="type" required data-label="Type">
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="evidence_file">Upload File:</label>

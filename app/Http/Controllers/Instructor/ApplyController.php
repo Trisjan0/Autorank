@@ -12,6 +12,7 @@ use App\Models\ResearchDocument;
 use App\Models\ExtensionService;
 use App\Models\ProfessionalDevelopment;
 use App\Models\Position;
+use App\Models\Application;
 
 class ApplyController extends Controller
 {
@@ -24,8 +25,8 @@ class ApplyController extends Controller
         $missing = [];
 
         // Check for at least one credential
-        if (Credential::where('user_id', $user->id)->count() === 0) {
-            $missing[] = 'Credentials';
+        if (Credential::where('user_id', $user->id)->count() < 2) {
+            $missing[] = 'Credentials (at least 2)';
         }
         // Check for KRA I-A
         if (Evaluation::where('user_id', $user->id)->count() === 0) {
@@ -66,17 +67,49 @@ class ApplyController extends Controller
     {
         $user = Auth::user();
 
-        //
-        // --- TODO: DATABASE LOGIC GOES HERE ---
-        // 1. Check if user has already applied for this position.
-        // 2. Create a new record in the 'applications' table.
-        //
+        // Validation 1: Check if the position is still available.
+        if (!$position->is_available || $position->available_slots <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, this position is no longer available.'
+            ], 400);
+        }
 
-        // For now, just return a success message.
+        // Validation 2: Check if the user has already applied for this specific position.
+        $existingApplication = Application::where('user_id', $user->id)
+            ->where('position_id', $position->id)
+            ->exists();
+
+        if ($existingApplication) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You have already applied for this position.'
+            ], 409); // 409 Conflict status code
+        }
+
+        // All checks passed, create the application.
+        Application::create([
+            'user_id' => $user->id,
+            'position_id' => $position->id,
+            'applicant_name' => $user->name, // Snapshot the user's name
+            'applicant_current_rank' => $user->rank ?? 'Not Specified', // Snapshot the user's rank
+            'status' => 'submitted',
+        ]);
+
+        // Decrement the available slots for the position
+        $position->decrement('available_slots');
+
+        // If slots are now zero, mark the position as unavailable
+        if ($position->available_slots <= 0) {
+            $position->is_available = false;
+            $position->save();
+        }
+
+        // Return a success response with a redirect URL
         return response()->json([
             'success' => true,
-            'message' => 'Application submitted successfully!',
-            // 'redirect_url' => route('some.confirmation.page') // Optional: redirect after success
+            'message' => 'Application submitted successfully! Reloading the page...',
+            'redirect_url' => route('dashboard')
         ]);
     }
 }

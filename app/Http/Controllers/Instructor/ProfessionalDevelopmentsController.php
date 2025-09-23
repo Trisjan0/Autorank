@@ -65,20 +65,33 @@ class ProfessionalDevelopmentsController extends Controller
             // Validate the incoming request data
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
-                'category' => 'required|string|in:Professional Organization Involvement,Continuing Development,Awards,Experience',
+                'type' => 'required|string|max:255',
+                'category' => 'required|string|in:Involvement in Professional Organizations,Continuing Development,Awards and Recognitions',
                 'publish_date' => 'nullable|date',
-                'evidence_file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,jpg,png|max:10240', // 10MB max
+                'development_file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,jpg,png|max:10240', // 10MB max
             ]);
 
-            // Upload the file to Google Drive and get the file ID
-            $googleDriveFileId = $this->uploadFileToGoogleDrive($request, 'evidence_file', 'KRA IV: Professional Development');
+            // Upload the file into subfolder of its category
+            $googleDriveFileId = $this->uploadFileToGoogleDrive(
+                $request,
+                'development_file',
+                'KRA IV: Professional Development',
+                $validatedData['category']
+            );
 
             // Create the new ProfessionalDevelopment record
-            $development = ProfessionalDevelopment::create(array_merge($validatedData, [
+            $development = ProfessionalDevelopment::create([
                 'user_id' => Auth::id(),
+                'title' => $validatedData['title'],
+                'type' => $validatedData['type'],
+                'category' => $validatedData['category'],
+                'publish_date' => $validatedData['publish_date'],
                 'google_drive_file_id' => $googleDriveFileId,
-                'filename' => $request->file('evidence_file')->getClientOriginalName(), // Store original filename
-            ]));
+                'filename' => $request->file('development_file')->getClientOriginalName(),
+                'sub_cat1_score' => null,
+                'sub_cat2_score' => null,
+                'sub_cat3_score' => null,
+            ]);
 
             // Render the partial view for the new table row
             $newRowHtml = view('partials._professional_developments_table_row', ['development' => $development])->render();
@@ -86,7 +99,7 @@ class ProfessionalDevelopmentsController extends Controller
             // Return a successful JSON response with the new row's HTML
             return response()->json([
                 'success' => true,
-                'message' => 'Professional development evidence uploaded successfully!',
+                'message' => 'Professional development evidence uploaded successfully! This will soon be scored by an Evaluator',
                 'newRowHtml' => $newRowHtml
             ], 201);
         } catch (ValidationException $e) {
@@ -98,6 +111,7 @@ class ProfessionalDevelopmentsController extends Controller
             return response()->json(['message' => 'An unexpected error occurred. Please try again.'], 500);
         }
     }
+
 
     /**
      * Remove the specified professional development record.

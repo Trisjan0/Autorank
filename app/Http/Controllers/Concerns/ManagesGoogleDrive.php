@@ -13,27 +13,34 @@ use Illuminate\Support\Facades\Log;
 trait ManagesGoogleDrive
 {
     /**
-     * Uploads a file to a specific Google Drive folder.
+     * Uploads a file to a specific, nested Google Drive folder.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $fileInputName The name of the file input from the form.
-     * @param  string  $kraFolderName The name of the KRA-specific folder in Google Drive.
+     * @param  string  $kraFolderName The name of the KRA-specific folder.
+     * @param  string|null $subFolderName The name of the category-specific subfolder.
      * @return string The ID of the uploaded Google Drive file.
      */
-    protected function uploadFileToGoogleDrive(Request $request, string $fileInputName, string $kraFolderName): string
+    protected function uploadFileToGoogleDrive(Request $request, string $fileInputName, string $kraFolderName, ?string $subFolderName = null): string
     {
-        $user = Auth::user();
         $file = $request->file($fileInputName);
-
         $service = $this->getGoogleDriveService();
 
+        // Find or create the main folders
         $mainFolderId = $this->findOrCreateFolder($service, 'Autorank Files');
         $kraFolderId = $this->findOrCreateFolder($service, $kraFolderName, $mainFolderId);
+
+        $targetFolderId = $kraFolderId; // Default to the KRA folder
+
+        // If a subfolder name is provided, find or create it inside the KRA folder
+        if ($subFolderName) {
+            $targetFolderId = $this->findOrCreateFolder($service, $subFolderName, $kraFolderId);
+        }
 
         $fileName = time() . '_' . $file->getClientOriginalName();
         $fileMetadata = new Google_Service_Drive_DriveFile([
             'name' => $fileName,
-            'parents' => [$kraFolderId]
+            'parents' => [$targetFolderId] // Upload to the final target folder
         ]);
 
         $content = file_get_contents($file->getRealPath());
@@ -49,9 +56,6 @@ trait ManagesGoogleDrive
 
     /**
      * Deletes a file from Google Drive.
-     *
-     * @param  string  $fileId The Google Drive file ID.
-     * @return void
      */
     protected function deleteFileFromGoogleDrive(string $fileId): void
     {
@@ -59,12 +63,9 @@ trait ManagesGoogleDrive
             $service = $this->getGoogleDriveService();
             $service->files->delete($fileId);
         } catch (\Google\Service\Exception $e) {
-            // If the API returns a 404 error, it means the file was not found.
             if ($e->getCode() == 404) {
                 Log::info('Attempted to delete a Google Drive file that was already gone.', ['file_id' => $fileId]);
-                // Do nothing, the file is already deleted.
             } else {
-                // If it's any other error (e.g., permission issue), re-throw it.
                 throw $e;
             }
         }

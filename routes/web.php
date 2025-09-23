@@ -112,7 +112,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Route for KRA I-A: Evaluations Page
         Route::get('/evaluations', [EvaluationsController::class, 'index'])->name('instructor.evaluations-page');
-        Route::post('/evaluations', [EvaluationsController::class, 'storeEvaluation'])->name('instructor.evaluations.store');
+        Route::post('/evaluations', [EvaluationsController::class, 'store'])->name('instructor.evaluations.store');
         Route::get('/evaluations/file-info/{id}', [EvaluationsController::class, 'getFileInfoForEvaluation'])->name('instructor.evaluations.file-info');
         Route::get('/evaluations/file/{id}', [EvaluationsController::class, 'viewFileForEvaluation'])->name('instructor.evaluations.view-file');
         Route::delete('/evaluations/{evaluation}', [EvaluationsController::class, 'destroy'])->name('instructor.evaluations.destroy');

@@ -25,6 +25,7 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Category</th>
+                <th>Type</th>
                 <th>Date Uploaded</th>
                 <th>Publish Date</th>
                 <th>Score</th>
@@ -47,7 +48,7 @@
             </tr>
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No items found.</td>
+                <td colspan="8" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -81,28 +82,27 @@
                     </div>
                     <div class="role-modal-content-body">
                         <div class="form-group">
-                            <label class="form-group-title">Category:</label>
-                            <div class="checkbox-group">
-                                <div class="radio-option">
-                                    <input type="radio" id="category-student" name="category" value="student" required data-label="Category">
-                                    <label for="category-student">Student</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" id="category-supervisor" name="category" value="supervisor" required data-label="Category">
-                                    <label for="category-supervisor">Supervisor</label>
-                                </div>
-                            </div>
+                            <label class="form-group-title" for="eval-category">Category:</label>
+                            <select class="eval-category" name="category" required data-label="Category">
+                                <option value="" disabled selected> Select a category</option>
+                                <option value="Teaching Effectiveness">Teaching Effectiveness</option>
+                                <option value="Thesis, Dissertation, and Mentorship Services">Thesis, Dissertation, and Mentorship Services</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="eval-title">Title:</label>
                             <input type="text" id="eval-title" name="title" required data-label="Title">
                         </div>
                         <div class="form-group">
+                            <label class="form-group-title" for="eval-type">Type:</label>
+                            <input type="text" id="eval-type" name="type" required data-label="Type">
+                        </div>
+                        <div class="form-group">
                             <label class="form-group-title" for="eval-publish-date">Publish Date:</label>
                             <input type="date" id="eval-publish-date" name="publish_date" style="color-scheme: dark;" required data-label="Publish Date">
                         </div>
                         <div class="form-group">
-                            <label class="form-group-title" for="eval-score">Score:</label>
+                            <label class="form-group-title" for="eval-score" id="eval-score-label">Score:</label>
                             <input type="number" id="eval-score" name="score" style="color-scheme: dark;" step="0.01" required data-label="Score">
                         </div>
                         <div class="form-group">

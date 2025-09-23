@@ -25,10 +25,11 @@
             <tr>
                 <th>ID</th>
                 <th>Title</th>
-                <th>Type</th>
                 <th>Category</th>
+                <th>Type</th>
                 <th>Date Uploaded</th>
                 <th>Publish Date</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.research-documents-page') }}" method="GET" id="kra-search-form">
@@ -48,7 +49,7 @@
             </tr>
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No items found.</td>
+                <td colspan="8" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -82,25 +83,26 @@
                     </div>
                     <div class="role-modal-content-body">
                         <div class="form-group">
-                            <label class="form-group-title">Type:</label>
-                            <div class="checkbox-group" style="flex-wrap: wrap; gap: 10px;">
-                                <div class="radio-option"><input type="radio" id="type-book" name="type" value="Book" required data-label="Type"><label for="type-book">Book</label></div>
-                                <div class="radio-option"><input type="radio" id="type-monograph" name="type" value="Monograph" required data-label="Type"><label for="type-monograph">Monograph</label></div>
-                                <div class="radio-option"><input type="radio" id="type-journal" name="type" value="Journal" required data-label="Type"><label for="type-journal">Journal</label></div>
-                                <div class="radio-option"><input type="radio" id="type-chapter" name="type" value="Chapter" required data-label="Type"><label for="type-chapter">Chapter</label></div>
-                            </div>
+                            <label class="form-group-title" for="research-category">Category:</label>
+                            <select class="eval-category" name="category" required data-label="Category">
+                                <option value="" disabled selected> Select a category</option>
+                                <option value="Research Outputs">Research Outputs</option>
+                                <option value="Inventions">Inventions</option>
+                                <option value="Creative Works">Creative Works</option>
+                                <option value="Papers Presented in Conferences">Papers Presented in Conferences</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="title">Title:</label>
                             <input type="text" id="title" name="title" required data-label="Title">
                         </div>
                         <div class="form-group">
-                            <label class="form-group-title" for="publish_date">Publish Date:</label>
-                            <input type="date" id="publish_date" name="publish_date" style="color-scheme: dark;" required data-label="Publish Date">
+                            <label class="form-group-title" for="type">Type:</label>
+                            <input type="text" id="type" name="type" required data-label="Type">
                         </div>
                         <div class="form-group">
-                            <label class="form-group-title" for="category">Category:</label>
-                            <input type="text" id="category" name="category" required data-label="Category">
+                            <label class="form-group-title" for="publish_date">Publish Date:</label>
+                            <input type="date" id="publish_date" name="publish_date" style="color-scheme: dark;" required data-label="Publish Date">
                         </div>
                         <div class="form-group">
                             <label class="form-group-title" for="document_file">Upload File:</label>

@@ -1,10 +1,16 @@
 <tr id="evaluation-row-{{ $evaluation->id }}">
     <td>{{ $evaluation->id }}</td>
     <td>{{ $evaluation->title }}</td>
-    <td>{{ ucfirst($evaluation->category) }}</td>
-    <td>{{ $evaluation->created_at->format('F j, Y') }}</td>
-    <td>{{ $evaluation->publish_date ? \Carbon\Carbon::parse($evaluation->publish_date)->format('F j, Y') : 'N/A' }}</td>
-    <td>{{ rtrim(rtrim(number_format($evaluation->score, 2), '0'), '.') }}</td>
+    <td>{{ $evaluation->category }}</td>
+    <td>{{ $evaluation->type ?? 'N/A' }}</td>
+    <td>{{ $evaluation->created_at->format('m/d/y') }}</td>
+    <td>{{ $evaluation->publish_date ? \Carbon\Carbon::parse($evaluation->publish_date)->format('m/d/y') : 'N/A' }}</td>
+    <td>
+        @php
+        $scoreToDisplay = $evaluation->sub_cat1_score ?? $evaluation->sub_cat2_score;
+        @endphp
+        {{ $scoreToDisplay === null || $scoreToDisplay == 0 ? 'TBE' : rtrim(rtrim(number_format($scoreToDisplay, 2), '0'), '.') }}
+    </td>
     <td>
         @if($evaluation->google_drive_file_id)
         <button class="btn btn-primary view-file-btn"

@@ -23,7 +23,7 @@ class ExtensionServicesController extends Controller
     {
         $perPage = 5;
         $query = ExtensionService::where('user_id', Auth::id())->orderBy('created_at', 'desc');
-        $searchableColumns = ['title', 'service_type'];
+        $searchableColumns = ['title', 'category', 'type'];
         $searchTerm = $request->input('search');
         $searchService->applySearch($query, $searchTerm, $searchableColumns);
 
@@ -57,38 +57,42 @@ class ExtensionServicesController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-            // Validate the incoming request data
             $validatedData = $request->validate([
-                'title' => 'required|string|max:255',
-                'service_type' => 'required|string|in:Institution,Community,Extension Involvement',
-                'date' => 'required|date',
-                'evidence_file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,jpg,png|max:10240', // 10MB max
+                'title'         => 'required|string|max:255',
+                'category'      => 'required|string|in:Service to the Institution,Service to the Community,Extension Involvement',
+                'type'          => 'required|string|max:255',
+                'evidence_file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,jpg,png|max:10240',
             ]);
 
-            // Upload the file to Google Drive and get the file ID
-            $googleDriveFileId = $this->uploadFileToGoogleDrive($request, 'evidence_file', 'KRA III: Extension Services');
+            $googleDriveFileId = $this->uploadFileToGoogleDrive(
+                $request,
+                'evidence_file',
+                'KRA III: Extension Services',
+                $validatedData['category']
+            );
 
-            // Create the new ExtensionService record
-            $service = ExtensionService::create(array_merge($validatedData, [
-                'user_id' => Auth::id(),
+            $service = ExtensionService::create([
+                'user_id'              => Auth::id(),
+                'title'                => $validatedData['title'],
+                'category'             => $validatedData['category'],
+                'type'                 => $validatedData['type'],
                 'google_drive_file_id' => $googleDriveFileId,
-                'filename' => $request->file('evidence_file')->getClientOriginalName(), // Store original filename
-            ]));
+                'filename'             => $request->file('evidence_file')->getClientOriginalName(),
+                'sub_cat1_score'       => null,
+                'sub_cat2_score'       => null,
+                'sub_cat3_score'       => null,
+            ]);
 
-            // Render the partial view for the new table row
             $newRowHtml = view('partials._extension_services_table_row', ['service' => $service])->render();
 
-            // Return a successful JSON response with the new row's HTML
             return response()->json([
-                'success' => true,
-                'message' => 'Extension service uploaded successfully!',
+                'success'    => true,
+                'message'    => 'Extension service uploaded successfully! This will soon be scored by an Evaluator.',
                 'newRowHtml' => $newRowHtml
             ], 201);
         } catch (ValidationException $e) {
-            // Return validation errors
             return response()->json(['message' => 'The given data was invalid.', 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            // Log the error for debugging and return a generic error message
             Log::error('Extension Service Upload Failed: ' . $e->getMessage());
             return response()->json(['message' => 'An unexpected error occurred. Please try again.'], 500);
         }
@@ -96,33 +100,23 @@ class ExtensionServicesController extends Controller
 
     /**
      * Remove the specified extension service.
-     *
-     * @param \App\Models\ExtensionService $service The service instance to delete.
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(ExtensionService $service): JsonResponse
     {
-        // Authorization check: Ensure the user owns the service record.
         if ($service->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         try {
-            // Delete the associated file from Google Drive if it exists.
             if ($service->google_drive_file_id) {
                 $this->deleteFileFromGoogleDrive($service->google_drive_file_id);
             }
 
-            // Delete the service record from the database.
             $service->delete();
 
-            // Return a successful JSON response.
             return response()->json(['message' => 'Extension service deleted successfully.']);
         } catch (\Exception $e) {
-            // Log the specific error for debugging purposes.
             Log::error('Extension Service Deletion Failed: ' . $e->getMessage());
-
-            // Return a generic, user-friendly error message.
             return response()->json(['message' => 'Failed to delete the extension service. Please try again later.'], 500);
         }
     }

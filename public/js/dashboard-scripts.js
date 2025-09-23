@@ -127,7 +127,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: 'You have all the required documents. Are you sure you want to submit your application for this position?',
                         confirmButtonText: 'Yes, Submit',
                         actionUrl: `/application/submit/${positionId}`,
-                        method: 'POST'
+                        method: 'POST',
+                        type: 'success'
                     });
                 } else {
                     // Documents are missing, show an informational modal

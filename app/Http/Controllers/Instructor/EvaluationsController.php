@@ -9,6 +9,7 @@ use App\Services\DataSearchService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
 
@@ -16,14 +17,11 @@ class EvaluationsController extends Controller
 {
     use ManagesGoogleDrive;
 
-    /**
-     * Display a paginated list of evaluations.
-     */
     public function index(Request $request, DataSearchService $searchService)
     {
         $perPage = 5;
         $query = Evaluation::where('user_id', Auth::id())->orderBy('created_at', 'desc');
-        $searchableColumns = ['title', 'category', 'score'];
+        $searchableColumns = ['title', 'category', 'type', 'sub_cat1_score', 'sub_cat2_score'];
         $searchTerm = $request->input('search');
         $searchService->applySearch($query, $searchTerm, $searchableColumns);
 
@@ -50,84 +48,115 @@ class EvaluationsController extends Controller
         return view('instructor.evaluations-page', compact('evaluations', 'initialHasMore', 'perPage'));
     }
 
-    /**
-     * Store a new evaluation and return a JSON response.
-     */
-    public function storeEvaluation(Request $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
-        // Sanitize publish_date input
-        if ($request->input('publish_date') === '') {
-            $request->merge(['publish_date' => null]);
-        }
-
         try {
-            // Validate the incoming request data
-            $validatedData = $request->validate([
-                'category' => 'required|string|in:student,supervisor',
+            $user = Auth::user();
+            $validCategories = ['Teaching Effectiveness', 'Thesis, Dissertation, and Mentorship Services'];
+            $category = $request->input('category');
+
+            $rules = [
+                'category' => ['required', 'string', Rule::in($validCategories)],
                 'title' => 'required|string|max:255',
-                'publish_date' => 'nullable|date',
-                'score' => 'required|numeric|min:0',
-                'evaluation_file' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:5120', // 5MB max
+                'type' => 'required|string|max:255',
+                'publish_date' => 'required|date',
+                'evaluation_file' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:5120',
+                'score' => ['nullable', 'numeric', 'min:0'],
+            ];
+
+            if ($category === 'Teaching Effectiveness') {
+                $existingScore = Evaluation::where('user_id', $user->id)->sum('sub_cat1_score');
+                $maxTotal = 60;
+                $pointsAvailable = max(0, $maxTotal - $existingScore);
+                $rules['score'] = ['required', 'numeric', 'min:0', 'max:' . $pointsAvailable];
+            } elseif ($category === 'Thesis, Dissertation, and Mentorship Services') {
+                $rules['score'] = ['prohibited'];
+            }
+
+            $validatedData = $request->validate($rules, [
+                'score.max' => 'The score exceeds the maximum available points for this category.'
             ]);
 
-            // Upload the file to Google Drive and get the file ID
-            $googleDriveFileId = $this->uploadFileToGoogleDrive($request, 'evaluation_file', 'KRA I-A: Evaluations');
+            $submittedScore = (float)($validatedData['score'] ?? 0);
+            $scoreToSave = 0;
+            $excessScore = 0;
 
-            // Create the new Evaluation record
-            $evaluation = Evaluation::create(array_merge($validatedData, [
-                'user_id' => Auth::id(),
+            if ($category === 'Teaching Effectiveness') {
+                $existingScore = Evaluation::where('user_id', $user->id)->sum('sub_cat1_score');
+                $maxTotal = 60;
+                $pointsAvailable = max(0, $maxTotal - $existingScore);
+                $scoreToSave = min($submittedScore, $pointsAvailable);
+                $excessScore = $submittedScore - $scoreToSave;
+            } elseif ($category === 'Thesis, Dissertation, and Mentorship Services') {
+                $scoreToSave = null;
+            }
+
+            $googleDriveFileId = $this->uploadFileToGoogleDrive(
+                $request,
+                'evaluation_file',
+                'KRA I-A: Evaluations',
+                $category
+            );
+
+            $dataToCreate = [
+                'user_id' => $user->id,
+                'category' => $validatedData['category'],
+                'title' => $validatedData['title'],
+                'type' => $validatedData['type'],
+                'publish_date' => $validatedData['publish_date'],
                 'google_drive_file_id' => $googleDriveFileId,
-                'filename' => $request->file('evaluation_file')->getClientOriginalName(), // Store original filename
-            ]));
+                'filename' => $request->file('evaluation_file')->getClientOriginalName(),
+                'sub_cat1_score' => null,
+                'sub_cat2_score' => null,
+            ];
 
-            // Render the partial view for the new table row
-            $newRowHtml = view('partials._evaluations_table_row', ['evaluation' => $evaluation])->render();
+            if ($category === 'Teaching Effectiveness') {
+                $dataToCreate['sub_cat1_score'] = $scoreToSave;
+            } elseif ($category === 'Thesis, Dissertation, and Mentorship Services') {
+                $dataToCreate['sub_cat2_score'] = null;
+            }
 
-            // Return a successful JSON response with the new row's HTML
+            Evaluation::create($dataToCreate);
+
+            if ($category === 'Teaching Effectiveness') {
+                $message = 'Evaluation uploaded successfully!';
+            } elseif ($category === 'Thesis, Dissertation, and Mentorship Services') {
+                $message = 'Evaluation uploaded successfully! This will soon be scored by an Evaluator.';
+            }
+
+            if ($excessScore > 0) {
+                $message .= " You have reached the maximum score for this category. Excess of " . $excessScore . " points was not added.";
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'Evaluation uploaded successfully!',
-                'newRowHtml' => $newRowHtml
+                'message' => $message,
             ], 201);
         } catch (ValidationException $e) {
-            // Return validation errors
             return response()->json(['message' => 'The given data was invalid.', 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            // Log the error for debugging and return a generic error message
             Log::error('Evaluation Upload Failed: ' . $e->getMessage());
             return response()->json(['message' => 'An unexpected error occurred. Please try again.'], 500);
         }
     }
 
-    /**
-     * Remove the specified evaluation.
-     *
-     * @param \App\Models\Evaluation $evaluation The evaluation instance to delete.
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function destroy(Evaluation $evaluation): JsonResponse
     {
-        // Authorization check: Ensure the user owns the evaluation.
         if ($evaluation->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         try {
-            // Delete the associated file from Google Drive if it exists.
             if ($evaluation->google_drive_file_id) {
                 $this->deleteFileFromGoogleDrive($evaluation->google_drive_file_id);
             }
 
-            // Delete the evaluation record from the database.
             $evaluation->delete();
 
-            // Return a successful JSON response.
             return response()->json(['message' => 'Evaluation deleted successfully.']);
         } catch (\Exception $e) {
-            // Log the specific error for debugging purposes.
             Log::error('Evaluation Deletion Failed: ' . $e->getMessage());
-
-            // Return a generic, user-friendly error message.
             return response()->json(['message' => 'Failed to delete the evaluation. Please try again later.'], 500);
         }
     }
