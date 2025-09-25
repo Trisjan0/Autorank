@@ -90,35 +90,26 @@
         @endauth
 
         {{-- INSTRUCTOR only links --}}
-        @unless (auth()->user()->hasAnyRole(['admin', 'evaluator']))
-        <a href="{{ route('instructor.evaluations-page') }}">
+        @unlessrole('admin|evaluator')
+        <a href="{{ route('instructor.instructional-page') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-clipboard-check"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>KRA I-A: Evaluations</p>
+                <p>KRA I: Instruction</p>
             </div>
         </a>
 
-        <a href="{{ route('instructor.instructional-materials-page') }}">
-            <div class="hidden-menu-icon">
-                <i class="fa-solid fa-folder-open"></i>
-            </div>
-            <div class="hidden-menu-title">
-                <p>KRA I-B: Instructional Materials</p>
-            </div>
-        </a>
-
-        <a href="{{ route('instructor.research-documents-page') }}">
+        <a href="{{ route('instructor.research-page') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-file-signature"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>KRA II: Research Output</p>
+                <p>KRA II: Research</p>
             </div>
         </a>
 
-        <a href="{{ route('instructor.extension-services-page') }}">
+        <a href="{{ route('instructor.extension-page') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-handshake"></i>
             </div>
@@ -127,7 +118,7 @@
             </div>
         </a>
 
-        <a href="{{ route('instructor.professional-developments-page') }}">
+        <a href="{{ route('instructor.professional-development-page') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-arrow-trend-up"></i>
             </div>
@@ -135,7 +126,7 @@
                 <p>KRA IV: Professional Development</p>
             </div>
         </a>
-        @endunless
+        @endunlessrole
 
         <a href="{{ route('system-settings') }}">
             <div class="hidden-menu-icon">

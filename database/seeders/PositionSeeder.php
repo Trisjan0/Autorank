@@ -14,7 +14,7 @@ class PositionSeeder extends Seeder
     public function run(): void
     {
         // Prevents duplicate entries if seeder is run multiple times
-        DB::table('positions')->truncate();
+        DB::table('positions')->delete();
 
         $positions = [
             ['title' => 'Instructor I', 'reqs' => [60, 10, 20, 10]],

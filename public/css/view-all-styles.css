@@ -3,13 +3,48 @@
     width: auto;
     height: 150px;
     display: flex;
+    padding: 0px 20px 0px 20px;
     align-items: center;
     justify-content: center;
     text-align: center;
+    gap: 20px;
 }
 
 .header h1 {
     font-weight: 700;
+}
+
+.criterion-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.criterion-selector select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-color: hsl(var(--base-hue-primary), var(--base-saturation-primary), calc(var(--base-lightness-primary) + 15%));;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 40px 10px 20px;
+  
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align-last: center;
+}
+
+.criterion-selector::after {
+  content: "▼";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #fff;
+  pointer-events: none;
 }
 
 /* DATA DISPLAY TABLE STYLING -- -- -- */
@@ -46,6 +81,7 @@
     padding: var(--tableDataPadding);
     text-align: center;
     font-weight: 500;
+    color: white;
 }
 
 .performance-metric-container table td div {

@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ProfessionalDevelopment extends Model
+class Extension extends Model
 {
     use HasFactory;
 
-    protected $table = 'professional_developments';
+    protected $table = 'extensions';
 
     /**
      * The attributes that are not mass assignable.
@@ -33,7 +33,7 @@ class ProfessionalDevelopment extends Model
     ];
 
     /**
-     * Get the user that owns the professional development record.
+     * Get the user that owns the extension record.
      */
     public function user(): BelongsTo
     {

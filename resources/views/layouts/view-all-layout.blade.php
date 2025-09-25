@@ -27,7 +27,6 @@
 
 <body>
     @include('partials._navbar')
-    @include('partials._modals')
 
     <main>
         @yield('content')

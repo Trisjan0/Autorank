@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ProfessionalDevelopment extends Model
+class Research extends Model
 {
     use HasFactory;
 
-    protected $table = 'professional_developments';
+    protected $table = 'researches';
 
     /**
      * The attributes that are not mass assignable.
+     *
+     * Following the pattern of Instruction.php
      *
      * @var array<int, string>
      */
@@ -28,12 +30,12 @@ class ProfessionalDevelopment extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'publication_date' => 'date',
+        'exhibition_date' => 'date',
     ];
 
     /**
-     * Get the user that owns the professional development record.
+     * Get the user that owns the research record.
      */
     public function user(): BelongsTo
     {

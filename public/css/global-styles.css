@@ -24,8 +24,8 @@
     --progressBarEmptyColor: #d3d3d3;
     --progressBarFillColor: #4DFF62;
     /* --- Table Colors --- */
-    --tableBackgroundColor: #ffffff;
-    --tableDataBorderColor: #d3d3d3;
+    --tableBackgroundColor: #333333;
+    --tableDataBorderColor: #434343;
     --tableHeaderPadding: 20px;
     --tableDataPadding: 25px;
     /* --- Modal Message Colors --- */

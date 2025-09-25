@@ -2,47 +2,28 @@
 
 namespace App\Http\Controllers\Concerns;
 
-use Google_Client;
-use Google_Service_Drive;
-use Google_Service_Drive_DriveFile;
-use Illuminate\Http\JsonResponse;
+// Use the modern, namespaced Google API classes
+use Google\Client;
+use Google\Service\Drive;
+use Google\Service\Drive\DriveFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 trait ManagesGoogleDrive
 {
-    /**
-     * Uploads a file to a specific, nested Google Drive folder.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $fileInputName The name of the file input from the form.
-     * @param  string  $kraFolderName The name of the KRA-specific folder.
-     * @param  string|null $subFolderName The name of the category-specific subfolder.
-     * @return string The ID of the uploaded Google Drive file.
-     */
     protected function uploadFileToGoogleDrive(Request $request, string $fileInputName, string $kraFolderName, ?string $subFolderName = null): string
     {
         $file = $request->file($fileInputName);
         $service = $this->getGoogleDriveService();
-
-        // Find or create the main folders
         $mainFolderId = $this->findOrCreateFolder($service, 'Autorank Files');
         $kraFolderId = $this->findOrCreateFolder($service, $kraFolderName, $mainFolderId);
-
-        $targetFolderId = $kraFolderId; // Default to the KRA folder
-
-        // If a subfolder name is provided, find or create it inside the KRA folder
-        if ($subFolderName) {
-            $targetFolderId = $this->findOrCreateFolder($service, $subFolderName, $kraFolderId);
-        }
-
+        $targetFolderId = $subFolderName ? $this->findOrCreateFolder($service, $subFolderName, $kraFolderId) : $kraFolderId;
         $fileName = time() . '_' . $file->getClientOriginalName();
-        $fileMetadata = new Google_Service_Drive_DriveFile([
+        $fileMetadata = new DriveFile([
             'name' => $fileName,
-            'parents' => [$targetFolderId] // Upload to the final target folder
+            'parents' => [$targetFolderId]
         ]);
-
         $content = file_get_contents($file->getRealPath());
         $uploadedFile = $service->files->create($fileMetadata, [
             'data' => $content,
@@ -50,19 +31,15 @@ trait ManagesGoogleDrive
             'uploadType' => 'multipart',
             'fields' => 'id'
         ]);
-
         return $uploadedFile->id;
     }
 
-    /**
-     * Deletes a file from Google Drive.
-     */
     protected function deleteFileFromGoogleDrive(string $fileId): void
     {
         try {
             $service = $this->getGoogleDriveService();
             $service->files->delete($fileId);
-        } catch (\Google\Service\Exception $e) {
+        } catch (\Exception $e) {
             if ($e->getCode() == 404) {
                 Log::info('Attempted to delete a Google Drive file that was already gone.', ['file_id' => $fileId]);
             } else {
@@ -71,69 +48,66 @@ trait ManagesGoogleDrive
         }
     }
 
-    /**
-     * Get file metadata to determine if it's viewable.
-     */
-    public function getFileInfo($id, $model, $routeName): JsonResponse
+    protected function getFileInfo($recordId, $modelClass, $viewRouteName)
     {
-        $item = $this->findItem($model, $id);
-        $service = $this->getGoogleDriveService();
+        $item = $modelClass::findOrFail($recordId);
+        return $this->getFileInfoById($item->google_drive_file_id, route($viewRouteName, ['id' => $recordId]));
+    }
 
+    protected function getFileInfoById($fileId, $viewUrl)
+    {
+        if (!$fileId) {
+            return response()->json(['message' => 'File not found for this record.'], 404);
+        }
         try {
-            $file = $service->files->get($item->google_drive_file_id, ['fields' => 'mimeType,name']);
-            return response()->json([
-                'isViewable' => $this->isMimeTypeViewable($file->getMimeType()),
-                'fileName'   => $file->getName(),
-                'viewUrl'    => route($routeName, $item->id),
+            $service = $this->getGoogleDriveService();
+            $file = $service->files->get($fileId, ['fields' => 'mimeType']);
+            $isViewable = in_array($file->getMimeType(), ['application/pdf', 'image/jpeg', 'image/png']);
+            return response()->json(['isViewable' => $isViewable, 'viewUrl' => $viewUrl]);
+        } catch (\Exception $e) {
+            Log::error('Google Drive file info retrieval failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Could not retrieve file information.'], 500);
+        }
+    }
+
+    protected function viewFile($recordId, $modelClass, Request $request)
+    {
+        $item = $modelClass::findOrFail($recordId);
+        return $this->viewFileById($item->google_drive_file_id, $request);
+    }
+
+    protected function viewFileById($fileId, Request $request)
+    {
+        if (!$fileId) abort(404, 'File ID not found.');
+        try {
+            $service = $this->getGoogleDriveService();
+            $response = $service->files->get($fileId, ['alt' => 'media']);
+            $content = $response->getBody()->getContents();
+            $fileMeta = $service->files->get($fileId, ['fields' => 'mimeType, name']);
+            return response($content, 200, [
+                'Content-Type' => $fileMeta->getMimeType(),
+                'Content-Disposition' => 'inline; filename="' . $fileMeta->getName() . '"',
             ]);
         } catch (\Exception $e) {
-            Log::error('Error fetching file metadata: ' . $e->getMessage());
-            return response()->json(['error' => 'Unable to fetch file info.'], 404);
+            Log::error('Google Drive file viewing failed: ' . $e->getMessage());
+            abort(500, 'Could not retrieve the file.');
         }
     }
 
-    /**
-     * Stream a file from Google Drive for viewing or download.
-     */
-    public function viewFile($id, $model, Request $request)
-    {
-        $item = $this->findItem($model, $id);
-        $service = $this->getGoogleDriveService();
-
-        try {
-            $file = $service->files->get($item->google_drive_file_id, ['fields' => 'mimeType,name']);
-            $content = $service->files->get($item->google_drive_file_id, ['alt' => 'media']);
-            $disposition = $request->query('download') ? 'attachment' : 'inline';
-
-            return response($content->getBody(), 200)
-                ->header('Content-Type', $file->getMimeType())
-                ->header('Content-Disposition', $disposition . '; filename="' . $file->getName() . '"');
-        } catch (\Exception $e) {
-            Log::error('Error fetching file: ' . $e->getMessage());
-            return abort(404, 'Unable to fetch file.');
-        }
-    }
-
-    /**
-     * Get an authenticated Google Drive service instance.
-     */
-    private function getGoogleDriveService(): Google_Service_Drive
+    private function getGoogleDriveService(): Drive
     {
         $user = Auth::user();
         if (empty($user->google_refresh_token)) {
             throw new \Exception('Google account not linked or permission denied.');
         }
-        $client = new Google_Client();
+        $client = new Client(); // Use modern Client
         $client->setClientId(env('GOOGLE_CLIENT_ID'));
         $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
         $client->refreshToken($user->google_refresh_token);
-        return new Google_Service_Drive($client);
+        return new Drive($client); // Use modern Drive
     }
 
-    /**
-     * Find or create a folder in Google Drive.
-     */
-    private function findOrCreateFolder(Google_Service_Drive $service, string $folderName, ?string $parentId = null): string
+    private function findOrCreateFolder(Drive $service, string $folderName, ?string $parentId = null): string
     {
         $query = "mimeType='application/vnd.google-apps.folder' and name='$folderName' and trashed=false";
         if ($parentId) {
@@ -143,34 +117,11 @@ trait ManagesGoogleDrive
         if (count($response->getFiles()) > 0) {
             return $response->getFiles()[0]->getId();
         }
-        $folderMetadata = new Google_Service_Drive_DriveFile(['name' => $folderName, 'mimeType' => 'application/vnd.google-apps.folder']);
+        $folderMetadata = new DriveFile(['name' => $folderName, 'mimeType' => 'application/vnd.google-apps.folder']);
         if ($parentId) {
             $folderMetadata->setParents([$parentId]);
         }
         $folder = $service->files->create($folderMetadata, ['fields' => 'id']);
         return $folder->id;
-    }
-
-    /**
-     * Check if a MIME type is viewable in a browser.
-     */
-    private function isMimeTypeViewable(string $mimeType): bool
-    {
-        return in_array($mimeType, [
-            'application/pdf',
-            'image/jpeg',
-            'image/png',
-            'image/gif',
-            'image/webp',
-            'text/plain',
-        ]);
-    }
-
-    /**
-     * Find the relevant item from the database.
-     */
-    private function findItem($modelClass, $id)
-    {
-        return $modelClass::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
     }
 }

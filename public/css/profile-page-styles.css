@@ -350,6 +350,7 @@
     padding: var(--tableDataPadding);
     text-align: center;
     font-weight: 500;
+    color: white;
 }
 
 .credentials-table-container table td div {
