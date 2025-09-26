@@ -341,6 +341,7 @@ class InstructionController extends Controller
                 }
                 $data['Role'] = $instruction->role;
                 $data['Publication Date'] = Carbon::parse($instruction->publication_date)->format('F j, Y');
+                $data['Score'] = $instruction->score !== null ? number_format($instruction->score, 2) : 'To be evaluated';
                 break;
 
             case 'mentorship-services':
@@ -350,6 +351,7 @@ class InstructionController extends Controller
                     'Student / Competition' => $instruction->student_or_competition,
                     'Completion Date' => Carbon::parse($instruction->completion_date)->format('F j, Y'),
                     'Level' => $instruction->level,
+                    'Score' => $instruction->score !== null ? number_format($instruction->score, 2) : 'To be evaluated',
                 ];
                 break;
         }

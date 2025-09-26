@@ -34,16 +34,17 @@
         </div>
     </div>
     <div id="hidden-menu">
-        {{-- Always show Dashboard, Profile, Settings, and Logout for any authenticated user --}}
+        {{-- Always show Dashboard, Settings, and Logout for any authenticated user --}}
         <a href="{{ route('dashboard') }}">
             <div class="hidden-menu-icon">
-                <i class="fa-solid fa-chart-simple"></i>
+                <i class="fa-solid fa-check-to-slot" style="color: #ffffff;"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>Dashboard</p>
+                <p>Faculty Ranks</p>
             </div>
         </a>
 
+        @unlessrole('evaluator')
         <a href="{{ route('profile-page') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-address-book"></i>
@@ -52,8 +53,9 @@
                 <p>Profile</p>
             </div>
         </a>
+        @endunlessrole
 
-        {{-- ADMIN/SUPER_ADMIN only links --}}
+        {{-- ADMIN Routes --}}
         @auth
         @can('manage users')
         <a href="{{ route('application-page') }}">
@@ -75,10 +77,10 @@
         @endcan
         @endauth
 
-        {{-- EVALUATOR only links --}}
+        {{-- EVALUATOR Routes --}}
         @auth
         @can('access evaluate applications page')
-        <a href="{{ route('evaluator.evaluate-applications') }}">
+        <a href="{{ route('evaluator.applications.dashboard') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-file-circle-check"></i>
             </div>
@@ -89,7 +91,7 @@
         @endcan
         @endauth
 
-        {{-- INSTRUCTOR only links --}}
+        {{-- INSTRUCTOR Routes --}}
         @unlessrole('admin|evaluator')
         <a href="{{ route('instructor.instructional-page') }}">
             <div class="hidden-menu-icon">

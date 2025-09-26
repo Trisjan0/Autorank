@@ -6,6 +6,7 @@
     <td>{{ $item->start_date->format('F d, Y') }}</td>
     <td>{{ $item->end_date->format('F d, Y') }}</td>
     <td>{{ $item->hours ?? 'N/A' }}</td>
+    <td>{{ $item->score ?? 'TBE' }}</td>
     <td>
         <div class="action-buttons">
             <button

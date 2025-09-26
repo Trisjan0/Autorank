@@ -5,6 +5,7 @@
     <td>{{ $item->student_or_competition }}</td>
     <td>{{ \Carbon\Carbon::parse($item->completion_date)->format('F d, Y') }}</td>
     <td>{{ $item->level }}</td>
+    <td>{{ $item->score ?? 'TBE' }}</td>
     <td>
         <div class="action-buttons">
             <button

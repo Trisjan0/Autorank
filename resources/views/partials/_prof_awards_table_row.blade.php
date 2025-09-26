@@ -4,6 +4,7 @@
     <td>{{ $item->awarding_body }}</td>
     <td>{{ $item->level }}</td>
     <td>{{ $item->end_date->format('F d, Y') }}</td>
+    <td>{{ $item->score ?? 'TBE' }}</td>
     <td>
         <div class="action-buttons">
             <button

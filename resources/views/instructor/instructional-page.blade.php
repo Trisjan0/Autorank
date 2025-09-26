@@ -74,6 +74,7 @@
                 <th>Type</th>
                 <th>Role</th>
                 <th>Publication / Approval Date</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.instructional-page') }}" method="GET">
@@ -93,7 +94,7 @@
             ])
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No items found.</td>
+                <td colspan="8" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -111,6 +112,7 @@
                 <th>Student / Competition</th>
                 <th>Completion / Award Date</th>
                 <th>Level</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.instructional-page') }}" method="GET">
@@ -130,7 +132,7 @@
             ])
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No items found.</td>
+                <td colspan="8" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\ApplicationModel;
+use App\Models\Application;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -11,7 +11,7 @@ class ApplicationController extends Controller
     public function index()
     {
         // Fetch all applications from the database
-        $applications = ApplicationModel::all();
+        $applications = Application::all();
 
         return view('admin.application-page', compact('applications'));
     }

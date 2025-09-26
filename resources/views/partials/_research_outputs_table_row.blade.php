@@ -7,6 +7,7 @@
     <td>{{ $item->publication_date->format('F d, Y') }}</td>
     <td>{{ $item->doi ?? 'N/A' }}</td>
     <td>{{ $item->role }}</td>
+    <td>{{ $item->score ?? 'TBE' }}</td>
     <td>
         <div class="action-buttons">
             <button

@@ -69,38 +69,25 @@ Profile | Autorank
                     <h1>Profile</h1>
                 </div>
                 <div class="progress-bars-container">
-                    <div class="years-of-teaching-container">
+                    <div class="evaluation-progress-container">
                         <div class="subtitle">
-                            <h4>Years of Teaching</h4>
-                            <h5></h5>
+                            <h4>Evaluation Progress</h4>
+                            <h5>In progress</h5> {{-- this changes when the progress bar is full --}}
                         </div>
-                        <div class="years-of-teaching-progress-bar-container">
-                            <div class="years-of-teaching-progress"></div>
+                        <div class="evaluation-progress-bar-container">
+                            <div class="evaluation-progress"></div>
                             <div class="bar"></div>
                         </div>
-                        <div class="years-of-teaching-bottom-note">
-                            <h5>5 years</h5>
-                        </div>
-                    </div>
-                    <div class="degree-container">
-                        <div class="subtitle">
-                            <h4>Degrees Achieved</h4>
-                            <h5></h5>
-                        </div>
-                        <div class="degree-progress-bar-container">
-                            <div class="degree-progress"></div>
-                            <div class="bar"></div>
-                        </div>
-                        <div class="degree-bottom-note">
-                            <h5>Bachelor's</h5>
-                            <h5>Master's</h5>
-                            <h5>Doctorate</h5>
+                        <div class="evaluation-progress-bottom-note">
+                            <h5>50%</h5> {{-- this would be dynamically generated based on the percentage --}}
                         </div>
                     </div>
                 </div>
                 @if ($isOwnProfile)
                 <div class="apply-for-reranking-container">
-                    <button>Apply for Merit Promotion</button>
+                    <button>
+                        <a href="{{ route('dashboard') }}">Apply for a Position</a>
+                    </button>
                 </div>
                 @endif
             </div>

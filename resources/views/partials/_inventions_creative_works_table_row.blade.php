@@ -6,6 +6,7 @@
     <td>{{ $item->status_level }}</td>
     <td>{{ $item->exhibition_date->format('F d, Y') }}</td>
     <td>{{ $item->role }}</td>
+    <td>{{ $item->score ?? 'TBE' }}</td>
     <td>
         <div class="action-buttons">
             <button

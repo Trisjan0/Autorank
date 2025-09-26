@@ -4,6 +4,7 @@
     <td>{{ $item->office_unit }}</td>
     <td>{{ $item->start_date->format('F d, Y') }}</td>
     <td>{{ $item->end_date ? $item->end_date->format('F d, Y') : 'Ongoing' }}</td>
+    <td>{{ $item->score ?? 'TBE' }}</td>
     <td>
         <div class="action-buttons">
             <button

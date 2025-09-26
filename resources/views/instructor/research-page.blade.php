@@ -38,6 +38,7 @@
                 <th>Publication Date</th>
                 <th>DOI</th>
                 <th>Role</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.research-page') }}" method="GET">
@@ -54,7 +55,7 @@
             @include('partials._research_outputs_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="9" style="text-align: center;">No items found.</td>
+                <td colspan="10" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -73,6 +74,7 @@
                 <th>Status / Level</th>
                 <th>Date of Issue / Exhibition</th>
                 <th>Role</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.research-page') }}" method="GET">
@@ -89,7 +91,7 @@
             @include('partials._inventions_creative_works_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="8" style="text-align: center;">No items found.</td>
+                <td colspan="9" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>

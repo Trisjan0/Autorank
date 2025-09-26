@@ -5,6 +5,7 @@
     <td>{{ $item->type ?? 'N/A' }}</td>
     <td>{{ $item->role }}</td>
     <td>{{ \Carbon\Carbon::parse($item->publication_date)->format('F d, Y') }}</td>
+    <td>{{ $item->score ?? 'TBE' }}</td>
     <td>
         <div class="action-buttons">
             <button

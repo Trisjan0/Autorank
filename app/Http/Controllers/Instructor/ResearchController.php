@@ -300,6 +300,7 @@ class ResearchController extends Controller
                     $data['DOI'] = $research->doi;
                 }
                 $data['Publication Date'] = \Carbon\Carbon::parse($research->publication_date)->format('F j, Y');
+                $data['Score'] = $research->score !== null ? number_format($research->score, 2) : 'To be evaluated';
                 break;
 
             case 'inventions-creative-works':
@@ -310,6 +311,7 @@ class ResearchController extends Controller
                     'Role' => $research->role,
                     'Status / Level' => $research->status_level,
                     'Date of Issue / Exhibition' => \Carbon\Carbon::parse($research->exhibition_date)->format('F j, Y'),
+                    'Score' => $research->score !== null ? number_format($research->score, 2) : 'To be evaluated',
                 ];
                 break;
         }

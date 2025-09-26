@@ -263,6 +263,7 @@ class ProfessionalDevelopmentController extends Controller
                     'Membership Type' => $professionalDevelopment->membership_type,
                     'Start Date' => Carbon::parse($professionalDevelopment->start_date)->format('F j, Y'),
                     'End Date' => Carbon::parse($professionalDevelopment->end_date)->format('F j, Y'),
+                    'Score' => $professionalDevelopment->score !== null ? number_format($professionalDevelopment->score, 2) : 'To be evaluated',
                 ];
                 if ($professionalDevelopment->role) {
                     $data['Role (as Officer)'] = $professionalDevelopment->role;
@@ -276,6 +277,7 @@ class ProfessionalDevelopmentController extends Controller
                     'Organizer/Institution' => $professionalDevelopment->organizer,
                     'Start Date' => Carbon::parse($professionalDevelopment->start_date)->format('F j, Y'),
                     'Completion Date' => Carbon::parse($professionalDevelopment->end_date)->format('F j, Y'),
+                    'Score' => $professionalDevelopment->score !== null ? number_format($professionalDevelopment->score, 2) : 'To be evaluated',
                 ];
                 if ($professionalDevelopment->hours) {
                     $data['Number of Hours'] = $professionalDevelopment->hours;
@@ -291,6 +293,7 @@ class ProfessionalDevelopmentController extends Controller
                     'Awarding Body' => $professionalDevelopment->awarding_body,
                     'Level' => $professionalDevelopment->level,
                     'Date Awarded' => Carbon::parse($professionalDevelopment->end_date)->format('F j, Y'),
+                    'Score' => $professionalDevelopment->score !== null ? number_format($professionalDevelopment->score, 2) : 'To be evaluated',
                 ];
                 break;
         }

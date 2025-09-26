@@ -174,7 +174,7 @@ body.modal-open {
   position: relative;
 }
 
-.initial-step {
+.initial-step, .confirmation-step {
     width: 100%;
     overflow: scroll;
     padding-inline: 5px;

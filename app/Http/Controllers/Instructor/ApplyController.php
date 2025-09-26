@@ -5,14 +5,16 @@ namespace App\Http\Controllers\Instructor;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Credential;
-use App\Models\Evaluation;
-use App\Models\Material;
-use App\Models\ResearchDocument;
-use App\Models\ExtensionService;
+use App\Models\Instruction;
+use App\Models\Research;
+use App\Models\Extension;
 use App\Models\ProfessionalDevelopment;
 use App\Models\Position;
 use App\Models\Application;
+use App\Models\ApplicationSubmission;
+use Illuminate\Support\Facades\Log;
 
 class ApplyController extends Controller
 {
@@ -24,29 +26,20 @@ class ApplyController extends Controller
         $user = Auth::user();
         $missing = [];
 
-        // Check for at least one credential
-        if (Credential::where('user_id', $user->id)->count() < 2) {
-            $missing[] = 'Credentials (at least 2)';
+        if (Credential::where('user_id', $user->id)->count() === 0) {
+            $missing[] = 'Credentials';
         }
-        // Check for KRA I-A
-        if (Evaluation::where('user_id', $user->id)->count() === 0) {
-            $missing[] = 'KRA I-A: Evaluations';
+        if (Instruction::where('user_id', $user->id)->count() === 0) {
+            $missing[] = 'KRA I: Instruction';
         }
-        // Check for KRA I-B
-        if (Material::where('user_id', $user->id)->count() === 0) {
-            $missing[] = 'KRA I-B: Instructional Materials';
+        if (Research::where('user_id', $user->id)->count() === 0) {
+            $missing[] = 'KRA II: Research';
         }
-        // Check for KRA II
-        if (ResearchDocument::where('user_id', $user->id)->count() === 0) {
-            $missing[] = 'KRA II: Research Documents';
+        if (Extension::where('user_id', $user->id)->count() === 0) {
+            $missing[] = 'KRA III: Extension';
         }
-        // Check for KRA III
-        if (ExtensionService::where('user_id', $user->id)->count() === 0) {
-            $missing[] = 'KRA III: Extension Services';
-        }
-        // Check for KRA IV
         if (ProfessionalDevelopment::where('user_id', $user->id)->count() === 0) {
-            $missing[] = 'KRA IV: Professional Developments';
+            $missing[] = 'KRA IV: Professional Development';
         }
 
         if (empty($missing)) {
@@ -67,45 +60,71 @@ class ApplyController extends Controller
     {
         $user = Auth::user();
 
-        // Validation 1: Check if the position is still available.
+        // Validation 1: Position availability.
         if (!$position->is_available || $position->available_slots <= 0) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Sorry, this position is no longer available.'
-            ], 400);
+            return response()->json(['success' => false, 'message' => 'Sorry, this position is no longer available.'], 400);
         }
 
-        // Validation 2: Check if the user has already applied for this specific position.
+        // Validation 2: Existing application.
         $existingApplication = Application::where('user_id', $user->id)
             ->where('position_id', $position->id)
+            ->whereIn('status', ['Pending Evaluation', 'Evaluated']) // Check for active applications
             ->exists();
 
         if ($existingApplication) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You have already applied for this position.'
-            ], 409); // 409 Conflict status code
+            return response()->json(['success' => false, 'message' => 'You already have an active application for this position.'], 409);
         }
 
-        // All checks passed, create the application.
-        Application::create([
-            'user_id' => $user->id,
-            'position_id' => $position->id,
-            'applicant_name' => $user->name, // Snapshot the user's name
-            'applicant_current_rank' => $user->rank ?? 'Not Specified', // Snapshot the user's rank
-            'status' => 'submitted',
-        ]);
+        // --- CORE LOGIC WRAPPED IN A DATABASE TRANSACTION FOR SAFETY ---
+        try {
+            DB::transaction(function () use ($user, $position) {
+                // Step 1: Create the main application record.
+                $application = Application::create([
+                    'user_id' => $user->id,
+                    'position_id' => $position->id,
+                    'status' => 'Pending Evaluation',
+                ]);
 
-        // Decrement the available slots for the position
-        $position->decrement('available_slots');
+                // Step 2: "Snapshot" all submissions by linking them in the pivot table.
+                $submissionTypes = [
+                    Instruction::class,
+                    Research::class,
+                    Extension::class,
+                    ProfessionalDevelopment::class,
+                ];
 
-        // If slots are now zero, mark the position as unavailable
-        if ($position->available_slots <= 0) {
-            $position->is_available = false;
-            $position->save();
+                foreach ($submissionTypes as $modelClass) {
+                    // Get all submissions for this user that are not yet part of another application.
+                    $submissions = $modelClass::where('user_id', $user->id)
+                        ->where('status', 'For Submission')
+                        ->get();
+
+                    foreach ($submissions as $submission) {
+                        // Create the link in our pivot table.
+                        ApplicationSubmission::create([
+                            'application_id' => $application->id,
+                            'submission_id' => $submission->id,
+                            'submission_type' => $modelClass,
+                        ]);
+
+                        // Update the status of the original submission to "lock" it to this application.
+                        $submission->status = 'Under Review';
+                        $submission->save();
+                    }
+                }
+
+                // Step 3: Update the position availability.
+                $position->decrement('available_slots');
+                if ($position->available_slots <= 0) {
+                    $position->is_available = false;
+                    $position->save();
+                }
+            });
+        } catch (\Exception $e) {
+            Log::error('Application Submission Failed: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'An unexpected error occurred during submission. Please try again.'], 500);
         }
 
-        // Return a success response with a redirect URL
         return response()->json([
             'success' => true,
             'message' => 'Application submitted successfully! Reloading the page...',

@@ -37,6 +37,7 @@
                 <th>Role (if Officer)</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.professional-development-page') }}" method="GET">
@@ -53,7 +54,7 @@
             @include('partials._prof_organizations_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No items found.</td>
+                <td colspan="8" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -72,6 +73,7 @@
                 <th>Start Date</th>
                 <th>Completion Date</th>
                 <th>Hours</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.professional-development-page') }}" method="GET">
@@ -88,7 +90,7 @@
             @include('partials._prof_training_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="8" style="text-align: center;">No items found.</td>
+                <td colspan="9" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -105,6 +107,7 @@
                 <th>Awarding Body</th>
                 <th>Level</th>
                 <th>Date Awarded</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.professional-development-page') }}" method="GET">
@@ -121,7 +124,7 @@
             @include('partials._prof_awards_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="6" style="text-align: center;">No items found.</td>
+                <td colspan="7" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>

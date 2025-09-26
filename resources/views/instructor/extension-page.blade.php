@@ -38,6 +38,7 @@
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Target Community</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.extension-page') }}" method="GET">
@@ -54,7 +55,7 @@
             @include('partials._service_community_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="8" style="text-align: center;">No items found.</td>
+                <td colspan="9" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -72,6 +73,7 @@
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Funding Source</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.extension-page') }}" method="GET">
@@ -88,7 +90,7 @@
             @include('partials._extension_involvement_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No items found.</td>
+                <td colspan="8" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -105,6 +107,7 @@
                 <th>Office / Unit</th>
                 <th>Appointment Start Date</th>
                 <th>Appointment End Date</th>
+                <th>Score</th>
                 <th>
                     <div class="search-bar-container">
                         <form action="{{ route('instructor.extension-page') }}" method="GET">
@@ -121,7 +124,7 @@
             @include('partials._admin_designation_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="6" style="text-align: center;">No items found.</td>
+                <td colspan="7" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>

@@ -5,7 +5,7 @@ use App\Http\Controllers\Admin\AhpController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ApplicationController;
-use App\Http\Controllers\Evaluator\EvaluatorController;
+use App\Http\Controllers\Evaluator\EvaluationController;
 use App\Http\Controllers\Instructor\CredentialController;
 use App\Http\Controllers\Instructor\InstructionController;
 use App\Http\Controllers\Instructor\ResearchController;
@@ -42,7 +42,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [PageController::class, 'showDashboard'])->name('dashboard');
 
     // Route for the Profile Page
-    Route::get('/profile', [CredentialController::class, 'index'])->name('profile-page');
+    Route::get('/profile', [CredentialController::class, 'index'])
+        ->middleware('not_evaluator')
+        ->name('profile-page');
 
     // Route for the System Settings
     Route::get('/settings', [SystemSettingsController::class, 'showSystemSettings'])->name('system-settings');
@@ -90,8 +92,24 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::middleware(['auth', 'permission:access evaluate applications page'])->group(function () {
-        Route::get('/evaluator/evaluate-applications', [EvaluatorController::class, 'showEvaluateApplications'])->name('evaluator.evaluate-applications');
+        Route::prefix('evaluator')->name('evaluator.')->group(function () {
+            // Main dashboard for viewing all pending applications
+            Route::get('/applications', [EvaluationController::class, 'index'])->name('applications.dashboard');
+
+            // View the summary of a single application
+            Route::get('/application/{application}', [EvaluationController::class, 'showApplication'])->name('application.details');
+
+            // View the specific submissions for one KRA within an application
+            Route::get('/application/{application}/kra/{kra_slug}', [EvaluationController::class, 'showApplicationKra'])->name('application.kra');
+
+            // Endpoint for saving a score for a submission
+            Route::post('/application/score/{kra_slug}/{submission_id}', [EvaluationController::class, 'scoreSubmission'])->name('submission.score');
+
+            // Endpoint to trigger the final score calculation
+            Route::post('/application/{application}/calculate-score', [EvaluationController::class, 'calculateFinalScore'])->name('application.calculate-score');
+        });
     });
+
 
     /*
     |--------------------------------------------------------------------------

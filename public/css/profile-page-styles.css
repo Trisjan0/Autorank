@@ -162,7 +162,7 @@
     margin-bottom: -20px;
 }
 
-.reclassification-progress-container .subtitle {
+.evaluation-progress-container .subtitle {
     display: flex;
     width: 100%;
     height: auto;
@@ -171,37 +171,30 @@
     white-space: nowrap;
 }
 
-.reclassification-progress-container .subtitle h3, h5{
+.evaluation-progress-container .subtitle h3, h5{
+    width: auto;
+    height: auto;
+}
+
+.evaluation-progress-container .subtitle h3, h5{
     width: auto;
     height: auto;
 }
 
 /* PROGRESS BAR STYLES -- -- */
-.years-of-teaching-progress-bar-container,
-.degree-progress-bar-container {
+.evaluation-progress-bar-container {
     position: relative;
     height: 30px;
     width: 100%;
 }
 
-.years-of-teaching-progress {
+.evaluation-progress {
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
     background-color: var(--progressBarFillColor);
     width: 50%; /* subject to change */
-    border-radius: 1.5px;
-    z-index: 1;
-}
-
-.degree-progress {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background-color: var(--progressBarFillColor);
-    width: 66.66%; /* subject to change */
     border-radius: 1.5px;
     z-index: 1;
 }
@@ -216,39 +209,11 @@
     border-radius: 1.5px;
 }
 
-.degree-progress-bar-container::before,
-.degree-progress-bar-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 3.5px;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 2;
-}
-
-.degree-progress-bar-container::before {
-    left: 33.33%;
-}
-
-.degree-progress-bar-container::after {
-    left: 66.66%;
-}
-
-.years-of-teaching-bottom-note {
+.evaluation-progress-bottom-note {
     height: auto;
     width: 50%;
     display: flex;
     justify-content: end;
-}
-
-.degree-bottom-note {
-    display: flex;
-}
-
-.degree-bottom-note h5 {
-    height: auto;
-    flex: 1;
 }
 
 .apply-for-reranking-container {

@@ -256,6 +256,7 @@ class ExtensionController extends Controller
                     'Role' => $extension->role,
                     'Start Date' => Carbon::parse($extension->start_date)->format('F j, Y'),
                     'End Date' => Carbon::parse($extension->end_date)->format('F j, Y'),
+                    'Score' => $extension->score !== null ? number_format($extension->score, 2) : 'To be evaluated',
                 ];
                 if ($extension->target_community) {
                     $data['Target Community'] = $extension->target_community;
@@ -269,6 +270,7 @@ class ExtensionController extends Controller
                     'Start Date' => Carbon::parse($extension->start_date)->format('F j, Y'),
                     'End Date' => Carbon::parse($extension->end_date)->format('F j, Y'),
                     'Funding Source' => $extension->funding_source,
+                    'Score' => $extension->score !== null ? number_format($extension->score, 2) : 'To be evaluated',
                 ];
                 break;
 
@@ -278,6 +280,7 @@ class ExtensionController extends Controller
                     'Office / Unit' => $extension->office_unit,
                     'Appointment Start Date' => Carbon::parse($extension->start_date)->format('F j, Y'),
                     'Appointment End Date' => $extension->end_date ? Carbon::parse($extension->end_date)->format('F j, Y') : 'Ongoing',
+                    'Score' => $extension->score !== null ? number_format($extension->score, 2) : 'To be evaluated',
                 ];
                 break;
         }
