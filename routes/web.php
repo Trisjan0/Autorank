@@ -42,9 +42,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [PageController::class, 'showDashboard'])->name('dashboard');
 
     // Route for the Profile Page
-    Route::get('/profile', [CredentialController::class, 'index'])
-        ->middleware('not_evaluator')
-        ->name('profile-page');
+    Route::get('/profile', [PageController::class, 'showProfilePage'])->name('profile-page');
 
     // Route for the System Settings
     Route::get('/settings', [SystemSettingsController::class, 'showSystemSettings'])->name('system-settings');
@@ -120,12 +118,6 @@ Route::middleware(['auth'])->group(function () {
         // Route for Checking Eligibility Before Application
         Route::get('/application/check-completeness', [ApplyController::class, 'checkCompleteness'])->name('application.check-completeness');
         Route::post('/application/submit/{position}', [ApplyController::class, 'submit'])->name('application.submit');
-
-        // Routes for Credentials
-        Route::post('/credentials', [CredentialController::class, 'store'])->name('credentials.store');
-        Route::delete('/credentials/{credential}', [CredentialController::class, 'destroy'])->name('credentials.destroy');
-        Route::get('/credentials/file-info/{credential}', [CredentialController::class, 'getFileInfoForCredential'])->name('credentials.file-info');
-        Route::get('/credentials/file/{credential}', [CredentialController::class, 'viewFileForCredential'])->name('credentials.view-file');
 
         Route::prefix('instructor')->name('instructor.')->group(function () {
             // KRA I: Instruction Routes

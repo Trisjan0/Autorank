@@ -26,9 +26,6 @@ class ApplyController extends Controller
         $user = Auth::user();
         $missing = [];
 
-        if (Credential::where('user_id', $user->id)->count() === 0) {
-            $missing[] = 'Credentials';
-        }
         if (Instruction::where('user_id', $user->id)->count() === 0) {
             $missing[] = 'KRA I: Instruction';
         }
