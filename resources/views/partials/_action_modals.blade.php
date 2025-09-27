@@ -4,9 +4,7 @@
         <div class="modal-header">
             <h5 class="modal-title" id="fileViewerModalLabel">Viewing File</h5>
             
-            {{-- UPDATED: Wrapper for header controls --}}
             <div class="modal-header-controls">
-                {{-- NEW: Toggle button for the details panel --}}
                 <button class="details-toggle-btn" id="toggleDetailsBtn" title="Toggle Details Panel">
                     <i class="fa-solid fa-info-circle"></i>
                 </button>
@@ -20,7 +18,6 @@
             <div class="file-details-panel">
                 <h3>Record Details</h3>
                 <div id="file-details-content">
-                    {{-- JavaScript will populate this area --}}
                 </div>
             </div>
 

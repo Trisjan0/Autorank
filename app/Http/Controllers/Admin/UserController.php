@@ -24,23 +24,39 @@ class UserController extends Controller
     {
         $perPage = 5;
 
-        // Start the base query
-        $query = User::with('roles.permissions')->orderBy('created_at', 'desc');
+        // Decide whether we’re showing roles or faculty ranks
+        $action = $request->input('action', 'manage-roles'); // default to roles
 
-        // Define which columns are searchable for the User model
-        $searchableColumns = ['name', 'email', 'id'];
+        // Base query
+        if ($action === 'manage-faculty-rank') {
+            // Only instructors for faculty rank management
+            $query = User::role('user')->orderBy('created_at', 'desc');
+            $searchableColumns = ['name', 'email'];
+        } else {
+            // All users for role management
+            $query = User::with('roles.permissions')->orderBy('created_at', 'desc');
+            $searchableColumns = ['name', 'email', 'id'];
+        }
+
         $searchTerm = $request->input('search');
-
-        // The service will modify the $query object directly.
         $searchService->applySearch($query, $searchTerm, $searchableColumns);
 
+        // AJAX pagination
         if ($request->ajax()) {
             $offset = $request->input('offset', 0);
             $users = (clone $query)->skip($offset)->take($perPage)->get();
 
-            $html = '';
-            foreach ($users as $user) {
-                $html .= view('partials._user_table_row', ['user' => $user])->render();
+            if ($action === 'manage-faculty-rank') {
+                $facultyRanks = $this->getFacultyRanks();
+                $html = '';
+                foreach ($users as $user) {
+                    $html .= view('partials._faculty_rank_table_row', compact('user', 'facultyRanks'))->render();
+                }
+            } else {
+                $html = '';
+                foreach ($users as $user) {
+                    $html .= view('partials._user_table_row', compact('user'))->render();
+                }
             }
 
             $totalUsersMatchingSearch = (clone $query)->count();
@@ -51,16 +67,24 @@ class UserController extends Controller
                 'hasMore' => $hasMore,
                 'nextOffset' => $offset + $perPage
             ]);
-        } else {
-            // Note: We clone the query for the count to avoid issues with the main query's take() limit
-            $totalUsersMatchingSearch = (clone $query)->count();
-            $users = $query->take($perPage)->get();
-            $allRoles = Role::orderBy('rank', 'asc')->get();
-            $initialHasMore = ($perPage < $totalUsersMatchingSearch);
-
-            return view('admin.manage-users', compact('users', 'allRoles', 'initialHasMore', 'perPage'));
         }
+
+        // Initial load
+        $totalUsersMatchingSearch = (clone $query)->count();
+        $users = $query->take($perPage)->get();
+        $allRoles = Role::orderBy('rank', 'asc')->get();
+        $facultyRanks = $this->getFacultyRanks();
+        $initialHasMore = ($perPage < $totalUsersMatchingSearch);
+
+        return view('admin.manage-users', compact(
+            'users',
+            'allRoles',
+            'facultyRanks',
+            'initialHasMore',
+            'perPage'
+        ));
     }
+
 
     /**
      * Update the specified user's roles in storage via AJAX.
@@ -187,5 +211,66 @@ class UserController extends Controller
             'user' => $user,
             'isOwnProfile' => $isOwnProfile,
         ]);
+    }
+
+    /**
+     * Update the specified user's faculty rank.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateFacultyRank(Request $request, User $user)
+    {
+        $request->validate([
+            'faculty_rank' => 'required|string|in:' . implode(',', $this->getFacultyRanks()),
+        ]);
+
+        /** @var \App\Models\User $loggedInUser */
+        $loggedInUser = Auth::user();
+
+        $user->faculty_rank = $request->faculty_rank;
+        $user->rank_assigned_at = Carbon::now();
+        $user->rank_assigned_by = $loggedInUser->email;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Faculty rank updated successfully.',
+            'newFacultyRank' => $user->faculty_rank,
+            'newRankAssignedAt' => $user->rank_assigned_at->timezone('Asia/Manila')->format('m/d/y H:i'),
+            'newRankAssignedBy' => $user->rank_assigned_by,
+        ]);
+    }
+
+
+    /**
+     * Get the list of faculty ranks.
+     *
+     * @return array
+     */
+    private function getFacultyRanks()
+    {
+        return [
+            'Instructor I',
+            'Instructor II',
+            'Instructor III',
+            'Assistant Professor I',
+            'Assistant Professor II',
+            'Assistant Professor III',
+            'Assistant Professor IV',
+            'Associate Professor I',
+            'Associate Professor II',
+            'Associate Professor III',
+            'Associate Professor IV',
+            'Associate Professor V',
+            'Professor I',
+            'Professor II',
+            'Professor III',
+            'Professor IV',
+            'Professor V',
+            'Professor VI',
+            'College / University Professor',
+        ];
     }
 }

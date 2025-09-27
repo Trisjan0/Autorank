@@ -11,7 +11,7 @@
             <button
                 class="btn btn-info view-file-btn"
                 data-info-url="{{ route('instructor.instruction.file-info', ['id' => $item->id]) }}"
-                data-filename="{{ $item->student_proof_filename }}">
+                data-filename="{{ $item->proof_filename }}">
                 View File
             </button>
             <button

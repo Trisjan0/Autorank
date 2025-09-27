@@ -10,19 +10,20 @@ class Instruction extends Model
 {
     use HasFactory;
 
-    protected $guarded = []; // Or use $fillable
-
-    /**
-     * An accessor to automatically calculate the 'total_score' attribute.
-     *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
-     */
-    protected function totalScore(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => (isset($this->attributes['student_score']) && isset($this->attributes['supervisor_score']))
-                ? number_format(($this->attributes['student_score'] + $this->attributes['supervisor_score']) / 2, 2)
-                : null,
-        );
-    }
+    protected $fillable = [
+        'user_id',
+        'criterion',
+        'title',
+        'category',
+        'type',
+        'role',
+        'publication_date',
+        'service_type',
+        'student_or_competition',
+        'completion_date',
+        'level',
+        'score',
+        'google_drive_file_id',
+        'proof_filename',
+    ];
 }

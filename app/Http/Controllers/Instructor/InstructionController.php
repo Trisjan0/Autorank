@@ -131,6 +131,12 @@ class InstructionController extends Controller
                 }
             }
 
+            if ($request->hasFile('proof_file')) {
+                $fileId = $this->uploadFileToGoogleDrive($request, 'proof_file', $kraFolderName, $subFolderName);
+                $dataToCreate['google_drive_file_id'] = $fileId;
+                $dataToCreate['proof_filename'] = $request->file('proof_file')->getClientOriginalName();
+            }
+
             Instruction::create($dataToCreate);
 
             return response()->json(['success' => true, 'message' => 'Successfully uploaded!'], 201);
@@ -154,9 +160,12 @@ class InstructionController extends Controller
                 'type' => [
                     'nullable',
                     'string',
-                    // Type is required only if the category expects it (e.g., Instructional Material)
+                    // Type is required only if the category expects it
                     Rule::requiredIf(function () use ($request) {
-                        return in_array($request->input('category'), ['Instructional Material', 'Syllabus Development/Enhancement']);
+                        return in_array($request->input('category'), [
+                            'Instructional Material',
+                            'Syllabus Development/Enhancement'
+                        ]);
                     }),
                 ],
                 'role' => ['required', Rule::in($options['im_roles'])],
@@ -176,7 +185,10 @@ class InstructionController extends Controller
                     'required',
                     function ($attribute, $value, $fail) use ($request, $options) {
                         $serviceType = $request->input('service_type');
-                        if (isset($options['ms_roles'][$serviceType]) && !in_array($value, $options['ms_roles'][$serviceType])) {
+                        if (
+                            isset($options['ms_roles'][$serviceType]) &&
+                            !in_array($value, $options['ms_roles'][$serviceType])
+                        ) {
                             $fail("The selected role is not valid for the chosen service type.");
                         }
                     },
@@ -190,6 +202,7 @@ class InstructionController extends Controller
 
         return $request->validate($rules);
     }
+
 
     public function destroy(Instruction $instruction): JsonResponse
     {

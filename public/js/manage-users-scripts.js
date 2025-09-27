@@ -1,6 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
     /*
     |--------------------------------------------------------------------------
+    | TABLE TOGGLE (Roles <-> Faculty Ranks)
+    |--------------------------------------------------------------------------
+    */
+    const actionSelect = document.getElementById('action-select');
+    const rolesTable = document.getElementById('manage-roles-table');
+    const ranksTable = document.getElementById('manage-faculty-rank-table');
+
+    function toggleTables() {
+        rolesTable.style.display = 'none';
+        ranksTable.style.display = 'none';
+
+        if (actionSelect.value === 'manage-roles') {
+            rolesTable.style.display = 'block';
+        } else if (actionSelect.value === 'manage-faculty-rank') {
+            ranksTable.style.display = 'block';
+        }
+    }
+
+    toggleTables();
+    actionSelect.addEventListener('change', toggleTables);
+
+    /*
+    |--------------------------------------------------------------------------
     | FOR MANAGING USER ROLES (MODAL)
     |--------------------------------------------------------------------------
     */
@@ -254,92 +277,215 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /*
     |--------------------------------------------------------------------------
-    | FOR MANAGING USERS (LOAD MORE & SEARCH)
+    | MANAGING FACULTY RANK (MODAL + AJAX)
     |--------------------------------------------------------------------------
     */
-    const loadMoreUsersBtn = document.getElementById('loadMoreUsersBtn');
-    const userTableBody = document.getElementById('user-table-body');
-    const searchForm = document.getElementById('search-form');
-    
-    if (!loadMoreUsersBtn || !userTableBody || !searchForm) {
-        return;
-    }
+    const facultyRankModal = document.getElementById('updateFacultyRankModal');
+    if (facultyRankModal) {
+        const form = facultyRankModal.querySelector('form');
+        const modalUserName = facultyRankModal.querySelector('#modal-user-name');
+        const modalUserId = facultyRankModal.querySelector('#modal-user-id');
+        const selectInput = facultyRankModal.querySelector('select');
 
-    const searchInput = searchForm.querySelector('input[name="search"]');
-    const searchBtnIcon = document.getElementById('search-btn-icon'); // Get the icon
+        const messageArea = facultyRankModal.querySelector('#role-modal-message');
+        const confirmBtn = facultyRankModal.querySelector('#confirmUpdateRoleBtn');
+        const backBtn = facultyRankModal.querySelector('#backToSelectionBtn');
+        const closeBtn = facultyRankModal.querySelector('#closeUpdateRoleModalBtn');
 
-    let isLoading = false;
-    let isFiltered = false; // State variable to track search status
+        const initialStep = facultyRankModal.querySelector('#updateRoleInitialStep');
+        const confirmationStep = facultyRankModal.querySelector('#updateRoleConfirmationStep');
+        const confirmationMessageArea = facultyRankModal.querySelector('#confirmationMessageArea');
+        const finalStatusMessageArea = facultyRankModal.querySelector('#finalStatusMessageArea');
 
-    async function loadUsers(isSearch = false) {
-        if (isLoading) return;
-        isLoading = true;
+        const pageRefreshDelay = 1250;
+        let currentSelectedUserId = null;
+        let currentSelectedUserName = null;
+        let selectedRank = null;
 
-        if (isSearch) {
-            userTableBody.innerHTML = '';
-            loadMoreUsersBtn.dataset.currentOffset = '0';
+        // --- Show & Hide ---
+        function showModal(step = 'initial') {
+            facultyRankModal.style.display = 'flex';
+            document.body.classList.add('modal-open');
+            showStep(step);
         }
-
-        const offset = parseInt(loadMoreUsersBtn.dataset.currentOffset);
-        const searchTerm = searchInput.value;
-
-        loadMoreUsersBtn.disabled = true;
-        loadMoreUsersBtn.textContent = 'Loading...';
-
-        try {
-            const url = `/manage-users?ajax=true&offset=${offset}&search=${encodeURIComponent(searchTerm)}`;
-            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
-            const data = await response.json();
-            userTableBody.insertAdjacentHTML('beforeend', data.html);
-            loadMoreUsersBtn.dataset.currentOffset = data.nextOffset;
-            loadMoreUsersBtn.style.display = data.hasMore ? 'block' : 'none';
-            
-            if (userTableBody.children.length === 0) {
-                const noUsersRowHTML = '<tr id="no-users-row"><td colspan="7" style="text-align: center;">No users found.</td></tr>';
-                userTableBody.innerHTML = noUsersRowHTML;
-                loadMoreUsersBtn.style.display = 'none';
+        function hideModal() {
+            facultyRankModal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+            messageArea.innerHTML = '';
+            confirmationMessageArea.innerHTML = '';
+            finalStatusMessageArea.innerHTML = '';
+            confirmBtn.disabled = false;
+            backBtn.disabled = false;
+            closeBtn.disabled = false;
+        }
+        function showStep(step) {
+            if (step === 'initial') {
+                initialStep.style.display = 'block';
+                confirmationStep.style.display = 'none';
+            } else {
+                initialStep.style.display = 'none';
+                confirmationStep.style.display = 'block';
             }
-        } catch (error) {
-            console.error('Error loading users:', error);
-            alert('Failed to load users. Please try again.');
-        } finally {
-            isLoading = false;
-            loadMoreUsersBtn.disabled = false;
-            loadMoreUsersBtn.textContent = 'Load More +';
         }
+
+        // --- Open modal ---
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.update-faculty-rank-btn')) {
+                const btn = e.target;
+                currentSelectedUserId = btn.dataset.userId;
+                currentSelectedUserName = btn.dataset.userName;
+
+                modalUserId.value = currentSelectedUserId;
+                modalUserName.textContent = currentSelectedUserName;
+                showModal('initial');
+            }
+        });
+
+        // --- Close modal ---
+        closeBtn.addEventListener('click', hideModal);
+        facultyRankModal.addEventListener('click', (e) => {
+            if (e.target === facultyRankModal) hideModal();
+        });
+
+        // --- Step 1: Validate & go to confirmation ---
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            selectedRank = selectInput.value;
+
+            if (!selectedRank) {
+                messageArea.innerHTML = '<div class="alert-danger">Please select a faculty rank.</div>';
+                return;
+            }
+
+            confirmationMessageArea.innerHTML =
+                `You are about to change <strong>${currentSelectedUserName}</strong>'s faculty rank to <strong>${selectedRank}</strong>.<br><br>Do you want to proceed?`;
+            showStep('confirmation');
+        });
+
+        // --- Step 2: Confirm & send AJAX ---
+        confirmBtn.addEventListener('click', async () => {
+            const url = `/users/${currentSelectedUserId}/update-faculty-rank`;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            confirmBtn.disabled = true;
+            backBtn.disabled = true;
+            closeBtn.disabled = true;
+            finalStatusMessageArea.innerHTML = '<div class="alert-info">Updating faculty rank... Please wait.</div>';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: JSON.stringify({ faculty_rank: selectedRank }),
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Error updating rank.');
+
+                finalStatusMessageArea.innerHTML = `<div class="alert-success">${data.message}</div>`;
+
+                // Update the table inline (no reload)
+                const rankTd = document.getElementById(`rank-${currentSelectedUserId}`);
+                const assignedAtTd = document.getElementById(`rank-assigned-at-${currentSelectedUserId}`);
+                const assignedByTd = document.getElementById(`rank-assigned-by-${currentSelectedUserId}`);
+
+                if (rankTd) rankTd.textContent = data.newFacultyRank;
+                if (assignedAtTd) assignedAtTd.textContent = data.newRankAssignedAt;
+                if (assignedByTd) assignedByTd.textContent = data.newRankAssignedBy;
+
+                // Also update button’s dataset
+                const updateBtn = document.querySelector(`.update-faculty-rank-btn[data-user-id="${currentSelectedUserId}"]`);
+                if (updateBtn) updateBtn.dataset.currentRank = data.newFacultyRank;
+
+                setTimeout(() => {
+                    hideModal();
+                }, pageRefreshDelay);
+            } catch (err) {
+                finalStatusMessageArea.innerHTML = `<div class="alert-danger">${err.message}</div>`;
+                confirmBtn.disabled = false;
+                backBtn.disabled = false;
+                closeBtn.disabled = false;
+            }
+        });
+
+        // --- Step 3: Back button ---
+        backBtn.addEventListener('click', () => {
+            showStep('initial');
+            confirmationMessageArea.innerHTML = '';
+            finalStatusMessageArea.innerHTML = '';
+            confirmBtn.disabled = false;
+            backBtn.disabled = false;
+            closeBtn.disabled = false;
+        });
     }
 
-    searchForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
 
-        // If the button is in "reset" mode (isFiltered is true)
-        if (isFiltered) {
-            searchInput.value = ''; // Clear the input
-            await loadUsers(true);  // Reload the table
-            
-            // Change icon back to search glass
-            searchBtnIcon.classList.remove('fa-xmark');
-            searchBtnIcon.classList.add('fa-magnifying-glass');
-            isFiltered = false; // Update state
-        } 
-        // If the button is in "search" mode
-        else {
-            const searchTerm = searchInput.value.trim();
-            if (searchTerm.length === 0) return; // Don't search if input is empty
+    /*
+    |--------------------------------------------------------------------------
+    | LOAD MORE + SEARCH (ROLES + FACULTY RANKS)
+    |--------------------------------------------------------------------------
+    */
+    async function setupTable(tableId, loadMoreBtnId, searchFormSelector) {
+        const tableBody = document.querySelector(`#${tableId} tbody`);
+        const loadMoreBtn = document.getElementById(loadMoreBtnId);
+        const searchForm = document.querySelector(searchFormSelector);
 
-            await loadUsers(true); // Perform the search
-            
-            // Change icon to an 'X'
-            searchBtnIcon.classList.remove('fa-magnifying-glass');
-            searchBtnIcon.classList.add('fa-xmark');
-            isFiltered = true; // Update state
+        if (!tableBody || !loadMoreBtn || !searchForm) return;
+
+        const searchInput = searchForm.querySelector('input[name="search"]');
+        let isLoading = false;
+
+        async function loadData(isSearch = false) {
+            if (isLoading) return;
+            isLoading = true;
+
+            if (isSearch) {
+                tableBody.innerHTML = '';
+                loadMoreBtn.dataset.currentOffset = '0';
+            }
+
+            const offset = parseInt(loadMoreBtn.dataset.currentOffset || '0');
+            const searchTerm = searchInput.value;
+
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.textContent = 'Loading...';
+
+            try {
+                const url = `${window.location.pathname}?ajax=true&offset=${offset}&search=${encodeURIComponent(searchTerm)}`;
+                const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+
+                const data = await response.json();
+                if (isSearch) tableBody.innerHTML = '';
+                if (data.html) tableBody.insertAdjacentHTML('beforeend', data.html);
+
+                loadMoreBtn.dataset.currentOffset = data.nextOffset;
+                loadMoreBtn.style.display = data.hasMore ? 'block' : 'none';
+
+                if (tableBody.children.length === 0) {
+                    const colspan = document.querySelector(`#${tableId} thead th`).length;
+                    tableBody.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center;">No results found.</td></tr>`;
+                    loadMoreBtn.style.display = 'none';
+                }
+            } catch (err) {
+                console.error('Error loading data:', err);
+            } finally {
+                isLoading = false;
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.textContent = 'Load More +';
+            }
         }
-    });
 
-    // Event listener for the "Load More" button
-    loadMoreUsersBtn.addEventListener('click', () => {
-        loadUsers(false);
-    });
+        // attach handlers
+        searchForm.addEventListener('submit', (e) => { e.preventDefault(); loadData(true); });
+        loadMoreBtn.addEventListener('click', () => loadData(false));
+    }
+
+    // Setup both tables
+    setupTable('manage-roles-table', 'loadMoreUsersBtn', '#search-form'); 
+    setupTable('manage-faculty-rank-table', 'loadMoreUsersBtn', '#search-form');
 });

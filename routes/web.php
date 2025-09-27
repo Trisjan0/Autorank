@@ -67,11 +67,15 @@ Route::middleware(['auth'])->group(function () {
         // Route for the Review Documents Page
         Route::get('/review-documents', [PageController::class, 'showReviewDocumentsPage'])->name('review-documents-page');
 
-        // Route for Managing Users
+        // Route for Managing User Roles
         Route::get('/manage-users', [UserController::class, 'index'])->name('manage-users');
+        Route::put('/manage-users/{user}/update-roles', [UserController::class, 'updateRoles'])->name('manage-users.updateRoles');
+
+        // Route for Managing User Roles
+        Route::get('/manage-faculty-ranks', [UserController::class, 'manageFacultyRanks'])->name('manage-faculty-ranks');
+        Route::put('/users/{user}/update-faculty-rank', [UserController::class, 'updateFacultyRank'])->name('users.update-faculty-rank');
 
         // Route for AJAX update of user roles
-        Route::put('/manage-users/{user}/update-roles', [UserController::class, 'updateRoles'])->name('manage-users.updateRoles');
 
         // Route for viewing a specific user's profile
         Route::get('/users/{user}', [UserController::class, 'show'])->name('user.profile');

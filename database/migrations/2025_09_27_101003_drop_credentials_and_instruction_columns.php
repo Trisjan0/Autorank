@@ -16,7 +16,7 @@ return new class extends Migration
 
         // Drop selected columns from instructions table
         Schema::table('instructions', function (Blueprint $table) {
-            $table->dropColumn([
+            $columns = [
                 'student_proof_filename',
                 'student_proof_file_id',
                 'supervisor_proof_filename',
@@ -24,7 +24,13 @@ return new class extends Migration
                 'academic_period',
                 'student_score',
                 'supervisor_score',
-            ]);
+            ];
+
+            foreach ($columns as $col) {
+                if (Schema::hasColumn('instructions', $col)) {
+                    $table->dropColumn($col);
+                }
+            }
         });
     }
 

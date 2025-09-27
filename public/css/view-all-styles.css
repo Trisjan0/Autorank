@@ -14,12 +14,12 @@
     font-weight: 700;
 }
 
-.criterion-selector {
+.criterion-selector, .action-selector {
   position: relative;
   display: inline-block;
 }
 
-.criterion-selector select {
+.criterion-selector select, .action-selector select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -36,7 +36,7 @@
   text-align-last: center;
 }
 
-.criterion-selector::after {
+.criterion-selector::after, .action-selector::after {
   content: "▼";
   position: absolute;
   right: 15px;

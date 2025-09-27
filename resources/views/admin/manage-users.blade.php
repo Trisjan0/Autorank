@@ -16,9 +16,16 @@
 
 <div class="header">
     <h1>Manage Users</h1>
+    <div class="action-selector">
+        <select id="action-select">
+            <option value="manage-roles" selected>Roles</option>
+            <option value="manage-faculty-rank">Faculty Ranks</option>
+        </select>
+    </div>
 </div>
 
-<div class="performance-metric-container">
+{{-- A: Manage Roles Table --}}
+<div class="performance-metric-container" id="manage-roles-table" style="display: none;">
     <table>
         <thead>
             <tr>
@@ -30,11 +37,10 @@
                 <th>Role Assigned By</th>
                 <th>
                     <div class="search-bar-container">
-                        <form action="{{ route('manage-users') }}" method="GET" id="search-form">
-                            <input type="text" name="search" placeholder="Search users..." value="{{ request('search') }}">
-                            <button type="submit">
-                                <i class="fa-solid fa-magnifying-glass" id="search-btn-icon" style="color: #ffffff;"></i>
-                            </button>
+                        <form action="{{ route('manage-users') }}" method="GET">
+                            <input type="hidden" name="action" value="manage-roles">
+                            <input type="text" name="search" placeholder="Search users...">
+                            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </form>
                     </div>
                 </th>
@@ -52,6 +58,40 @@
     </table>
 </div>
 
+{{-- B: Manage Faculty Rank Table --}}
+<div class="performance-metric-container"  id="manage-faculty-rank-table" style="display: none;">
+    <table>
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Faculty Rank</th>
+                <th>Rank Assigned At</th>
+                <th>Rank Assigned By</th>
+                <th>
+                    <div class="search-bar-container">
+                        <form action="{{ route('manage-users') }}" method="GET">
+                            <input type="hidden" name="action" value="manage-roles">
+                            <input type="text" name="search" placeholder="Search users...">
+                            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </form>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody id="user-table-body">
+            @forelse($users as $user)
+            @include('partials._faculty_rank_table_row', ['user' => $user, 'facultyRanks' => $facultyRanks])
+            @empty
+            <tr id="no-users-row">
+                <td colspan="7" style="text-align: center;">No instructors found.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
 <div class="load-more-container">
     <button onclick="window.history.back()">Back</button>
     <button id="loadMoreUsersBtn" data-current-offset="{{ $perPage }}"
@@ -60,7 +100,11 @@
     </button>
 </div>
 
-{{-- UPDATE ROLE MODAL --}}
+{{-- =================================================================== --}}
+{{-- =================== MANAGE USER MODALS ============================ --}}
+{{-- =================================================================== --}}
+
+{{-- A: Manage Roles Table --}}
 <div class="role-modal-container" id="updateRoleModal">
     <div class="role-modal">
         <div class="role-modal-navigation">
@@ -74,7 +118,7 @@
                 @method('PUT')
                 <div class="role-modal-content">
                     <div class="role-modal-content-header">
-                        <h1>Update Roles for [ <span id="modal-user-name"></span> ]</h1>
+                        <h1>Update Roles for <span id="modal-user-name"></span></h1>
                         <p>Select a new role for this user. Assigning a new role will update their permissions accordingly.</p>
                     </div>
                     <div class="role-modal-content-body">
@@ -105,6 +149,61 @@
             <div class="role-modal-content">
                 <div class="role-modal-content-header">
                     <h1>Confirm Role Update</h1>
+                    <p id="confirmationMessageArea"></p>
+                </div>
+                <div class="role-modal-content-body">
+                    <div id="finalStatusMessageArea" class="mt-2"></div>
+                </div>
+            </div>
+            <div class="role-modal-actions">
+                <button type="button" class="btn btn-info" id="backToSelectionBtn">Back</button>
+                <button type="button" class="btn btn-success" id="confirmUpdateRoleBtn">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- B: Manage Faculty Rank Table --}}
+<div class="role-modal-container" id="updateFacultyRankModal">
+    <div class="role-modal">
+        <div class="role-modal-navigation">
+            <i class="fa-solid fa-xmark" style="color: #ffffff;" id="closeUpdateRoleModalBtn"></i>
+        </div>
+
+        {{-- STEP 1: Initial Role Selection --}}
+        <div id="updateRoleInitialStep">
+            <form id="updateRoleForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="role-modal-content">
+                    <div class="role-modal-content-header">
+                        <h1>Update Faculty Rank for <span id="modal-user-name"></span></h1>
+                        <p>Set a faculty rank for this user.</p>
+                    </div>
+                    <div class="role-modal-content-body">
+                        <input type="hidden" name="user_id" id="modal-user-id">
+                        <div class="form-group">
+                            <select id="faculty-rank" name="faculty_rank" class="select-input" required>
+                                <option value="" disabled selected>Click here to select</option>
+                                @foreach($facultyRanks as $rank)
+                                    <option value="{{ $rank }}">{{ $rank }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div id="role-modal-message" class="mt-2"></div>
+                    </div>
+                </div>
+                <div class="role-modal-actions">
+                    <button type="submit" id="proceedToConfirmationBtn">Proceed</button>
+                </div>
+            </form>
+        </div>
+
+        {{-- STEP 2: Confirmation --}}
+        <div id="updateRoleConfirmationStep" style="display: none;">
+            <div class="role-modal-content">
+                <div class="role-modal-content-header">
+                    <h1>Confirm Faculty Rank Update</h1>
                     <p id="confirmationMessageArea"></p>
                 </div>
                 <div class="role-modal-content-body">
