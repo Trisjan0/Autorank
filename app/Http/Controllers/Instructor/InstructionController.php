@@ -54,14 +54,13 @@ class InstructionController extends Controller
         $userId = Auth::id();
 
         if ($request->ajax()) {
-            $criterion = $request->input('criterion', 'teaching-effectiveness');
+            $criterion = $request->input('criterion', 'instructional-materials');
             $searchTerm = $request->input('search');
             $offset = $request->input('offset', 0);
 
             $query = Instruction::where('user_id', $userId)->where('criterion', $criterion)->orderBy('created_at', 'desc');
 
             $searchableColumns = [
-                'teaching-effectiveness' => ['academic_period'],
                 'instructional-materials' => ['title', 'category', 'type', 'role'],
                 'mentorship-services' => ['service_type', 'role', 'student_or_competition'],
             ];
@@ -79,7 +78,6 @@ class InstructionController extends Controller
                 foreach ($items as $item) {
                     $html .= view($partialName, [
                         'item' => $item,
-                        'academicPeriods' => $this->generateAcademicPeriods(),
                     ])->render();
                 }
             }
@@ -91,20 +89,17 @@ class InstructionController extends Controller
             ]);
         }
 
-        $teachingEffectivenessData = Instruction::where('user_id', $userId)->where('criterion', 'teaching-effectiveness')->orderBy('created_at', 'desc');
-        $academicPeriods = $this->generateAcademicPeriods();
+        $instructionalMaterialsData = Instruction::where('user_id', $userId)->where('criterion', 'instructional-materials')->orderBy('created_at', 'desc');
         $instructionalOptions = $this->getInstructionalOptions();
 
         $imTypesJson = json_encode($instructionalOptions['im_types'] ?? []);
         $msRolesJson = json_encode($instructionalOptions['ms_roles'] ?? []);
 
         return view('instructor.instructional-page', [
-            'teachingEffectivenessData' => (clone $teachingEffectivenessData)->take($perPage)->get(),
             'instructionalMaterialsData' => Instruction::where('user_id', $userId)->where('criterion', 'instructional-materials')->orderBy('created_at', 'desc')->take($perPage)->get(),
             'mentorshipServicesData' => Instruction::where('user_id', $userId)->where('criterion', 'mentorship-services')->orderBy('created_at', 'desc')->take($perPage)->get(),
             'perPage' => $perPage,
-            'initialHasMore' => $teachingEffectivenessData->count() > $perPage,
-            'academicPeriods' => $academicPeriods,
+            'initialHasMore' => $instructionalMaterialsData->count() > $perPage,
             'instructionalOptions' => $instructionalOptions,
             'imTypesJson' => $imTypesJson,
             'msRolesJson' => $msRolesJson,
@@ -120,7 +115,6 @@ class InstructionController extends Controller
 
             $kraFolderName = 'KRA I: Instruction';
             $folderNameMap = [
-                'teaching-effectiveness' => 'Teaching Effectiveness',
                 'instructional-materials' => 'Curriculum & Instructional Materials',
                 'mentorship-services' => 'Thesis, Dissertation, & Mentorship'
             ];
@@ -134,25 +128,6 @@ class InstructionController extends Controller
             foreach ($validatedData as $key => $value) {
                 if (!$request->hasFile($key)) {
                     $dataToCreate[$key] = $value;
-                }
-            }
-
-            if ($criterion === 'teaching-effectiveness') {
-                if ($request->hasFile('student_proof')) {
-                    $studentFileId = $this->uploadFileToGoogleDrive($request, 'student_proof', $kraFolderName, $subFolderName);
-                    $dataToCreate['student_proof_file_id'] = $studentFileId;
-                    $dataToCreate['student_proof_filename'] = $request->file('student_proof')->getClientOriginalName();
-                }
-                if ($request->hasFile('supervisor_proof')) {
-                    $supervisorFileId = $this->uploadFileToGoogleDrive($request, 'supervisor_proof', $kraFolderName, $subFolderName);
-                    $dataToCreate['supervisor_proof_file_id'] = $supervisorFileId;
-                    $dataToCreate['supervisor_proof_filename'] = $request->file('supervisor_proof')->getClientOriginalName();
-                }
-            } else {
-                if ($request->hasFile('proof_file')) {
-                    $fileId = $this->uploadFileToGoogleDrive($request, 'proof_file', $kraFolderName, $subFolderName);
-                    $dataToCreate['student_proof_file_id'] = $fileId;
-                    $dataToCreate['student_proof_filename'] = $request->file('proof_file')->getClientOriginalName();
                 }
             }
 
@@ -172,16 +147,7 @@ class InstructionController extends Controller
         $rules = [];
         $options = $this->getInstructionalOptions();
 
-        if ($criterion === 'teaching-effectiveness') {
-            $validPeriods = $this->generateAcademicPeriods();
-            $rules = [
-                'academic_period' => ['required', 'string', Rule::in($validPeriods)],
-                'student_score' => 'required|numeric|between:1,5',
-                'supervisor_score' => 'required|numeric|between:1,5',
-                'student_proof' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:5120',
-                'supervisor_proof' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:5120',
-            ];
-        } elseif ($criterion === 'instructional-materials') {
+        if ($criterion === 'instructional-materials') {
             $rules = [
                 'title' => 'required|string|max:255',
                 'category' => ['required', Rule::in($options['im_categories'])],
@@ -225,36 +191,15 @@ class InstructionController extends Controller
         return $request->validate($rules);
     }
 
-    private function generateAcademicPeriods(): array
-    {
-        $periods  = [];
-        $currentYear = Carbon::now()->year;
-        $currentMonth = Carbon::now()->month;
-
-        for ($year = $currentYear; $year >= $currentYear - 5; $year--) {
-            $academicYear = 'A.Y. ' . $year . '-' . ($year + 1);
-
-            // 2nd Semester (Jan-May) is always valid for past years
-            if ($year < $currentYear || ($year === $currentYear && $currentMonth >= 1)) {
-                $periods[] = $academicYear . ', 2nd Sem';
-            }
-
-            // 1st Semester (Aug-Dec) is always valid for past years
-            if ($year < $currentYear || ($year === $currentYear && $currentMonth >= 8)) {
-                $periods[] = $academicYear . ', 1st Sem';
-            }
-        }
-        return $periods;
-    }
-
     public function destroy(Instruction $instruction): JsonResponse
     {
         if ($instruction->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
         try {
-            if ($instruction->student_proof_file_id) $this->deleteFileFromGoogleDrive($instruction->student_proof_file_id);
-            if ($instruction->supervisor_proof_file_id) $this->deleteFileFromGoogleDrive($instruction->supervisor_proof_file_id);
+            if ($instruction->google_drive_file_id) {
+                $this->deleteFileFromGoogleDrive($instruction->google_drive_file_id);
+            }
             $instruction->delete();
             return response()->json(['message' => 'Item deleted successfully.']);
         } catch (\Exception $e) {
@@ -271,19 +216,14 @@ class InstructionController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $fileType = $request->query('fileType', 'student');
-        $fileId = ($fileType === 'supervisor')
-            ? $instruction->supervisor_proof_file_id
-            : $instruction->student_proof_file_id;
-
-        if (!$fileId) {
+        if (!$instruction->google_drive_file_id) {
             return response()->json(['message' => 'No file associated with this record.'], 404);
         }
 
-        $viewUrl = route('instructor.instruction.view-file', ['id' => $id, 'fileType' => $fileType]);
+        $viewUrl = route('instructor.instruction.view-file', ['id' => $id]);
 
         // Get the standard file info from the trait
-        $fileInfoResponse = $this->getFileInfoById($fileId, $viewUrl);
+        $fileInfoResponse = $this->getFileInfoById($instruction->google_drive_file_id, $viewUrl);
         $fileInfoData = $fileInfoResponse->getData(true);
 
         // Get the formatted record data from our new helper method
@@ -303,12 +243,7 @@ class InstructionController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $fileType = $request->query('fileType', 'student');
-        $fileId = ($fileType === 'supervisor')
-            ? $instruction->supervisor_proof_file_id
-            : $instruction->student_proof_file_id;
-
-        return $this->viewFileById($fileId, $request);
+        return $this->viewFileById($instruction->google_drive_file_id, $request);
     }
 
     /**
@@ -321,16 +256,6 @@ class InstructionController extends Controller
     {
         $data = [];
         switch ($instruction->criterion) {
-            case 'teaching-effectiveness':
-                $totalScore = ($instruction->student_score + $instruction->supervisor_score) / 2;
-                $data = [
-                    'Academic Period' => $instruction->academic_period,
-                    'Student Score' => number_format($instruction->student_score, 2),
-                    'Supervisor Score' => number_format($instruction->supervisor_score, 2),
-                    'Total Score' => number_format($totalScore, 2),
-                ];
-                break;
-
             case 'instructional-materials':
                 $data = [
                     'Title' => $instruction->title,

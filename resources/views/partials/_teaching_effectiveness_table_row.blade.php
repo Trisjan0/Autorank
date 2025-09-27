@@ -1,4 +1,6 @@
-<tr data-id="{{ $item->id }}">
+{{-- ** NOT NEEDED FOR CCE --}}
+
+{{-- <tr data-id="{{ $item->id }}">
     <td>{{ $item->id }}</td>
     <td>{{ $item->academic_period }}</td>
     <td>{{ $item->student_score }}</td>
@@ -7,7 +9,6 @@
     <td>{{ $item->created_at->format('F d, Y') }}</td>
     <td>
         <div class="action-buttons">
-            {{-- This single button now holds info for both files --}}
             <button
                 class="btn btn-info view-file-btn"
                 data-info-url-student="{{ route('instructor.instruction.file-info', ['id' => $item->id, 'fileType' => 'student']) }}"
@@ -30,4 +31,4 @@
             </button>
         </div>
     </td>
-</tr>
+</tr> --}}

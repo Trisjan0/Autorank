@@ -75,7 +75,6 @@ class ApplyController extends Controller
             return response()->json(['success' => false, 'message' => 'You already have an active application for this position.'], 409);
         }
 
-        // --- CORE LOGIC WRAPPED IN A DATABASE TRANSACTION FOR SAFETY ---
         try {
             DB::transaction(function () use ($user, $position) {
                 // Step 1: Create the main application record.

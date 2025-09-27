@@ -20,11 +20,10 @@ return new class extends Migration
             $table->string('filename')->nullable();
             $table->string('google_drive_file_id')->nullable();
 
-            // Fields for Teaching Effectiveness (Criterion A)
-            $table->string('academic_period')->nullable();
-            $table->float('student_score')->nullable();
-            $table->float('supervisor_score')->nullable();
-            // Note: We'll use the common file columns for proofs
+            // Fields for Teaching Effectiveness (Criterion A) -- NOT NEEDED FOR CCE
+            // $table->string('academic_period')->nullable();
+            // $table->float('student_score')->nullable();
+            // $table->float('supervisor_score')->nullable();
 
             // Fields for Instructional Materials (Criterion B)
             $table->string('title')->nullable();

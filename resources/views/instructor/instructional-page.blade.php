@@ -19,51 +19,13 @@
     <h1>KRA I: Instruction</h1>
     <div class="criterion-selector">
         <select id="criterion-select">
-            <option value="teaching-effectiveness" selected>Teaching Effectiveness</option>
-            <option value="instructional-materials">Curriculum & Instructional Materials</option>
+            <option value="instructional-materials" selected>Curriculum & Instructional Materials</option>
             <option value="mentorship-services">Thesis, Dissertation, & Mentorship</option>
         </select>
     </div>
 </div>
 
-{{-- Criterion A: Teaching Effectiveness Table --}}
-<div class="performance-metric-container" id="teaching-effectiveness-table">
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Academic Year / Semester</th>
-                <th>Student Score</th>
-                <th>Supervisor Score</th>
-                <th>Total Score</th>
-                <th>Date Uploaded</th>
-                <th>
-                    <div class="search-bar-container">
-                        <form action="{{ route('instructor.instructional-page') }}" method="GET">
-                            <input type="hidden" name="criterion" value="teaching-effectiveness">
-                            <input type="text" name="search" placeholder="Search...">
-                            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-                        </form>
-                    </div>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($teachingEffectivenessData as $item)
-            @include('partials._teaching_effectiveness_table_row', [
-            'item' => $item,
-            'academicPeriods' => $academicPeriods
-            ])
-            @empty
-            <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No items found.</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
-
-{{-- Criterion B: Instructional Materials Table --}}
+{{-- Criterion A: Instructional Materials Table --}}
 <div class="performance-metric-container" id="instructional-materials-table" style="display: none;">
     <table>
         <thead>
@@ -90,7 +52,6 @@
             @forelse($instructionalMaterialsData as $item)
             @include('partials._instructional_materials_table_row', [
             'item' => $item,
-            'academicPeriods' => $academicPeriods
             ])
             @empty
             <tr id="no-results-row">
@@ -101,7 +62,7 @@
     </table>
 </div>
 
-{{-- Criterion C: Mentorship Services Table --}}
+{{-- Criterion B: Mentorship Services Table --}}
 <div class="performance-metric-container" id="mentorship-services-table" style="display: none;">
     <table>
         <thead>
@@ -128,7 +89,6 @@
             @forelse ($mentorshipServicesData as $item)
             @include('partials._mentorship_services_table_row', [
             'item' => $item,
-            'academicPeriods' => $academicPeriods
             ])
             @empty
             <tr id="no-results-row">
@@ -152,76 +112,7 @@
 {{-- ================= KRA I: UPLOAD MODALS ============================ --}}
 {{-- =================================================================== --}}
 
-{{-- Criterion A: Teaching Effectiveness Upload Modal --}}
-<div class="role-modal-container" id="teaching-effectiveness-modal" style="display: none;">
-    <div class="role-modal">
-        <div class="role-modal-navigation">
-            <i class="fa-solid fa-xmark close-modal-btn" style="color: #ffffff;"></i>
-        </div>
-        <div class="initial-step">
-            <form class="kra-upload-form" action="{{ route('instructor.instruction.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="hidden" name="criterion" value="teaching-effectiveness">
-                <div class="role-modal-content">
-                    <div class="role-modal-content-header">
-                        <h1>Upload Teaching Effectiveness</h1>
-                        <p>Fill out the details below. You will be asked to confirm before the file is uploaded.</p>
-                    </div>
-                    <div class="role-modal-content-body">
-                        <div class="form-group">
-                            <label class="form-group-title" data-label="Academic Year/Semester">Academic Year / Semester *</label>
-                            <select class="select-input" name="academic_period" required>
-                                <option value="" disabled selected>Click here to select</option>
-                                @isset($academicPeriods)
-                                @foreach ($academicPeriods as $period)
-                                <option value="{{ $period }}">{{ $period }}</option>
-                                @endforeach
-                                @endisset
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-group-title" data-label="Student Evaluation Score">Student Evaluation Score *</label>
-                            <input type="number" name="student_score" style="color-scheme: dark;" min=1 max=5 step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-group-title" data-label="Supervisor Evaluation Score">Supervisor Evaluation Score *</label>
-                            <input type="number" name="supervisor_score" style="color-scheme: dark;" min=1 max=5 step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-group-title" data-label="Student Evaluation Proof">Student Evaluation Proof *</label>
-                            <input type="file" name="student_proof" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-group-title" data-label="Supervisor Evaluation Proof">Supervisor Evaluation Proof *</label>
-                            <input type="file" name="supervisor_proof" required>
-                        </div>
-                        <div class="modal-messages mt-2"></div>
-                    </div>
-                </div>
-                <div class="role-modal-actions">
-                    <button type="button" class="proceed-btn">Proceed</button>
-                </div>
-            </form>
-        </div>
-        <div class="confirmation-step" style="display: none;">
-            <div class="role-modal-content">
-                <div class="role-modal-content-header">
-                    <h1>Confirm Upload</h1>
-                    <p class="confirmation-message-area"></p>
-                </div>
-                <div class="role-modal-content-body">
-                    <div class="final-status-message-area mt-2"></div>
-                </div>
-            </div>
-            <div class="role-modal-actions">
-                <button type="button" class="back-btn">Back</button>
-                <button type="button" class="confirm-btn">Confirm & Upload</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- Criterion B: Instructional Materials Upload Modal --}}
+{{-- Criterion A: Instructional Materials Upload Modal --}}
 <div class="role-modal-container" id="instructional-materials-modal" style="display: none;">
     <div class="role-modal">
         <div class="role-modal-navigation">
@@ -283,7 +174,7 @@
     </div>
 </div>
 
-{{-- Criterion C: Mentorship Services Upload Modal --}}
+{{-- Criterion B: Mentorship Services Upload Modal --}}
 <div class="role-modal-container" id="mentorship-services-modal" style="display: none;">
     <div class="role-modal">
         <div class="role-modal-navigation"><i class="fa-solid fa-xmark close-modal-btn" style="color: #ffffff;"></i></div>
@@ -354,11 +245,10 @@
     </div>
 </div>
 
-@include('partials._action_modals', ['academicPeriods' => $academicPeriods])
-
 @endsection
 
 @push('page-scripts')
+<script src="{{ asset('js/modal-scripts.js') }}"></script>
 <script>
     window.instructionalMaterialOptions = {!! $imTypesJson !!};
     window.mentorshipRoleOptions = {!! $msRolesJson !!};

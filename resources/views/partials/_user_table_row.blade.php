@@ -21,7 +21,6 @@
                 data-user-id="{{ $user->id }}"
                 data-user-name="{{ $user->name }}"
                 data-user-roles="{{ json_encode($user->roles->pluck('id')->toArray()) }}"
-                {{-- Add data-current-role-name for the confirmation modal --}}
                 data-current-role-name="{{ Str::title(str_replace('_', ' ', $user->roles->first()->name ?? 'N/A')) }}">
                 Update Role
             </button>

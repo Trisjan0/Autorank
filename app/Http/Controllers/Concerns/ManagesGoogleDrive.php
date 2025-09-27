@@ -100,11 +100,11 @@ trait ManagesGoogleDrive
         if (empty($user->google_refresh_token)) {
             throw new \Exception('Google account not linked or permission denied.');
         }
-        $client = new Client(); // Use modern Client
+        $client = new Client();
         $client->setClientId(env('GOOGLE_CLIENT_ID'));
         $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
         $client->refreshToken($user->google_refresh_token);
-        return new Drive($client); // Use modern Drive
+        return new Drive($client);
     }
 
     private function findOrCreateFolder(Drive $service, string $folderName, ?string $parentId = null): string
