@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
@@ -18,12 +18,17 @@
     <link rel="stylesheet" href="{{ asset('css/system-settings-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/authentication-page-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive-styles.css') }}">
+    <link rel="stylesheet" href="{{ route('dynamic.css') }}">
 
     <!-- Fontawesome CDN -->
     <script src="https://kit.fontawesome.com/5ba477d22e.js" crossorigin="anonymous"></script>
 </head>
 
-<body>
+@php
+    $themeClass = Auth::check() && Auth::user()->theme === 'dark' ? 'dark-mode' : '';
+@endphp
+
+<body class="{{ $themeClass }}">
     @include('partials._signin_navbar')
 
     <main>

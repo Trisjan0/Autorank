@@ -3,48 +3,175 @@
 @section('title', 'Settings | Autorank')
 
 @section('content')
-<!-- for notes only -->
-<h1>change logo - admin</h1>
-<hr>
-@auth
-@can('manage users')
-<div class="color-picker-section">
-    <h2>Change color scheme</h2>
-    <div class="color-grid">
-        <div class="color-control">
-            <label for="primaryColor">Primary Color</label>
-            <input type="color" id="primaryColor">
-        </div>
-    </div>
-    <div class="reset-button-wrapper">
-        <button id="resetColorsBtn" class="reset-button">
-            Reset to Default Colors
-        </button>
-    </div>
-</div>
-@endcan
-@endauth
-<hr>
-<h1>customizable font - admin</h1>
-<hr>
-<div class="settingContainer">
-    <label class="switch" for="darkModeToggle">
-        <input type="checkbox" id="darkModeToggle">
-        <div class="slider">
-            <div class="circle">
-                <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                    <g>
-                        <path data-original="#000000" fill="currentColor" d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0"></path>
-                    </g>
-                </svg>
-                <svg class="checkmark" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 24 24" y="0" x="0" height="10" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                    <g>
-                        <path class="" data-original="#000000" fill="currentColor" d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"></path>
-                    </g>
-                </svg>
+<div class="settings-content-container">
+    <div class="settings-content">
+        <!-- LEFT SIDE (Navigation) -->
+        <div class="settings-content-left-side">
+            <div class="settings-menu-header">
+                <h1>System Settings</h1>
+                <hr>
+            </div>
+            <div class="system-menu-list">
+                <a href="#revoke-google-drive-token-section">Privacy</a>
+                <ul>
+                    <li>Google Drive Access</li>
+                </ul>
+                @auth
+                @can('manage users')
+                <a href="#functionality-section-bookmark">Functionality</a>
+                <ul>
+                    <li>Rank Weights</li>
+                </ul>
+                @endcan
+                @endauth
+                <a href="#display-settings-section-bookmark">Display</a>
+                <ul>
+                    @auth
+                    @can('manage users')
+                    <li>Website Logo</li>
+                    @endcan
+                    @endauth
+                    <li>Darkmode</li>
+                    @auth
+                    @can('manage users')
+                    <li>Color Scheme</li>
+                    @endcan
+                    @endauth
+                </ul>
             </div>
         </div>
-    </label>
-    <h1>Darkmode</h1>
+        
+        <div class="settings-separator"></div>
+
+        <!-- RIGHT SIDE (Content) -->
+        <div class="settings-content-right-side">
+            <section>
+                <div class="settings-section-child" id="revoke-google-drive-token-section">
+                    <h1>Google Drive Access Control</h1>
+                    <hr>
+                    <p class="settings-section-description">
+                        This application uses Google Drive access only to allow users to upload, view, and manage files within the system. At any time, users may disconnect their Google account and remove all Drive permissions by visiting their <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account Permissions <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: .8rem;"></i></a> page. Once removed, the application will immediately lose access and will no longer be able to view, store, or manage any files in Google Drive.
+                    </p>
+                    <div class="settings-section-child-div" id="functionality-section-bookmark">
+                        <button>Disable Google Drive access</button>
+                    </div>
+                    <hr>
+                </div>
+            </section>
+
+            <section>
+                @auth
+                @can('manage users')
+                <div class="settings-section-child">
+                    <h1>Set Faculty Rank Weights</h1>
+                    <hr>
+                    <p class="settings-section-description">Adjust or reset evaluation weights for each faculty rank to maintain consistency with institutional standards.</p>
+                    <div class="settings-section-child-div">
+                    </div>
+                    <hr>
+                </div>
+                @endcan
+                @endauth
+            </section>
+
+            <section id="display-settings-section-bookmark">
+                @auth
+                @can('manage users')
+                <div class="settings-section-child">
+                <h1>Website Logo</h1>
+                <hr>
+                <p class="settings-section-description">Update the official logo displayed across the website to reflect institutional branding</p>
+                <div class="settings-section-child-div">
+                    @if($logo = \App\Models\Setting::where('key', 'site_logo')->value('value'))
+                    <div class="settings-logo-preview">
+                        <img src="{{ asset($logo) }}" alt="Website Logo">
+                        <h6>Current Logo</h6>
+                    </div>
+                    @endif
+
+                    <div class="role-modal-container" id="change-website-logo-modal" style="display: none;">
+                        <div class="role-modal">
+                            <div class="role-modal-navigation">
+                                <i class="fa-solid fa-xmark close-modal-btn" style="color: #ffffff;"></i>
+                            </div>
+                            <div class="initial-step">
+                                <form class="kra-upload-form" action="{{ route('settings.logo.update') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="criterion" value="instructional-materials">
+                                    <div class="role-modal-content">
+                                        <div class="role-modal-content-header">
+                                            <h1>Upload an Image</h1>
+                                            <p>Maximum of 2MB.</p>
+                                        </div>
+                                        <div class="role-modal-content-body">
+                                            <div class="form-group"><label class="form-group-title" data-label="File Uploaded">File *</label><input type="file" name="logo" required></div>
+                                            <div class="modal-messages mt-2"></div>
+                                        </div>
+                                    </div>
+                                    <div class="role-modal-actions"><button type="button" class="proceed-btn">Proceed</button></div>
+                                </form>
+                            </div>
+                            <div class="confirmation-step" style="display: none;">
+                                <div class="role-modal-content">
+                                    <div class="role-modal-content-header">
+                                        <h1>Confirm Upload</h1>
+                                        <p class="confirmation-message-area"></p>
+                                    </div>
+                                    <div class="role-modal-content-body">
+                                        <div id="logoConfirmPreviewContainer">
+                                            <img id="logoConfirmPreview" src="" alt="Preview">
+                                        </div>
+                                        <div class="final-status-message-area mt-2"></div>
+                                    </div>
+                                </div>
+                                <div class="role-modal-actions"><button type="button" class="back-btn">Back</button><button type="button" class="confirm-btn">Confirm & Upload</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="upload-logo-button">Upload Logo</button>
+                </div>
+                <hr>
+                </div>
+                @endcan
+                @endauth
+
+                <div class="settings-section-child">
+                    <hr style="margin-top: -1.5rem">
+                    <div class="settings-section-child-div" id="darkmode-toggle-section">
+                        <h1>Darkmode</h1>
+                        <input type="checkbox" id="darkModeToggle" {{ Auth::user()->theme === 'dark' ? 'checked' : '' }}>
+                        <label for="darkModeToggle" class="toggleSwitch"></label>
+                    </div>
+                    <hr style="margin-bottom: -1.5rem">
+                </div>
+
+                 @auth
+                @can('manage users')
+                <div class="settings-section-child">
+                    <h1>Color Scheme</h1>
+                    <hr>
+                    <p class="settings-section-description">Customize the website's primary colors to match institutional branding or preferred design standards.</p>
+                    <div class="settings-section-child-div">
+                        <div id="change-color-scheme-container">
+                            <div class="color-grid">
+                                <div class="color-control">
+                                    <label for="primaryColor">Primary Color</label>
+                                    <input type="color" id="primaryColor" value="{{ $primaryColor }}">
+                                </div>
+                            </div>
+                            <div class="reset-button-wrapper">
+                                <button id="resetColorsBtn" class="reset-button">
+                                    Reset to Default Colors
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                @endcan
+                @endauth
+            </section>
+        </div>
+    </div>
 </div>
 @endsection

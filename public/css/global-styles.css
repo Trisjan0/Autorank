@@ -37,6 +37,25 @@
     --alertDefaultL: #ffffff;
 }
 
+body.dark-mode {
+    /* --- Website Colors --- */
+    --pageBackgroundColor: #191919;
+    --pageTextColor: #ffffff;
+    --pageTextColorOnBlack: #ffffffff;
+
+    /* --- Card Colors --- */
+    --cardBackgroundColorL: #363636;
+    --cardBorderColorL: #262626;
+
+    /* --- Progress Bar Colors --- */
+    --progressBarEmptyColor: #404040;
+    --progressBarFillColor: #299e40;
+
+    /* --- Table Colors --- */
+    --tableBackgroundColor: #333333;
+    --tableDataBorderColor: #434343;
+}
+
 * {
     margin: 0;
     box-sizing: border-box;

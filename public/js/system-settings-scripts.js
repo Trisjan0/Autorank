@@ -1,178 +1,224 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // References for toggling dark mode
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Handlers for Theme and Color
+    |--------------------------------------------------------------------------
+    */
     const darkModeToggle = document.getElementById('darkModeToggle');
-
-    // References for changing color scheme
     const primaryColorInput = document.getElementById('primaryColor');
-
-    // Reference for reset custom color changes
     const resetColorsBtn = document.getElementById('resetColorsBtn');
 
-    // References for default colors
-    const defaultColors = {
-        // Primary Color
-        '--primaryColor': 'hsl(var(--base-hue-primary), var(--base-saturation-primary), var(--base-lightness-primary))',
-
-        /* --- Website Colors --- */
-        '--pageBackgroundColor': '#ffffff',
-        '--pageTextColor': '#000000',
-        '--pageTextColorOnBlack': '#ffffff',
-
-        /* --- Card Colors --- */
-        '--cardBackgroundColorL': '#ffffff',
-        '--cardBorderColorL': '#262626',
-
-        /* --- Progress Bar Colors --- */
-        '--progressBarEmptyColor': '#d3d3d3',
-        '--progressBarFillColor': '#4DFF62',
-
-        /* --- Table Colors --- */
-        '--tableBackgroundColor': '#ffffff',
-        '--tableDataBorderColor': '#d3d3d3',
-    };
-
-    // References for dark mode colors
-    const darkModeColors = {
-        // Primary Color
-        '--primaryColor': 'hsl(var(--base-hue-primary), var(--base-saturation-primary), var(--base-lightness-primary))',
-
-        /* --- Website Colors --- */
-        '--pageBackgroundColor': '#191919',
-        '--pageTextColor': '#ffffff',
-        '--pageTextColorOnBlack': '#ffffffff',
-
-        /* --- Card Colors --- */
-        '--cardBackgroundColorL': '#363636',
-        '--cardBorderColorL': '#262626',
-
-        /* --- Progress Bar Colors --- */
-        '--progressBarEmptyColor': '#404040',
-        '--progressBarFillColor': '#299e40',
-
-        /* --- Table Colors --- */
-        '--tableBackgroundColor': '#333333',
-        '--tableDataBorderColor': '#434343',
-    };
-
-    // Loads and applies custom color scheme based on save state
-    loadAndApplyCustomColors();
-
-    /*
-    |--------------------------------------------------------------------------
-    | FOR TOGGLING DARK MODE -- START
-    |--------------------------------------------------------------------------
-    */
-    // Load Dark Mode preference
-    const savedDarkModeState = localStorage.getItem('darkModeEnabled');
-    const isDarkModeEnabled = savedDarkModeState === 'true'; // saved as string
-
-    // Apply dark mode class immediately based on saved state
-    if (isDarkModeEnabled) {
-        document.body.classList.add('dark-mode');
-    } else {
-        document.body.classList.remove('dark-mode');
-    }
-
-    // If the toggle element exists on this page, set its checked state
-    if (darkModeToggle) {
-        darkModeToggle.checked = isDarkModeEnabled;
-    }
-
-    function toggleDarkMode(isDarkMode) {
-    if (isDarkMode) {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('darkModeEnabled', 'true');
-        } else {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('darkModeEnabled', 'false');
-        }
-        loadAndApplyCustomColors();
-    }
-
-    // Event listener for the dark mode toggle
+    // Event listener for the dark mode toggle (User Preference)
     if (darkModeToggle) {
         darkModeToggle.addEventListener('change', (event) => {
-            toggleDarkMode(event.target.checked);
+            const isDarkMode = event.target.checked;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            saveUserTheme(isDarkMode ? 'dark' : 'light');
         });
     }
-    /*
-    |--------------------------------------------------------------------------
-    | FOR TOGGLING DARK MODE -- END
-    |--------------------------------------------------------------------------
-    */
 
-    /*
-    |--------------------------------------------------------------------------
-    | FOR CHANGING COLOR SCHEME -- START
-    |--------------------------------------------------------------------------
-    */
-    /**
-     * Applies the given color values to the CSS custom properties and updates the input fields.
-     * This function directly sets the properties on the documentElement (which represents :root),
-     * ensuring user selections override any theme-based defaults.
-     * @param {object} colors - An object containing CSS variable names as keys and color values as values.
-     */
-    function applyColors(colors) {
-    for (const [prop, value] of Object.entries(colors)) {
-        document.documentElement.style.setProperty(prop, value);
-        // Update the corresponding input field value based on the CSS variable name
-        if (prop === '--primaryColor' && primaryColorInput) primaryColorInput.value = value;
-        }
-    }
-
-    /**
-     * Saves a single color property to localStorage and applies it to the CSS.
-     * @param {string} cssVarName - The name of the CSS custom property (e.g., '--primaryColor').
-     * @param {string} value - The color value (e.g., '#RRGGBB' or 'hsl(...)').
-     */
-    function saveAndApplyColor(cssVarName, value) {
-        document.documentElement.style.setProperty(cssVarName, value);
-        localStorage.setItem(cssVarName, value);
-    }
-
-    /**
-     * Loads custom colors from localStorage and applies them.
-     * These will override the current theme's default colors.
-     */
-    function loadAndApplyCustomColors() {
-        const currentCustomColors = {};
-        // Iterate through the default light theme colors to get the variable names
-        // This ensures we check localStorage for all relevant color properties
-        for (const prop in defaultColors) { // Use defaultLightColors to get all variable names
-            const savedValue = localStorage.getItem(prop);
-            if (savedValue) {
-                currentCustomColors[prop] = savedValue;
-            }
-        }
-        // Apply only the colors that were explicitly saved by the user
-        applyColors(currentCustomColors);
-    }
-
-    // Add event listeners to each color input
-    // Check if element exists before adding listener, as these might only be on the settings page
+    // Event listener for the primary color input (Global Setting)
     if (primaryColorInput) {
-        primaryColorInput.addEventListener('input', (event) => {
-            saveAndApplyColor('--primaryColor', event.target.value);
-        });
+        primaryColorInput.addEventListener('input', debounce((event) => {
+            const newColor = event.target.value;
+            document.documentElement.style.setProperty('--primaryColor', newColor);
+            savePrimaryColor(newColor);
+        }, 500));
     }
 
-    // Event listener for the reset button
+    // Event listener for the reset button (Global Setting)
     if (resetColorsBtn) {
         resetColorsBtn.addEventListener('click', () => {
-            // Determine which default set to apply based on current dark mode state
-            const currentDefaults = darkModeToggle.checked ? darkModeColors : defaultColors;
-            applyColors(currentDefaults);
+            const defaultColor = '#262626';
+            document.documentElement.style.setProperty('--primaryColor', defaultColor);
+            if (primaryColorInput) {
+                primaryColorInput.value = defaultColor;
+            }
+            resetPrimaryColor();
+        });
+    }
 
-            // Clear all custom color settings from localStorage
-            // We iterate through defaultLightColors to ensure all possible custom color properties are cleared
-            for (const prop in defaultColors) {
-                localStorage.removeItem(prop);
+    /*
+    |--------------------------------------------------------------------------
+    | API Functions to Save Settings
+    |--------------------------------------------------------------------------
+    */
+
+    /** Saves the user's personal theme choice. */
+    async function saveUserTheme(themeValue) {
+        try {
+            await fetch('/user/preference/theme', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                body: JSON.stringify({ theme: themeValue })
+            });
+        } catch (error) {
+            console.error('Error saving user theme:', error);
+        }
+    }
+
+    /** Saves the new global primary color. */
+    async function savePrimaryColor(colorValue) {
+        // NOTE: Make sure your route matches this URL
+        const url = '/system-settings/primary-color';
+        try {
+            await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                body: JSON.stringify({ primary_color: colorValue })
+            });
+        } catch (error) {
+            console.error('Error saving primary color:', error);
+        }
+    }
+
+    /** Resets the global primary color in the database. */
+    async function resetPrimaryColor() {
+        // NOTE: Make sure your route matches this URL
+        const url = '/system-settings/theme/reset';
+        try {
+            await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
+            });
+        } catch (error) {
+            console.error('Error resetting theme color:', error);
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Utility Functions
+    |--------------------------------------------------------------------------
+    */
+
+    /** Debounce function to limit how often a function is called. */
+    function debounce(func, delay) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logo Upload Modal Logic (Unchanged)
+    |--------------------------------------------------------------------------
+    */
+    const modal = document.getElementById('change-website-logo-modal');
+    if (modal) {
+        const openBtn = document.getElementById('upload-logo-button');
+        const form = modal.querySelector('.kra-upload-form');
+        const closeBtn = modal.querySelector('.close-modal-btn');
+        const initialStep = modal.querySelector('.initial-step');
+        const confirmationStep = modal.querySelector('.confirmation-step');
+        const proceedBtn = modal.querySelector('.proceed-btn');
+        const backBtn = modal.querySelector('.back-btn');
+        const confirmBtn = modal.querySelector('.confirm-btn');
+        const messages = {
+            initial: modal.querySelector('.modal-messages'),
+            confirmation: modal.querySelector('.confirmation-message-area'),
+            finalStatus: modal.querySelector('.final-status-message-area'),
+        };
+
+        const previewContainer = modal.querySelector('#logoConfirmPreviewContainer');
+        const previewImage = modal.querySelector('#logoConfirmPreview');
+
+        const showStep = (step) => {
+            initialStep.style.display = (step === 'initial') ? 'block' : 'none';
+            confirmationStep.style.display = (step === 'confirmation') ? 'block' : 'none';
+        };
+        const hideModal = () => {
+            modal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+            Object.values(messages).forEach(el => el && (el.innerHTML = ''));
+            form.reset();
+            [confirmBtn, backBtn, closeBtn].forEach(btn => btn && (btn.disabled = false));
+            previewImage.src = '';
+            previewContainer.style.display = 'none';
+            showStep('initial');
+        };
+
+        openBtn?.addEventListener('click', () => {
+            modal.style.display = 'flex';
+            document.body.classList.add('modal-open');
+        });
+
+        closeBtn?.addEventListener('click', hideModal);
+        modal.addEventListener('click', (e) => (e.target === modal) && hideModal());
+
+        backBtn?.addEventListener('click', () => { 
+            showStep('initial'); 
+            messages.finalStatus.innerHTML = ''; 
+            previewImage.src = '';
+            previewContainer.style.display = 'none';
+        });
+
+        proceedBtn?.addEventListener('click', () => {
+            if (messages.initial) messages.initial.innerHTML = '';
+            if (!form.checkValidity()) {
+                if (messages.initial) {
+                    messages.initial.innerHTML = '<div class="alert-danger">Please select a file.</div>';
+                }
+                return;
+            }
+
+            const formData = new FormData(form);
+            let confirmationHtml = 'Please confirm the following details:<br><br>';
+
+            formData.forEach((value, key) => {
+                if (key.startsWith('_')) return;
+                const input = form.querySelector(`[name="${key}"]`);
+                if (!input || input.type === 'hidden' || input.disabled) return;
+                const label = input.closest('.form-group')?.querySelector('[data-label],label')?.dataset.label || key;
+                let displayValue = (value instanceof File) ? value.name : value;
+                confirmationHtml += `<strong>${label}:</strong> ${displayValue}<br>`;
+
+                if (value instanceof File && value.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        previewContainer.style.display = 'block';
+                    };
+                    reader.readAsDataURL(value);
+                }
+            });
+
+            messages.confirmation.innerHTML = confirmationHtml;
+            showStep('confirmation');
+        });
+
+        confirmBtn?.addEventListener('click', async () => {
+            const url = form.getAttribute('action');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const formData = new FormData(form);
+
+            [confirmBtn, backBtn, closeBtn].forEach(btn => btn.disabled = true);
+            messages.finalStatus.innerHTML = '<div class="alert-info">Uploading... Please wait.</div>';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    body: formData,
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    let errorMsg = data.message || 'Error.';
+                    if (response.status === 422 && data.errors) {
+                        errorMsg = Object.values(data.errors).map(err => `<p>${err[0]}</p>`).join('');
+                    }
+                    throw new Error(errorMsg);
+                }
+                messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
+                setTimeout(() => { hideModal(); window.location.reload(); }, 1500);
+            } catch (error) {
+                messages.finalStatus.innerHTML = `<div class="alert-danger">${error.message}</div>`;
+                [confirmBtn, backBtn, closeBtn].forEach(btn => btn.disabled = false);
             }
         });
     }
-    /*
-    |--------------------------------------------------------------------------
-    | FOR CHANGING COLOR SCHEME -- END
-    |--------------------------------------------------------------------------
-    */
 });

@@ -3,7 +3,7 @@
         <div class="navbar-left-side">
             <i id="menu-toggle-button" class="fa-solid fa-bars" style="color: #ffffff;"></i>
             <div class="navbar-logo-container">
-                <img src="https://dhvsu.edu.ph/images/about_pampanga_state_u/pampanga-state-u-logo-small.png" alt="website logo">
+                <img src="{{ asset(\App\Models\Setting::where('key', 'site_logo')->value('value') ?? 'images/pampanga-state-u-logo-small.png') }}" alt="Website Logo">
                 <h1>AutoRank</h1>
             </div>
         </div>
@@ -135,7 +135,7 @@
                 <i class="fa-solid fa-gear"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>Settings</p>
+                <p>System Settings</p>
             </div>
         </a>
 

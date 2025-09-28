@@ -48,7 +48,8 @@
     color: darkgrey;
 }
 
-.separator-container h6 {
+.separator-container h1 {
+    font-size: .3rem;
     font-weight: 600;
 }
 
