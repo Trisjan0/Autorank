@@ -3,23 +3,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /*
     |--------------------------------------------------------------------------
-    | Handlers for Theme and Color
+    | Dark Mode Handler (User Preference)
     |--------------------------------------------------------------------------
     */
     const darkModeToggle = document.getElementById('darkModeToggle');
-    const primaryColorInput = document.getElementById('primaryColor');
-    const resetColorsBtn = document.getElementById('resetColorsBtn');
-
-    // Event listener for the dark mode toggle (User Preference)
     if (darkModeToggle) {
-        darkModeToggle.addEventListener('change', (event) => {
+        darkModeToggle.addEventListener('change', async (event) => {
             const isDarkMode = event.target.checked;
             document.body.classList.toggle('dark-mode', isDarkMode);
-            saveUserTheme(isDarkMode ? 'dark' : 'light');
+            try {
+                await fetch('/user/preference/theme', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    body: JSON.stringify({ theme: isDarkMode ? 'dark' : 'light' })
+                });
+            } catch (error) {
+                console.error('Error saving theme preference:', error);
+            }
         });
     }
 
-    // Event listener for the primary color input (Global Setting)
+    /*
+    |--------------------------------------------------------------------------
+    | Global Color Scheme Handler (Admin Only)
+    |--------------------------------------------------------------------------
+    */
+    const primaryColorInput = document.getElementById('primaryColor');
+    const resetColorsBtn = document.getElementById('resetColorsBtn');
+
     if (primaryColorInput) {
         primaryColorInput.addEventListener('input', debounce((event) => {
             const newColor = event.target.value;
@@ -28,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500));
     }
 
-    // Event listener for the reset button (Global Setting)
     if (resetColorsBtn) {
         resetColorsBtn.addEventListener('click', () => {
             const defaultColor = '#262626';
@@ -40,31 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | API Functions to Save Settings
-    |--------------------------------------------------------------------------
-    */
-
-    /** Saves the user's personal theme choice. */
-    async function saveUserTheme(themeValue) {
-        try {
-            await fetch('/user/preference/theme', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-                body: JSON.stringify({ theme: themeValue })
-            });
-        } catch (error) {
-            console.error('Error saving user theme:', error);
-        }
-    }
-
-    /** Saves the new global primary color. */
     async function savePrimaryColor(colorValue) {
-        // NOTE: Make sure your route matches this URL
-        const url = '/system-settings/primary-color';
         try {
-            await fetch(url, {
+            await fetch('/system-settings/primary-color', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
                 body: JSON.stringify({ primary_color: colorValue })
@@ -74,12 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /** Resets the global primary color in the database. */
     async function resetPrimaryColor() {
-        // NOTE: Make sure your route matches this URL
-        const url = '/system-settings/theme/reset';
         try {
-            await fetch(url, {
+            await fetch('/system-settings/theme/reset', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
             });
@@ -88,116 +73,142 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
     /*
     |--------------------------------------------------------------------------
-    | Utility Functions
+    | Google Drive Access Handlers
     |--------------------------------------------------------------------------
     */
+    const revokeBtn = document.getElementById('revoke-google-access-btn');
+    const allowBtn = document.getElementById('allow-google-access-btn');
 
-    /** Debounce function to limit how often a function is called. */
-    function debounce(func, delay) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
+    if (revokeBtn) {
+        revokeBtn.addEventListener('click', (event) => {
+            const button = event.currentTarget;
+            showConfirmationModal({
+                title: button.dataset.modalTitle,
+                body: button.dataset.modalBody,
+                confirmText: 'Yes, Revoke',
+                onConfirm: async () => {
+                    const response = await fetch(button.dataset.action, {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message || 'An error occurred.');
+                    
+                    document.getElementById('confirmation-final-status-message-area').innerHTML = `<div class="alert-success">${data.message}</div>`;
+                    setTimeout(() => window.location.reload(), 1500);
+                }
+            });
+        });
     }
 
+    if (allowBtn) {
+        allowBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const link = event.currentTarget;
+            showConfirmationModal({
+                title: link.dataset.modalTitle,
+                body: link.dataset.modalBody,
+                confirmText: 'Yes, Continue',
+                onConfirm: () => {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    }
+
+
     /*
     |--------------------------------------------------------------------------
-    | Logo Upload Modal Logic (Unchanged)
+    | Logo Upload Modal Logic (Admin Only)
     |--------------------------------------------------------------------------
     */
-    const modal = document.getElementById('change-website-logo-modal');
-    if (modal) {
+    const logoModal = document.getElementById('change-website-logo-modal');
+    if (logoModal) {
         const openBtn = document.getElementById('upload-logo-button');
-        const form = modal.querySelector('.kra-upload-form');
-        const closeBtn = modal.querySelector('.close-modal-btn');
-        const initialStep = modal.querySelector('.initial-step');
-        const confirmationStep = modal.querySelector('.confirmation-step');
-        const proceedBtn = modal.querySelector('.proceed-btn');
-        const backBtn = modal.querySelector('.back-btn');
-        const confirmBtn = modal.querySelector('.confirm-btn');
+        const form = logoModal.querySelector('form');
+        const closeBtn = logoModal.querySelector('.close-modal-btn');
+        const initialStep = logoModal.querySelector('.initial-step');
+        const confirmationStep = logoModal.querySelector('.confirmation-step');
+        const proceedBtn = logoModal.querySelector('.proceed-btn');
+        const backBtn = logoModal.querySelector('.back-btn');
+        const confirmBtn = logoModal.querySelector('.confirm-btn');
         const messages = {
-            initial: modal.querySelector('.modal-messages'),
-            confirmation: modal.querySelector('.confirmation-message-area'),
-            finalStatus: modal.querySelector('.final-status-message-area'),
+            initial: logoModal.querySelector('.modal-messages'),
+            confirmation: logoModal.querySelector('.confirmation-message-area'),
+            finalStatus: logoModal.querySelector('.final-status-message-area'),
         };
-
-        const previewContainer = modal.querySelector('#logoConfirmPreviewContainer');
-        const previewImage = modal.querySelector('#logoConfirmPreview');
+        const previewContainer = logoModal.querySelector('#logoConfirmPreviewContainer');
+        const previewImage = logoModal.querySelector('#logoConfirmPreview');
 
         const showStep = (step) => {
-            initialStep.style.display = (step === 'initial') ? 'block' : 'none';
-            confirmationStep.style.display = (step === 'confirmation') ? 'block' : 'none';
+            if (initialStep) initialStep.style.display = (step === 'initial') ? 'block' : 'none';
+            if (confirmationStep) confirmationStep.style.display = (step === 'confirmation') ? 'block' : 'none';
         };
+
         const hideModal = () => {
-            modal.style.display = 'none';
+            logoModal.style.display = 'none';
             document.body.classList.remove('modal-open');
-            Object.values(messages).forEach(el => el && (el.innerHTML = ''));
+            Object.values(messages).forEach(el => { if (el) el.innerHTML = ''; });
             form.reset();
-            [confirmBtn, backBtn, closeBtn].forEach(btn => btn && (btn.disabled = false));
-            previewImage.src = '';
-            previewContainer.style.display = 'none';
+            [confirmBtn, backBtn, closeBtn].forEach(btn => { if (btn) btn.disabled = false; });
+            if (previewImage) previewImage.src = '';
+            if (previewContainer) previewContainer.style.display = 'none';
             showStep('initial');
         };
 
         openBtn?.addEventListener('click', () => {
-            modal.style.display = 'flex';
+            logoModal.style.display = 'flex';
             document.body.classList.add('modal-open');
         });
 
         closeBtn?.addEventListener('click', hideModal);
-        modal.addEventListener('click', (e) => (e.target === modal) && hideModal());
+        logoModal.addEventListener('click', (e) => { if (e.target === logoModal) hideModal(); });
 
         backBtn?.addEventListener('click', () => { 
             showStep('initial'); 
-            messages.finalStatus.innerHTML = ''; 
-            previewImage.src = '';
-            previewContainer.style.display = 'none';
+            if (messages.finalStatus) messages.finalStatus.innerHTML = ''; 
+            if (previewImage) previewImage.src = '';
+            if (previewContainer) previewContainer.style.display = 'none';
         });
 
         proceedBtn?.addEventListener('click', () => {
             if (messages.initial) messages.initial.innerHTML = '';
             if (!form.checkValidity()) {
-                if (messages.initial) {
-                    messages.initial.innerHTML = '<div class="alert-danger">Please select a file.</div>';
-                }
+                if (messages.initial) messages.initial.innerHTML = '<div class="alert-danger">Please select a file.</div>';
                 return;
             }
 
             const formData = new FormData(form);
             let confirmationHtml = 'Please confirm the following details:<br><br>';
+            const logoFile = formData.get('logo');
 
-            formData.forEach((value, key) => {
-                if (key.startsWith('_')) return;
-                const input = form.querySelector(`[name="${key}"]`);
-                if (!input || input.type === 'hidden' || input.disabled) return;
-                const label = input.closest('.form-group')?.querySelector('[data-label],label')?.dataset.label || key;
-                let displayValue = (value instanceof File) ? value.name : value;
-                confirmationHtml += `<strong>${label}:</strong> ${displayValue}<br>`;
+            if (logoFile instanceof File) {
+                const label = form.querySelector('[name="logo"]')?.closest('.form-group')?.querySelector('[data-label],label')?.dataset.label || 'logo';
+                confirmationHtml += `<strong>${label}:</strong> ${logoFile.name}<br>`;
 
-                if (value instanceof File && value.type.startsWith('image/')) {
+                if (logoFile.type.startsWith('image/')) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        previewImage.src = e.target.result;
-                        previewContainer.style.display = 'block';
+                        if (previewImage) previewImage.src = e.target.result;
+                        if (previewContainer) previewContainer.style.display = 'block';
                     };
-                    reader.readAsDataURL(value);
+                    reader.readAsDataURL(logoFile);
                 }
-            });
+            }
 
-            messages.confirmation.innerHTML = confirmationHtml;
+            if (messages.confirmation) messages.confirmation.innerHTML = confirmationHtml;
             showStep('confirmation');
         });
 
         confirmBtn?.addEventListener('click', async () => {
             const url = form.getAttribute('action');
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             const formData = new FormData(form);
 
-            [confirmBtn, backBtn, closeBtn].forEach(btn => btn.disabled = true);
-            messages.finalStatus.innerHTML = '<div class="alert-info">Uploading... Please wait.</div>';
+            [confirmBtn, backBtn, closeBtn].forEach(btn => { if (btn) btn.disabled = true; });
+            if (messages.finalStatus) messages.finalStatus.innerHTML = '<div class="alert-info">Uploading... Please wait.</div>';
 
             try {
                 const response = await fetch(url, {
@@ -207,18 +218,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const data = await response.json();
                 if (!response.ok) {
-                    let errorMsg = data.message || 'Error.';
+                    let errorMsg = data.message || 'An error occurred.';
                     if (response.status === 422 && data.errors) {
-                        errorMsg = Object.values(data.errors).map(err => `<p>${err[0]}</p>`).join('');
+                        errorMsg = Object.values(data.errors).map(err => `<p>${err.join(' ')}</p>`).join('');
                     }
                     throw new Error(errorMsg);
                 }
-                messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
-                setTimeout(() => { hideModal(); window.location.reload(); }, 1500);
+                if (messages.finalStatus) messages.finalStatus.innerHTML = `<div class="alert-success">${data.message}</div>`;
+                setTimeout(() => { window.location.reload(); }, 1500);
             } catch (error) {
-                messages.finalStatus.innerHTML = `<div class="alert-danger">${error.message}</div>`;
-                [confirmBtn, backBtn, closeBtn].forEach(btn => btn.disabled = false);
+                if (messages.finalStatus) messages.finalStatus.innerHTML = `<div class="alert-danger">${error.message}</div>`;
+                [confirmBtn, backBtn, closeBtn].forEach(btn => { if (btn) btn.disabled = false; });
             }
         });
+    }
+
+    /**
+     * Utility function to delay execution of a function.
+     * @param {Function} func The function to execute after the delay.
+     * @param {number} delay The delay in milliseconds.
+     * @returns {Function}
+     */
+    function debounce(func, delay) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
     }
 });

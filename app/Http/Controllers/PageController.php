@@ -16,25 +16,7 @@ class PageController extends Controller
 
     public function showDashboard()
     {
-        $user = Auth::user();
-
-        // Start by querying all positions
-        $query = Position::query();
-
-        // If the authenticated user is NOT an admin, only fetch available positions.
-        if (!$user->hasRole('admin')) {
-            $query->where('is_available', true);
-        }
-
-        // Execute the query
-        $positions = $query->get();
-
-        return view('dashboard', compact('positions'));
-    }
-
-    public function showApplicationsPage()
-    {
-        return view('admin.application-page');
+        return view('dashboard');
     }
 
     public function showProfilePage()
@@ -53,11 +35,6 @@ class PageController extends Controller
             // Redirect to signin if not logged in
             return redirect()->route('signin-page')->with('error', 'You must be logged in to view your profile.');
         }
-    }
-
-    public function showReviewDocumentsPage()
-    {
-        return view('admin.review-documents-page');
     }
 
     public function showAllUsersPage()

@@ -50,6 +50,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SystemSettingsController::class, 'showSystemSettings'])->name('system-settings');
     Route::post('/user/preference/theme', [UserPreferenceController::class, 'updateTheme'])->name('user.preference.theme.update');
 
+    // Google Drive Access Management
+    Route::post('/settings/google-drive/revoke', [SocialiteLoginController::class, 'revokeGoogleToken'])->name('settings.google.revoke');
+    Route::get('/settings/google-drive/reconnect', [SocialiteLoginController::class, 'reconnectGoogle'])->name('settings.google.reconnect');
+
     // Logout Route
     Route::post('/logout', function (Request $request) {
         Auth::logout();

@@ -40,7 +40,7 @@
                 <i class="fa-solid fa-check-to-slot" style="color: #ffffff;"></i>
             </div>
             <div class="hidden-menu-title">
-                <p>Faculty Ranks</p>
+                <p>Dashboard</p>
             </div>
         </a>
 
@@ -58,14 +58,6 @@
         {{-- ADMIN Routes --}}
         @auth
         @can('manage users')
-        <a href="{{ route('application-page') }}">
-            <div class="hidden-menu-icon">
-                <i class="fa-solid fa-file-circle-check"></i>
-            </div>
-            <div class="hidden-menu-title">
-                <p>Review Applications</p>
-            </div>
-        </a>
         <a href="{{ route('manage-users') }}">
             <div class="hidden-menu-icon">
                 <i class="fa-solid fa-users"></i>

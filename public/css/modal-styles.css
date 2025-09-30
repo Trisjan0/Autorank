@@ -407,7 +407,7 @@ select {
 }
 
 .confirmation-modal-actions .btn-confirm {
-    background-color: var(--systemRed);
+    background-color: hsl(var(--base-hue-primary), var(--base-saturation-primary), calc(var(--base-lightness-primary) + 15%));
     border: none;
     border-radius: 5px;
     font-size: 1rem;
@@ -417,7 +417,7 @@ select {
 }
 
 .confirmation-modal-actions .btn-confirm:hover {
-    background-color: var(--systemRedHover);
+    background-color: hsl(var(--base-hue-primary), var(--base-saturation-primary), calc(var(--base-lightness-primary) + 25%));
     cursor: pointer;
 }
 

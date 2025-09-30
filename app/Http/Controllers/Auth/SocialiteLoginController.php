@@ -3,98 +3,136 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
-use Illuminate\Support\Str;
+use Google_Client;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Spatie\Permission\PermissionRegistrar;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteLoginController extends Controller
 {
     /**
      * Redirects the user to the Google authentication page.
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function redirectGoogleAuth()
+    public function redirectGoogleAuth(): RedirectResponse
     {
         return Socialite::driver('google')
             ->scopes([
-                'https://www.googleapis.com/auth/drive.file', // Asks for permission to manage files
+                'https://www.googleapis.com/auth/drive.file',
                 'https://www.googleapis.com/auth/userinfo.profile',
                 'https://www.googleapis.com/auth/userinfo.email'
             ])
-            ->with(["access_type" => "offline", "prompt" => "consent select_account"]) // Asks for a refresh token
+            ->with(["access_type" => "offline", "prompt" => "consent select_account"])
             ->redirect();
     }
 
     /**
      * Handles the callback from Google after the user has authenticated.
-     * This method receives the user's data from Google.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function handleGoogleCallback(Request $request)
+    public function handleGoogleCallback(Request $request): RedirectResponse
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')->stateless()->user();
         } catch (\Exception $e) {
-            Log::error('Google authentication failed: ' . $e->getMessage(), ['exception' => $e]);
-            return redirect('/signin-page')->withErrors('Google authentication failed. Please try again.');
+            Log::error('Google authentication failed: ' . $e->getMessage());
+            return redirect()->route('signin-page')->with('error', 'Google authentication failed. Please try again.');
         }
 
-        $originalAvatarUrl = $googleUser->getAvatar();
-        $avatarUrl = null;
-        if ($originalAvatarUrl) {
-            $avatarUrl = preg_replace('/=s\d+(-c)?$/', '=s400-c', $originalAvatarUrl);
-            if (strpos($avatarUrl, '=s') === false) {
-                $avatarUrl .= '=s400-c';
-            }
-        }
-
-        $user = User::where('email', $googleUser->email)->first();
-        $wasCreated = false;
-
-        if (!$user) {
-            $user = User::where('google_id', $googleUser->id)->first();
-            if (!$user) {
-                $user = User::create([
-                    'google_id' => $googleUser->id,
-                    'name' => $googleUser->name,
-                    'email' => $googleUser->email,
-                    'password' => bcrypt(Str::random(40)),
-                    'avatar' => $avatarUrl,
-                    // NEW: Save tokens for new users
-                    'google_token' => $googleUser->token,
-                    'google_refresh_token' => $googleUser->refreshToken,
-                ]);
-                $wasCreated = true;
-            }
-        }
+        // Find an existing user by their email.
+        $user = User::where('email', $googleUser->getEmail())->first();
 
         if ($user) {
+            // If the user exists, update their information.
             $user->update([
-                'name' => $googleUser->name,
-                'google_id' => $googleUser->id, // Ensure google_id is linked if they first signed up with email
-                'avatar' => $avatarUrl,
-                'google_token' => $googleUser->token, // Always update the short-lived token
-                'google_refresh_token' => $googleUser->refreshToken ?? $user->google_refresh_token, // Only update the refresh token if a new one is provided
+                'name' => $googleUser->getName(),
+                'google_id' => $googleUser->getId(),
+                'avatar' => preg_replace('/=s\d+(-c)?$/', '=s400-c', $googleUser->getAvatar()),
+                'google_token' => $googleUser->token,
+                'google_refresh_token' => $googleUser->refreshToken ?? $user->google_refresh_token, // Keep old refresh token if a new one isn't provided
             ]);
-        }
-
-        if ($wasCreated) {
+        } else {
+            // If the user does not exist, create a new one.
+            $user = User::create([
+                'email' => $googleUser->getEmail(),
+                'name' => $googleUser->getName(),
+                'google_id' => $googleUser->getId(),
+                'avatar' => preg_replace('/=s\d+(-c)?$/', '=s400-c', $googleUser->getAvatar()),
+                'google_token' => $googleUser->token,
+                'google_refresh_token' => $googleUser->refreshToken,
+                'password' => bcrypt(Str::random(40)),
+            ]);
+            // Assign the default role since this is a new user.
             $user->assignDefaultRoleByEmail();
         }
 
-        $freshUser = User::find($user->id);
+        Auth::login($user, true);
 
-        app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
-
-        Auth::login($freshUser);
+        // Check for the session flag and redirect to settings if present.
+        if ($request->session()->pull('redirect_to_settings')) {
+            return redirect()->route('system-settings')->with('success', 'Google Drive has been reconnected successfully!');
+        }
 
         return redirect()->route('dashboard');
+    }
+
+    /**
+     * Revoke the Google token for the authenticated user.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function revokeGoogleToken(Request $request): JsonResponse
+    {
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+
+        if ($user->google_refresh_token) {
+            try {
+                $this->getGoogleClient()->revokeToken($user->google_refresh_token);
+            } catch (\Exception $e) {
+                Log::warning('Failed to revoke Google token, possibly already invalid: ' . $e->getMessage());
+            } finally {
+                $user->forceFill([
+                    'google_id' => null,
+                    'google_token' => null,
+                    'google_refresh_token' => null,
+                ])->save();
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Google Drive access has been successfully revoked.']);
+    }
+
+    /**
+     * Redirect the user to Google to re-authenticate for Drive access.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function reconnectGoogle(): RedirectResponse
+    {
+        session(['redirect_to_settings' => true]);
+        return $this->redirectGoogleAuth();
+    }
+
+    /**
+     * Helper method to get an authenticated Google API client.
+     *
+     * @return \Google_Client
+     */
+    private function getGoogleClient(): Google_Client
+    {
+        $client = new Google_Client();
+        $client->setClientId(config('services.google.client_id'));
+        $client->setClientSecret(config('services.google.client_secret'));
+        return $client;
     }
 }

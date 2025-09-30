@@ -52,8 +52,25 @@
                     <p class="settings-section-description">
                         This application uses Google Drive access only to allow users to upload, view, and manage files within the system. At any time, users may disconnect their Google account and remove all Drive permissions by visiting their <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account Permissions <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: .8rem;"></i></a> page. Once removed, the application will immediately lose access and will no longer be able to view, store, or manage any files in Google Drive.
                     </p>
-                    <div class="settings-section-child-div" id="functionality-section-bookmark">
-                        <button>Disable Google Drive access</button>
+                    <div class="settings-section-child-div">
+
+                        @if(Auth::user()->google_refresh_token)
+                            {{-- If the user has a refresh token, they are connected. Show the "Revoke" button. --}}
+                            <button class="btn-confirm" id="revoke-google-access-btn"
+                                    data-action="{{ route('settings.google.revoke') }}"
+                                    data-modal-title="Confirm Access Revocation"
+                                    data-modal-body="Are you sure you want to revoke Google Drive access? You will need to grant permission again to upload or manage your files.">
+                                Revoke Google Drive Access
+                            </button>
+                        @else
+                            {{-- If the user does not have a refresh token, they are not connected. Show the "Allow" button. --}}
+                            <a href="{{ route('settings.google.reconnect') }}" class="btn-primary" id="allow-google-access-btn"
+                            data-modal-title="Allow Google Drive Access"
+                            data-modal-body="You will be redirected to Google to grant this application permission to your Google Drive. Do you want to continue?">
+                                <button>Allow Google Drive Access</button>
+                            </a>
+                        @endif
+
                     </div>
                     <hr>
                 </div>

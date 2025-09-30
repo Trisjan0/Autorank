@@ -193,18 +193,25 @@ body.dark-mode {
     margin-bottom: 45px;
 }
 
-#revoke-google-drive-token-section a {
-    text-decoration: underline dotted;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-    color: var(--pageTextColor);
+#allow-google-access-btn button {
+    background-color: var(--systemGreen);
+    border: none;
+    border-radius: 5px;
+    width: auto;
+    min-height: 35px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    justify-self: center;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
-#revoke-google-drive-token-section a:hover {
-    font-style: italic;
+#allow-google-access-btn button:hover {
+    background-color: var(--systemGreenHover);
+    cursor: pointer;
 }
 
-#revoke-google-drive-token-section button {
+#revoke-google-access-btn {
     background-color: var(--systemRed);
     border: none;
     border-radius: 5px;
@@ -217,7 +224,7 @@ body.dark-mode {
     padding-right: 15px;
 }
 
-#revoke-google-drive-token-section button:hover {
+#revoke-google-access-btn:hover {
     background-color: var(--systemRedHover);
     cursor: pointer;
 }
