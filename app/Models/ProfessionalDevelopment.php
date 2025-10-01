@@ -22,9 +22,6 @@ class ProfessionalDevelopment extends Model
     /**
      * The attributes that should be cast.
      *
-     * This ensures that date columns from the database are
-     * automatically converted to Carbon date objects.
-     *
      * @var array<string, string>
      */
     protected $casts = [
@@ -38,5 +35,13 @@ class ProfessionalDevelopment extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the application that this professional development submission belongs to.
+     */
+    public function application(): BelongsTo
+    {
+        return $this->belongsTo(Application::class);
     }
 }

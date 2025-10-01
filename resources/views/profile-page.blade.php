@@ -44,7 +44,7 @@ Profile | Autorank
                 <div class="basic-info-fields">
                     <div class="basic-info">
                         <h3>Faculty Rank</h3>
-                        <h5>{{ $user->rank ?? 'TBC' }}</h5>
+                        <h5>{{ $user->faculty_rank ?? 'Unset (Please reach out to an Admin.)' }}</h5>
                     </div>
                     <div class="basic-info-action"></div>
                 </div>
@@ -85,8 +85,9 @@ Profile | Autorank
                 </div>
                 @if ($isOwnProfile)
                 <div class="apply-for-reranking-container">
-                    <button>
-                        <a href="{{ route('dashboard') }}">Apply for Merit Promotion</a>
+                    <button id="start-evaluation-btn"
+                    data-check-url="{{ route('instructor.evaluation.check') }}">
+                        Start CCE Evaluation Process
                     </button>
                 </div>
                 @endif
@@ -94,9 +95,33 @@ Profile | Autorank
         </div>
     </div>
 </div>
-</div>
+
+<form id="submit-evaluation-form" action="{{ route('instructor.evaluation.submit') }}" method="POST" style="display: none;">
+    @csrf
+</form>
 @endsection
 
 @push('page-scripts')
+<script src="{{ asset('js/modal-scripts.js') }}"></script>
 <script src="{{ asset('js/profile-page-scripts.js') }}"></script>
+</script>
+
+<style>
+    .missing-kra-list {
+        list-style-type: none;
+        padding-left: 0;
+        margin-top: 1rem;
+    }
+    .missing-kra-list li {
+        margin-bottom: 0.5rem;
+    }
+    .missing-kra-list li a {
+        text-decoration: none;
+        color: var(--primary-color, #3F51B5);
+        font-weight: 500;
+    }
+    .missing-kra-list li a:hover {
+        text-decoration: underline;
+    }
+</style>
 @endpush

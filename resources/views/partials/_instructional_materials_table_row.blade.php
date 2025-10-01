@@ -2,10 +2,10 @@
     <td>{{ $item->id }}</td>
     <td>{{ $item->title }}</td>
     <td>{{ $item->category }}</td>
-    <td>{{ $item->type ?? 'N/A' }}</td>
     <td>{{ $item->role }}</td>
-    <td>{{ \Carbon\Carbon::parse($item->publication_date)->format('F d, Y') }}</td>
-    <td>{{ $item->score ?? 'TBE' }}</td>
+    <td @if(($item->score ?? 'TBE') === 'TBE') style="color: gray;" title="To be evaluated" @endif>
+    {{ $item->score ?? 'TBE' }}
+    </td>
     <td>
         <div class="action-buttons">
             <button

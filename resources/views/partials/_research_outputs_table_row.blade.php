@@ -3,11 +3,10 @@
     <td>{{ $item->title }}</td>
     <td>{{ $item->category }}</td>
     <td>{{ $item->journal_name }}</td>
-    <td>{{ $item->indexing ?? 'N/A'}}</td>
-    <td>{{ $item->publication_date->format('F d, Y') }}</td>
-    <td>{{ $item->doi ?? 'N/A' }}</td>
     <td>{{ $item->role }}</td>
-    <td>{{ $item->score ?? 'TBE' }}</td>
+    <td @if(($item->score ?? 'TBE') === 'TBE') style="color: gray;" title="To be evaluated." @endif>
+    {{ $item->score ?? 'TBE' }}
+    </td>
     <td>
         <div class="action-buttons">
             <button

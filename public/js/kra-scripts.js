@@ -105,9 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     document.getElementById('load-more-kra-btn')?.addEventListener('click', () => window.loadData(false));
-
-    // --- PART 4: FILE VIEWER AND DELETE MODAL LOGIC ---
-    window.initializeActionModals();
     
     // --- INITIAL PAGE SETUP ---
     if (isDynamicPage) {

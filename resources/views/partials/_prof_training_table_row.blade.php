@@ -3,10 +3,9 @@
     <td>{{ $item->title }}</td>
     <td>{{ $item->type }}</td>
     <td>{{ $item->organizer }}</td>
-    <td>{{ $item->start_date->format('F d, Y') }}</td>
-    <td>{{ $item->end_date->format('F d, Y') }}</td>
-    <td>{{ $item->hours ?? 'N/A' }}</td>
-    <td>{{ $item->score ?? 'TBE' }}</td>
+    <td @if(($item->score ?? 'TBE') === 'TBE') style="color: gray;" title="To be evaluated" @endif>
+    {{ $item->score ?? 'TBE' }}
+    </td>
     <td>
         <div class="action-buttons">
             <button

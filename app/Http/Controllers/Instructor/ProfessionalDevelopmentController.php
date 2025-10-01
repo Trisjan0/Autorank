@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Instructor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\ManagesGoogleDrive;
+use App\Models\Application;
 use App\Models\ProfessionalDevelopment;
 use App\Services\DataSearchService;
 use Illuminate\Http\JsonResponse;
@@ -17,6 +18,24 @@ use Carbon\Carbon;
 class ProfessionalDevelopmentController extends Controller
 {
     use ManagesGoogleDrive;
+
+    /**
+     * Find or create a draft application for the authenticated user.
+     *
+     * @return \App\Models\Application
+     */
+    private function findOrCreateDraftApplication()
+    {
+        $user = Auth::user();
+
+        // Find an existing draft application or create a new one
+        return Application::firstOrCreate(
+            [
+                'user_id' => $user->id,
+                'status' => 'draft',
+            ]
+        );
+    }
 
     /**
      * Centralized method to get all dropdown options for KRA IV.
@@ -102,6 +121,9 @@ class ProfessionalDevelopmentController extends Controller
             $criterion = $request->input('criterion');
             $validatedData = $this->validateRequest($request, $criterion, $user->id);
 
+            // Get or create the draft application for this evaluation cycle
+            $draftApplication = $this->findOrCreateDraftApplication();
+
             $kraFolderName = 'KRA IV: Professional Development';
             $folderNameMap = [
                 'prof-organizations' => 'Involvement in Professional Organizations',
@@ -112,6 +134,7 @@ class ProfessionalDevelopmentController extends Controller
 
             $dataToCreate = [
                 'user_id' => $user->id,
+                'application_id' => $draftApplication->id, // Link to the application cycle
                 'criterion' => $criterion,
             ];
 
@@ -164,23 +187,23 @@ class ProfessionalDevelopmentController extends Controller
         } elseif ($criterion === 'prof-training') {
             $nonDegreeTypes = ['Training / Seminar / Workshop', 'Conference / Forum / Symposium'];
             $rules = [
-                'title'        => ['required', 'string', 'max:255'],
-                'type'         => ['required', Rule::in($options['pt_types'])],
-                'organizer'    => 'required|string|max:255',
-                'start_date'   => 'required|date|before_or_equal:today',
-                'end_date'     => 'required|date|after_or_equal:start_date',
-                'hours'        => [
+                'title'      => ['required', 'string', 'max:255'],
+                'type'       => ['required', Rule::in($options['pt_types'])],
+                'organizer'  => 'required|string|max:255',
+                'start_date' => 'required|date|before_or_equal:today',
+                'end_date'   => 'required|date|after_or_equal:start_date',
+                'hours'      => [
                     'nullable',
                     'integer',
                     'min:1',
                     Rule::requiredIf(fn() => in_array($request->input('type'), $nonDegreeTypes)),
                 ],
-                'level'        => [
+                'level'      => [
                     'nullable',
                     'string',
                     Rule::requiredIf(fn() => !in_array($request->input('type'), $nonDegreeTypes)),
                 ],
-                'proof_file'   => 'required|file|mimes:pdf,doc,docx,jpg,png|max:5120',
+                'proof_file' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:5120',
             ];
         } elseif ($criterion === 'prof-awards') {
             $rules = [

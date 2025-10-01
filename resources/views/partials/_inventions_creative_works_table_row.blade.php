@@ -2,11 +2,10 @@
     <td>{{ $item->id }}</td>
     <td>{{ $item->title }}</td>
     <td>{{ $item->type }}</td>
-    <td>{{ $item->sub_type }}</td>
-    <td>{{ $item->status_level }}</td>
-    <td>{{ $item->exhibition_date->format('F d, Y') }}</td>
     <td>{{ $item->role }}</td>
-    <td>{{ $item->score ?? 'TBE' }}</td>
+    <td @if(($item->score ?? 'TBE') === 'TBE') style="color: gray;" title="To be evaluated." @endif>
+    {{ $item->score ?? 'TBE' }}
+    </td>
     <td>
         <div class="action-buttons">
             <button

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Instructor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\ManagesGoogleDrive;
+use App\Models\Application;
 use App\Models\Extension;
 use App\Services\DataSearchService;
 use Illuminate\Http\JsonResponse;
@@ -17,6 +18,24 @@ use Carbon\Carbon;
 class ExtensionController extends Controller
 {
     use ManagesGoogleDrive;
+
+    /**
+     * Find or create a draft application for the authenticated user.
+     *
+     * @return \App\Models\Application
+     */
+    private function findOrCreateDraftApplication()
+    {
+        $user = Auth::user();
+
+        // Find an existing draft application or create a new one
+        return Application::firstOrCreate(
+            [
+                'user_id' => $user->id,
+                'status' => 'draft',
+            ]
+        );
+    }
 
     /**
      * Centralized method to get all dropdown options for KRA III.
@@ -82,12 +101,12 @@ class ExtensionController extends Controller
         $extensionOptions = $this->getExtensionOptions();
 
         return view('instructor.extension-page', [
-            'serviceCommunityData'      => (clone $serviceCommunityData)->take($perPage)->get(),
-            'extensionInvolvementData'  => Extension::where('user_id', $userId)->where('criterion', 'extension-involvement')->orderBy('created_at', 'desc')->take($perPage)->get(),
-            'adminDesignationData'      => Extension::where('user_id', $userId)->where('criterion', 'admin-designation')->orderBy('created_at', 'desc')->take($perPage)->get(),
-            'perPage'                   => $perPage,
-            'initialHasMore'            => $serviceCommunityData->count() > $perPage,
-            'extensionOptions'          => $extensionOptions,
+            'serviceCommunityData'     => (clone $serviceCommunityData)->take($perPage)->get(),
+            'extensionInvolvementData' => Extension::where('user_id', $userId)->where('criterion', 'extension-involvement')->orderBy('created_at', 'desc')->take($perPage)->get(),
+            'adminDesignationData'     => Extension::where('user_id', $userId)->where('criterion', 'admin-designation')->orderBy('created_at', 'desc')->take($perPage)->get(),
+            'perPage'                  => $perPage,
+            'initialHasMore'           => $serviceCommunityData->count() > $perPage,
+            'extensionOptions'         => $extensionOptions,
         ]);
     }
 
@@ -98,9 +117,12 @@ class ExtensionController extends Controller
             $criterion = $request->input('criterion');
             $validatedData = $this->validateRequest($request, $criterion, $user->id);
 
+            // Get or create the draft application for this evaluation cycle
+            $draftApplication = $this->findOrCreateDraftApplication();
+
             $kraFolderName = 'KRA III: Extension and Community Involvement';
             $folderNameMap = [
-                'service-community'      => 'Service to the Institution or Community',
+                'service-community'     => 'Service to the Institution or Community',
                 'extension-involvement'  => 'Extension Program or Project Involvement',
                 'admin-designation'      => 'Administrative Designation',
             ];
@@ -108,6 +130,7 @@ class ExtensionController extends Controller
 
             $dataToCreate = [
                 'user_id' => $user->id,
+                'application_id' => $draftApplication->id, // Link to the application cycle
                 'criterion' => $criterion,
             ];
 

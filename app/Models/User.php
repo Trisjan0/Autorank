@@ -9,7 +9,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Permission\Traits\HasRoles;
 use Carbon\Carbon;
-use App\Models\Credential;
 
 class User extends Authenticatable
 {
@@ -68,6 +67,50 @@ class User extends Authenticatable
         'faculty_rank' => 'Unset',
         'rank_assigned_by' => 'N/A',
     ];
+
+    // --- START: RELATIONSHIPS ---
+
+    /**
+     * Get all of the applications for the User.
+     */
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class);
+    }
+
+    /**
+     * Get all of the instruction submissions for the User.
+     */
+    public function instructions(): HasMany
+    {
+        return $this->hasMany(Instruction::class);
+    }
+
+    /**
+     * Get all of the research submissions for the User.
+     */
+    public function researches(): HasMany
+    {
+        return $this->hasMany(Research::class);
+    }
+
+    /**
+     * Get all of the extension submissions for the User.
+     */
+    public function extensions(): HasMany
+    {
+        return $this->hasMany(Extension::class);
+    }
+
+    /**
+     * Get all of the professional development submissions for the User.
+     */
+    public function professionalDevelopments(): HasMany
+    {
+        return $this->hasMany(ProfessionalDevelopment::class);
+    }
+
+    // --- END: RELATIONSHIPS ---
 
     public function assignDefaultRoleByEmail(): void
     {

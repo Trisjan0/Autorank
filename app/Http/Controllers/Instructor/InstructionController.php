@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Instructor;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\ManagesGoogleDrive;
 use App\Models\Instruction;
+use App\Models\Application;
 use App\Services\DataSearchService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,6 +18,27 @@ use Illuminate\Validation\Rule;
 class InstructionController extends Controller
 {
     use ManagesGoogleDrive;
+
+    /**
+     * Find or create a draft application for the authenticated user.
+     *
+     * @return \App\Models\Application
+     */
+    private function findOrCreateDraftApplication()
+    {
+        $user = Auth::user();
+
+        // Find an existing draft application or create a new one.
+        $application = Application::firstOrCreate(
+            [
+                'user_id' => $user->id,
+                'status' => 'draft',
+            ]
+        );
+
+        return $application;
+    }
+
 
     private function getInstructionalOptions(): array
     {
@@ -113,6 +135,9 @@ class InstructionController extends Controller
             $criterion = $request->input('criterion');
             $validatedData = $this->validateRequest($request, $criterion, $user->id);
 
+            // Get or create the draft application for this evaluation cycle
+            $draftApplication = $this->findOrCreateDraftApplication();
+
             $kraFolderName = 'KRA I: Instruction';
             $folderNameMap = [
                 'instructional-materials' => 'Curriculum & Instructional Materials',
@@ -122,6 +147,7 @@ class InstructionController extends Controller
 
             $dataToCreate = [
                 'user_id' => $user->id,
+                'application_id' => $draftApplication->id, // Link to the application cycle
                 'criterion' => $criterion,
             ];
 

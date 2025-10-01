@@ -35,8 +35,6 @@
                 <th>Organization Name</th>
                 <th>Membership Type</th>
                 <th>Role (if Officer)</th>
-                <th>Start Date</th>
-                <th>End Date</th>
                 <th>Score</th>
                 <th>
                     <div class="search-bar-container">
@@ -54,7 +52,7 @@
             @include('partials._prof_organizations_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="8" style="text-align: center;">No items found.</td>
+                <td colspan="6" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -70,9 +68,6 @@
                 <th>Title of Training / Degree</th>
                 <th>Type</th>
                 <th>Organizer / Institution</th>
-                <th>Start Date</th>
-                <th>Completion Date</th>
-                <th>Hours</th>
                 <th>Score</th>
                 <th>
                     <div class="search-bar-container">
@@ -90,7 +85,7 @@
             @include('partials._prof_training_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="9" style="text-align: center;">No items found.</td>
+                <td colspan="6" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -106,7 +101,6 @@
                 <th>Award Title</th>
                 <th>Awarding Body</th>
                 <th>Level</th>
-                <th>Date Awarded</th>
                 <th>Score</th>
                 <th>
                     <div class="search-bar-container">
@@ -124,7 +118,7 @@
             @include('partials._prof_awards_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No items found.</td>
+                <td colspan="6" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -167,7 +161,7 @@
                         <div class="form-group" id="officer-role-group" style="display: none;"><label class="form-group-title" data-label="Role (if Officer)">Role (if Officer) *</label><input type="text" name="role"></div>
                         <div class="form-group"><label class="form-group-title" data-label="Start Date">Start Date *</label><input type="date" style="color-scheme: dark;" name="start_date" required></div>
                         <div class="form-group"><label class="form-group-title" data-label="End Date">End Date *</label><input type="date" style="color-scheme: dark;" name="end_date" required></div>
-                        <div class="form-group"><label class="form-group-title" data-label="Proof of Membership/Appointment">Proof of Membership/Appointment *</label><input type="file" name="proof_file" required></div>
+                        <div class="form-group"><label class="form-group-title file-upload" data-label="Proof of Membership/Appointment">Proof of Membership/Appointment * <h6>&nbsp;&nbsp;&nbsp;5MB max</h6></label><input type="file" name="proof_file" required></div>
                         <div class="modal-messages mt-2"></div>
                     </div>
                 </div>
@@ -213,7 +207,7 @@
                         <div class="form-group"><label class="form-group-title" data-label="Completion Date">Completion Date *</label><input type="date" style="color-scheme: dark;" name="end_date" required></div>
                         <div class="form-group" id="training-hours-group" style="display: none;"><label class="form-group-title" data-label="Number of Hours">Number of Hours *</label><input type="number" name="hours" style="color-scheme: dark;" min="1"></div>
                         <div class="form-group" id="training-level-group" style="display: none;"><label class="form-group-title" data-label="Level">Level *</label><input type="text" name="level"></div>
-                        <div class="form-group"><label class="form-group-title" data-label="Proof of Completion">Proof of Completion *</label><input type="file" name="proof_file" required></div>
+                        <div class="form-group"><label class="form-group-title file-upload" data-label="Proof of Completion">Proof of Completion * <h6>&nbsp;&nbsp;&nbsp;5MB max</h6></label><input type="file" name="proof_file" required></div>
                         <div class="modal-messages mt-2"></div>
                     </div>
                 </div>
@@ -256,7 +250,7 @@
                             @endforeach
                         </select></div>
                         <div class="form-group"><label class="form-group-title" data-label="Date Awarded">Date Awarded *</label><input type="date" style="color-scheme: dark;" name="end_date" required></div>
-                        <div class="form-group"><label class="form-group-title" data-label="Proof of Award">Proof of Award *</label><input type="file" name="proof_file" required></div>
+                        <div class="form-group"><label class="form-group-title file-upload" data-label="Proof of Award">Proof of Award * <h6>&nbsp;&nbsp;&nbsp;5MB max</h6></label><input type="file" name="proof_file" required></div>
                         <div class="modal-messages mt-2"></div>
                     </div>
                 </div>

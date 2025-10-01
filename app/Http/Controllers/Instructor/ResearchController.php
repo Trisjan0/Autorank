@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Instructor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\ManagesGoogleDrive;
+use App\Models\Application;
 use App\Models\Research;
 use App\Services\DataSearchService;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +17,24 @@ use Illuminate\Validation\ValidationException;
 class ResearchController extends Controller
 {
     use ManagesGoogleDrive;
+
+    /**
+     * Find or create a draft application for the authenticated user.
+     *
+     * @return \App\Models\Application
+     */
+    private function findOrCreateDraftApplication()
+    {
+        $user = Auth::user();
+
+        // Find an existing draft application or create a new one
+        return Application::firstOrCreate(
+            [
+                'user_id' => $user->id,
+                'status' => 'draft',
+            ]
+        );
+    }
 
     /**
      * Centralized method to get all dropdown options and dependency maps for KRA II.
@@ -108,13 +127,13 @@ class ResearchController extends Controller
         $icwStatusLevelsJson = json_encode($researchOptions['icw_status_levels'] ?? []);
 
         return view('instructor.research-page', [
-            'researchOutputsData'         => (clone $researchOutputsData)->take($perPage)->get(),
+            'researchOutputsData'       => (clone $researchOutputsData)->take($perPage)->get(),
             'inventionsCreativeWorksData' => (clone $inventionsCreativeWorksData)->take($perPage)->get(),
-            'perPage'                     => $perPage,
-            'initialHasMoreResearch'      => $researchOutputsData->count() > $perPage,
-            'researchOptions'             => $researchOptions,
-            'icwSubTypesJson'             => $icwSubTypesJson,
-            'icwStatusLevelsJson'         => $icwStatusLevelsJson,
+            'perPage'                   => $perPage,
+            'initialHasMoreResearch'    => $researchOutputsData->count() > $perPage,
+            'researchOptions'           => $researchOptions,
+            'icwSubTypesJson'           => $icwSubTypesJson,
+            'icwStatusLevelsJson'       => $icwStatusLevelsJson,
         ]);
     }
 
@@ -125,6 +144,9 @@ class ResearchController extends Controller
             $criterion = $request->input('criterion');
             $validatedData = $this->validateRequest($request, $criterion, $user->id);
 
+            // Get or create the draft application for this evaluation cycle
+            $draftApplication = $this->findOrCreateDraftApplication();
+
             $kraFolderName = 'KRA II: Research, Innovation, and Creative Work';
             $folderNameMap = [
                 'research-outputs' => 'Research Outputs Published',
@@ -134,6 +156,7 @@ class ResearchController extends Controller
 
             $dataToCreate = [
                 'user_id' => $user->id,
+                'application_id' => $draftApplication->id, // Link to the application cycle
                 'criterion' => $criterion,
             ];
 
@@ -188,10 +211,10 @@ class ResearchController extends Controller
             ];
         } elseif ($criterion === 'inventions-creative-works') {
             $rules = [
-                'title'           => ['required', 'string', 'max:255', Rule::unique('researches')->where('user_id', $userId)->where('criterion', $criterion)],
-                'role'            => ['required', Rule::in($options['icw_roles'])],
-                'type'            => ['required', Rule::in($options['icw_types'])],
-                'sub_type'        => [
+                'title'          => ['required', 'string', 'max:255', Rule::unique('researches')->where('user_id', $userId)->where('criterion', $criterion)],
+                'role'           => ['required', Rule::in($options['icw_roles'])],
+                'type'           => ['required', Rule::in($options['icw_types'])],
+                'sub_type'       => [
                     'required',
                     'string',
                     // Custom validation rule to check if sub_type is valid for the selected type
@@ -202,7 +225,7 @@ class ResearchController extends Controller
                         }
                     },
                 ],
-                'status_level'    => [
+                'status_level'   => [
                     'required',
                     'string',
                     // Custom validation rule to check if status_level is valid for the selected type

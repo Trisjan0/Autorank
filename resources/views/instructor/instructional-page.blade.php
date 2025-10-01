@@ -33,9 +33,7 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Category</th>
-                <th>Type</th>
                 <th>Role</th>
-                <th>Publication / Approval Date</th>
                 <th>Score</th>
                 <th>
                     <div class="search-bar-container">
@@ -55,7 +53,7 @@
             ])
             @empty
             <tr id="no-results-row">
-                <td colspan="8" style="text-align: center;">No items found.</td>
+                <td colspan="6" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -70,8 +68,6 @@
                 <th>ID</th>
                 <th>Service Type</th>
                 <th>Role</th>
-                <th>Student / Competition</th>
-                <th>Completion / Award Date</th>
                 <th>Level</th>
                 <th>Score</th>
                 <th>
@@ -92,7 +88,7 @@
             ])
             @empty
             <tr id="no-results-row">
-                <td colspan="8" style="text-align: center;">No items found.</td>
+                <td colspan="6" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -152,7 +148,7 @@
                             </select>
                         </div>
                         <div class="form-group"><label class="form-group-title" data-label="Publication/Approval Date">Publication / Approval Date *</label><input type="date" name="publication_date" style="color-scheme: dark;" required></div>
-                        <div class="form-group"><label class="form-group-title" data-label="Proof of Output">Proof of Output *</label><input type="file" name="proof_file" required></div>
+                        <div class="form-group"><label class="form-group-title file-upload" data-label="Proof of Output">Proof of Output * <h6>&nbsp;&nbsp;&nbsp;5MB max</h6></label><input type="file" name="proof_file" required></div>
                         <div class="modal-messages mt-2"></div>
                     </div>
                 </div>
@@ -221,7 +217,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-group-title" data-label="Proof of Service">Proof of Service *</label>
+                            <label class="form-group-title file-upload" data-label="Proof of Service">Proof of Service * <h6>&nbsp;&nbsp;&nbsp;5MB max</h6></label>
                             <input type="file" name="proof_file" required>
                         </div>
                         <div class="modal-messages mt-2"></div>

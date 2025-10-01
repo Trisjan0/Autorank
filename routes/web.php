@@ -5,8 +5,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Controller Imports
-use App\Http\Controllers\Admin\ApplicationController;
-use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\SystemSettingsController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\SocialiteLoginController;
@@ -68,11 +66,6 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::middleware(['role_or_permission:admin|access applications page'])->group(function () {
-        // Application Management
-        Route::get('/applications', [ApplicationController::class, 'index'])->name('application-page');
-        Route::get('/review-documents', [PageController::class, 'showReviewDocumentsPage'])->name('review-documents-page');
-        Route::patch('/positions/{position}/toggle', [PositionController::class, 'toggle'])->name('admin.positions.toggle');
-
         // User & Rank Management
         Route::get('/manage-users', [UserController::class, 'index'])->name('manage-users');
         Route::put('/manage-users/{user}/update-roles', [UserController::class, 'updateRoles'])->name('manage-users.updateRoles');
@@ -106,9 +99,9 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::middleware(['role:super_admin|user'])->group(function () {
-        // Application Submission
-        Route::get('/application/check-completeness', [ApplyController::class, 'checkCompleteness'])->name('application.check-completeness');
-        Route::post('/application/submit/{position}', [ApplyController::class, 'submit'])->name('application.submit');
+        // CCE Evaluation Submission Flow
+        Route::get('/evaluation/check-submissions', [ApplyController::class, 'checkSubmissions'])->name('instructor.evaluation.check');
+        Route::post('/evaluation/submit', [ApplyController::class, 'submitEvaluation'])->name('instructor.evaluation.submit');
 
         Route::prefix('instructor')->name('instructor.')->group(function () {
             // KRA I: Instruction

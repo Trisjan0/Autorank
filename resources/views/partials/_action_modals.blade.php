@@ -46,7 +46,7 @@
     </div>
 </div>
 
-{{-- DELETE CONFIRMATION MODAL --}}
+{{-- CONFIRMATION MODAL --}}
 <div class="modal-container" id="confirmationModal" style="display: none;">
     <div class="confirmation-modal-box">
         <div class="confirmation-modal-header">

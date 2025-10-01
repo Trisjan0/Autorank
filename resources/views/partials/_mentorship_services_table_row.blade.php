@@ -2,10 +2,10 @@
     <td>{{ $item->id }}</td>
     <td>{{ $item->service_type }}</td>
     <td>{{ $item->role }}</td>
-    <td>{{ $item->student_or_competition }}</td>
-    <td>{{ \Carbon\Carbon::parse($item->completion_date)->format('F d, Y') }}</td>
     <td>{{ $item->level }}</td>
-    <td>{{ $item->score ?? 'TBE' }}</td>
+    <td @if(($item->score ?? 'TBE') === 'TBE') style="color: gray;" title="To be evaluated." @endif>
+    {{ $item->score ?? 'TBE' }}
+    </td>
     <td>
         <div class="action-buttons">
             <button

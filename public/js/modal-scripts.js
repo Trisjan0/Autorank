@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * It is exposed globally so that other scripts can call it if needed.
      */
     function initializeActionModals() {
-        // --- File Viewer Modal (Your Original Code, Beautified) ---
+        // --- File Viewer Modal ---
         const fileViewerModal = document.getElementById('fileViewerModal');
         if (fileViewerModal) {
             const iframe = document.getElementById('fileViewerIframe');
@@ -168,10 +168,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             prevBtn?.addEventListener('click', () => { if (currentIndex > 0) { currentIndex--; updateSlider(); } });
             nextBtn?.addEventListener('click', () => { if (currentIndex < files.length - 1) { currentIndex++; updateSlider(); } });
-            toggleDetailsBtn?.addEventListener('click', () => {
+            
+            if (toggleDetailsBtn && !toggleDetailsBtn.dataset.bound) {
+            toggleDetailsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('Before:', detailsPanel.className);
                 detailsPanel.classList.toggle('file-details-panel--hidden');
                 toggleDetailsBtn.classList.toggle('active');
+                console.log('After:', detailsPanel.className);
             });
+            toggleDetailsBtn.dataset.bound = "true"; // prevent double binding
+            }
+
 
             document.body.addEventListener('click', (event) => {
                 const viewButton = event.target.closest('.view-file-btn');
@@ -194,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fileViewerModal.addEventListener('click', (e) => { if (e.target === fileViewerModal) closeFileViewer(); });
         }
 
-        // --- Confirmation Modal (Your Original Code, now refactored and simplified) ---
+        // --- Confirmation Modal ---
         const confirmationModal = document.getElementById('confirmationModal');
         if (confirmationModal) {
             const closeBtn = document.getElementById('closeConfirmationModalBtn');
@@ -207,8 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (e.target === confirmationModal) hideConfirmationModal();
             });
 
-            // This listener activates the modal using the new, flexible function.
-            // It looks for any button with the class '.confirm-action-btn'
             document.body.addEventListener('click', (event) => {
                 const actionButton = event.target.closest('.confirm-action-btn');
                 if (actionButton) {
@@ -217,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         body: actionButton.dataset.modalText,
                         confirmText: actionButton.dataset.confirmButtonText,
                         onConfirm: async () => {
-                            // This section handles the original AJAX logic for your KRA pages
                             const actionUrl = actionButton.dataset.actionUrl;
                             if (!actionUrl) return;
 

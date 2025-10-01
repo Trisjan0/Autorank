@@ -138,10 +138,7 @@
 }
 
 .file-details-panel--hidden {
-    flex-basis: 0;
-    width: 0;
-    padding: 0;
-    overflow: hidden;
+    display: none !important;
 }
 
 .file-details-panel h3 {

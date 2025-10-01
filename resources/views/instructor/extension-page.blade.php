@@ -35,9 +35,6 @@
                 <th>Title of Service / Project</th>
                 <th>Category</th>
                 <th>Role</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Target Community</th>
                 <th>Score</th>
                 <th>
                     <div class="search-bar-container">
@@ -55,7 +52,7 @@
             @include('partials._service_community_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="9" style="text-align: center;">No items found.</td>
+                <td colspan="6" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -70,9 +67,6 @@
                 <th>ID</th>
                 <th>Program / Project Title</th>
                 <th>Role</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Funding Source</th>
                 <th>Score</th>
                 <th>
                     <div class="search-bar-container">
@@ -90,7 +84,7 @@
             @include('partials._extension_involvement_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="8" style="text-align: center;">No items found.</td>
+                <td colspan="5" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -105,8 +99,6 @@
                 <th>ID</th>
                 <th>Designation / Position</th>
                 <th>Office / Unit</th>
-                <th>Appointment Start Date</th>
-                <th>Appointment End Date</th>
                 <th>Score</th>
                 <th>
                     <div class="search-bar-container">
@@ -124,7 +116,7 @@
             @include('partials._admin_designation_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="7" style="text-align: center;">No items found.</td>
+                <td colspan="5" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -172,7 +164,7 @@
                         <div class="form-group"><label class="form-group-title" data-label="Start Date">Start Date *</label><input type="date" style="color-scheme: dark;" name="start_date" required></div>
                         <div class="form-group"><label class="form-group-title" data-label="End Date">End Date *</label><input type="date" style="color-scheme: dark;" name="end_date" required></div>
                         <div class="form-group" id="target-community-group" style="display: none;"><label class="form-group-title" data-label="Target Community/Beneficiaries">Target Community / Beneficiaries *</label><input type="text" name="target_community"></div>
-                        <div class="form-group"><label class="form-group-title" data-label="Proof of Service">Proof of Service *</label><input type="file" name="proof_file" required></div>
+                        <div class="form-group"><label class="form-group-title file-upload" data-label="Proof of Service">Proof of Service * <h6>&nbsp;&nbsp;&nbsp;5MB max</h6></label><input type="file" name="proof_file" required></div>
                         <div class="modal-messages mt-2"></div>
                     </div>
                 </div>
@@ -216,7 +208,7 @@
                         <div class="form-group"><label class="form-group-title" data-label="Start Date">Start Date *</label><input type="date" style="color-scheme: dark;" name="start_date" required></div>
                         <div class="form-group"><label class="form-group-title" data-label="End Date">End Date *</label><input type="date" style="color-scheme: dark;" name="end_date" required></div>
                         <div class="form-group"><label class="form-group-title" data-label="Funding Source">Funding Source *</label><input type="text" name="funding_source" required></div>
-                        <div class="form-group"><label class="form-group-title" data-label="Proof of Involvement">Proof of Involvement *</label><input type="file" name="proof_file" required></div>
+                        <div class="form-group"><label class="form-group-title file-upload" data-label="Proof of Involvement">Proof of Involvement * <h6>&nbsp;&nbsp;&nbsp;5MB max</h6></label><input type="file" name="proof_file" required></div>
                         <div class="modal-messages mt-2"></div>
                     </div>
                 </div>
@@ -255,7 +247,7 @@
                         <div class="form-group"><label class="form-group-title" data-label="Appointment Start Date">Appointment Start Date *</label><input type="date" style="color-scheme: dark;" name="start_date" required></div>
                         <div class="form-group" id="appointment-end-date-group"><label class="form-group-title" data-label="Appointment End Date">Appointment End Date *</label><input type="date" style="color-scheme: dark;" name="end_date" required></div>
                         <div class="form-group-checkbox"><input type="checkbox" id="ongoing-checkbox" name="ongoing" value="1"><label for="ongoing-checkbox">This designation is ongoing (Present)</label></div>
-                        <div class="form-group"><label class="form-group-title" data-label="Proof of Designation">Proof of Designation *</label><input type="file" name="proof_file" required></div>
+                        <div class="form-group"><label class="form-group-title file-upload" data-label="Proof of Designation">Proof of Designation * <h6>&nbsp;&nbsp;&nbsp;5MB max</h6></label><input type="file" name="proof_file" required></div>
                         <div class="modal-messages mt-2"></div>
                     </div>
                 </div>

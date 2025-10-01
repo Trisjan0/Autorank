@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Instruction extends Model
 {
@@ -12,6 +12,7 @@ class Instruction extends Model
 
     protected $fillable = [
         'user_id',
+        'application_id',
         'criterion',
         'title',
         'category',
@@ -26,4 +27,12 @@ class Instruction extends Model
         'google_drive_file_id',
         'proof_filename',
     ];
+
+    /**
+     * Get the application that this instruction submission belongs to.
+     */
+    public function application(): BelongsTo
+    {
+        return $this->belongsTo(Application::class);
+    }
 }

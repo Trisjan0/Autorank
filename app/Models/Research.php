@@ -15,17 +15,12 @@ class Research extends Model
     /**
      * The attributes that are not mass assignable.
      *
-     * Following the pattern of Instruction.php
-     *
      * @var array<int, string>
      */
     protected $guarded = [];
 
     /**
      * The attributes that should be cast.
-     *
-     * This ensures that date columns from the database are
-     * automatically converted to Carbon date objects.
      *
      * @var array<string, string>
      */
@@ -40,5 +35,13 @@ class Research extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the application that this research submission belongs to.
+     */
+    public function application(): BelongsTo
+    {
+        return $this->belongsTo(Application::class);
     }
 }

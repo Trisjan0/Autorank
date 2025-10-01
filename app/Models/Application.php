@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Application extends Model
 {
@@ -24,9 +25,6 @@ class Application extends Model
      */
     protected $fillable = [
         'user_id',
-        'position_id',
-        'applicant_name',
-        'applicant_current_rank',
         'status',
         'kra1_score',
         'kra2_score',
@@ -44,11 +42,39 @@ class Application extends Model
         return $this->belongsTo(User::class);
     }
 
+    // --- START: KRA SUBMISSION RELATIONSHIPS ---
+
     /**
-     * Get the position for which the application was submitted.
+     * Get all of the instruction submissions for the Application.
      */
-    public function position(): BelongsTo
+    public function instructions(): HasMany
     {
-        return $this->belongsTo(Position::class);
+        return $this->hasMany(Instruction::class);
     }
+
+    /**
+     * Get all of the research submissions for the Application.
+     */
+    public function researches(): HasMany
+    {
+        return $this->hasMany(Research::class);
+    }
+
+    /**
+     * Get all of the extension submissions for the Application.
+     */
+    public function extensions(): HasMany
+    {
+        return $this->hasMany(Extension::class);
+    }
+
+    /**
+     * Get all of the professional development submissions for the Application.
+     */
+    public function professionalDevelopments(): HasMany
+    {
+        return $this->hasMany(ProfessionalDevelopment::class);
+    }
+
+    // --- END: KRA SUBMISSION RELATIONSHIPS ---
 }

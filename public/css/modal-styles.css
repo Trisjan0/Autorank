@@ -187,6 +187,19 @@ body.modal-open {
   font-weight: 500;
 }
 
+.form-group-title.file-upload {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.form-group-title.file-upload h6 {
+    font-weight: 400;
+}
+
 .mt-2 {
   width: 100%;
   height: auto;
@@ -367,6 +380,10 @@ select {
     height: auto;
 }
 
+#confirmation-final-status-message-area {
+    margin-top: 30px;
+}
+
 .confirmation-modal-title {
     font-size: 1.45rem;
     font-weight: 600;
@@ -374,7 +391,6 @@ select {
 
 #confirmationModalText {
     font-size: .95rem;
-    margin: 0 0 53px 0;
 }
 
 .confirmation-modal-actions {

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ asset('css/global-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/system-settings-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modal-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/kra-modal-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/profile-page-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive-styles.css') }}">
     <link rel="stylesheet" href="{{ route('dynamic.css') }}">
@@ -31,6 +32,7 @@
 
 <body class="{{ $themeClass }}">
     @include('partials._navbar')
+    @include('partials._action_modals')
 
     <main>
         @yield('content')

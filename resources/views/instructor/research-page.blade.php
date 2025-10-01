@@ -34,9 +34,6 @@
                 <th>Title</th>
                 <th>Category</th>
                 <th>Publication / Journal Name</th>
-                <th>Indexing</th>
-                <th>Publication Date</th>
-                <th>DOI</th>
                 <th>Role</th>
                 <th>Score</th>
                 <th>
@@ -55,7 +52,7 @@
             @include('partials._research_outputs_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="10" style="text-align: center;">No items found.</td>
+                <td colspan="7" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -70,9 +67,6 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Type</th>
-                <th>Sub-Type</th>
-                <th>Status / Level</th>
-                <th>Date of Issue / Exhibition</th>
                 <th>Role</th>
                 <th>Score</th>
                 <th>
@@ -91,7 +85,7 @@
             @include('partials._inventions_creative_works_table_row', ['item' => $item])
             @empty
             <tr id="no-results-row">
-                <td colspan="9" style="text-align: center;">No items found.</td>
+                <td colspan="6" style="text-align: center;">No items found.</td>
             </tr>
             @endforelse
         </tbody>
@@ -151,7 +145,7 @@
                                 <option value="{{ $option }}">{{ $option }}</option>
                                 @endforeach
                             </select></div>
-                        <div class="form-group"><label class="form-group-title" data-label="Proof of Publication">Proof of Publication *</label><input type="file" name="proof_file" required></div>
+                        <div class="form-group"><label class="form-group-title file-upload" data-label="Proof of Publication">Proof of Publication * <h6>&nbsp;&nbsp;&nbsp;5MB max</h6></label><input type="file" name="proof_file" required></div>
                         <div class="modal-messages mt-2"></div>
                     </div>
                 </div>
@@ -209,7 +203,7 @@
                                 <option value="{{ $option }}">{{ $option }}</option>
                                 @endforeach
                             </select></div>
-                        <div class="form-group"><label class="form-group-title" data-label="Proof of Output">Proof of Output *</label><input type="file" name="proof_file" required></div>
+                        <div class="form-group"><label class="form-group-title file-upload" data-label="Proof of Output">Proof of Output * <h6>&nbsp;&nbsp;&nbsp;5MB max</h6></label><input type="file" name="proof_file" required></div>
                         <div class="modal-messages mt-2"></div>
                     </div>
                 </div>
