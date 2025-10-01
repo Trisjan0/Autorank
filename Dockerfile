@@ -25,6 +25,8 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
+RUN mkdir -p /var/www/html/database && touch /var/www/html/database/database.sqlite
+
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
