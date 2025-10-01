@@ -24,8 +24,6 @@ RUN php artisan config:cache \
  && php artisan route:cache \
  && php artisan view:cache
 
----
-
 # Stage 2: Runtime
 FROM php:8.2-fpm
 
